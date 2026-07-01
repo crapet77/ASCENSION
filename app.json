@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Ascension",
+    "slug": "ascension",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "ascension",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ascension.app"
+    },
+    "android": {
+      "package": "com.ascension.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#050505"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
