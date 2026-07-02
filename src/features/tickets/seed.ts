@@ -111,6 +111,130 @@ export const localTicketPayload: TicketApiPayload = {
         playStatus: "played"
       },
       savedAt: "2026-06-29T20:50:00.000Z"
+    },
+    {
+      selection: {
+        id: "ascension-2026-07-02-angleterre-rd-congo-over-15",
+        providerSelectionId: "ascension-2026-07-02-angleterre-rd-congo-over-15",
+        date: "2026-07-02",
+        sport: "Football",
+        competition: "Pronostic Ascension",
+        match: "Angleterre vs RD Congo",
+        kickoffTime: "Terminé",
+        market: "Plus de 1,5 but dans le match",
+        recommendedMarket: "Plus de 1,5 but dans le match",
+        pick: "Plus de 1,5 but dans le match",
+        estimatedOdds: 1.31,
+        ascensionScore: 0,
+        confidenceLevel: "Validé",
+        strengths: [],
+        risks: [],
+        conclusion: "Ticket gagné : le pari portait uniquement sur le nombre de buts.",
+        explanation: "Score final : Angleterre 2 - 1 RD Congo.",
+        comment: "Gain brut 2,62 €. Bénéfice net +0,62 €.",
+        status: "won",
+        scoreFinal: "Angleterre 2 - 1 RD Congo",
+        officialResult: "won",
+        officialScore: "Angleterre 2 - 1 RD Congo",
+        resultUpdatedAt: "2026-07-02T22:00:00.000Z"
+      },
+      input: {
+        realOdds: "1.31",
+        stake: "2",
+        playStatus: "played"
+      },
+      savedAt: "2026-07-02T18:00:00.000Z",
+      syncedAt: "2026-07-02T22:00:00.000Z"
+    },
+    {
+      selection: {
+        id: "ascension-2026-07-02-usa-bosnie-over-15",
+        providerSelectionId: "ascension-2026-07-02-usa-bosnie-over-15",
+        date: "2026-07-02",
+        sport: "Football",
+        competition: "Pronostic Ascension",
+        match: "États-Unis vs Bosnie-Herzégovine",
+        kickoffTime: "Terminé",
+        market: "Plus de 1,5 but dans le match",
+        recommendedMarket: "Plus de 1,5 but dans le match",
+        pick: "Plus de 1,5 but dans le match",
+        estimatedOdds: 1.20,
+        ascensionScore: 0,
+        confidenceLevel: "Validé",
+        strengths: [],
+        risks: [],
+        conclusion: "Ticket gagné : le pari portait uniquement sur le nombre de buts.",
+        explanation: "Score final : États-Unis 2 - 0 Bosnie-Herzégovine.",
+        comment: "Gain brut 2,40 €. Bénéfice net +0,40 €.",
+        status: "won",
+        scoreFinal: "États-Unis 2 - 0 Bosnie-Herzégovine",
+        officialResult: "won",
+        officialScore: "États-Unis 2 - 0 Bosnie-Herzégovine",
+        resultUpdatedAt: "2026-07-02T22:00:00.000Z"
+      },
+      input: {
+        realOdds: "1.20",
+        stake: "2",
+        playStatus: "played"
+      },
+      savedAt: "2026-07-02T18:00:00.000Z",
+      syncedAt: "2026-07-02T22:00:00.000Z"
+    },
+    {
+      selection: {
+        id: "ascension-2026-07-02-espagne-autriche-qualification",
+        providerSelectionId: "ascension-2026-07-02-espagne-autriche-qualification",
+        date: "2026-07-02",
+        sport: "Football",
+        competition: "Pronostic Ascension",
+        match: "Espagne vs Autriche",
+        kickoffTime: "À renseigner",
+        market: "Qualification Espagne",
+        recommendedMarket: "Qualification Espagne",
+        pick: "Qualification Espagne",
+        estimatedOdds: 1.13,
+        ascensionScore: 0,
+        confidenceLevel: "À suivre",
+        strengths: [],
+        risks: [],
+        conclusion: undefined,
+        explanation: "Pronostic du jour en attente du résultat officiel.",
+        status: "pending"
+      },
+      input: {
+        realOdds: "1.13",
+        stake: "2",
+        playStatus: "played"
+      },
+      savedAt: "2026-07-02T12:00:00.000Z"
+    },
+    {
+      selection: {
+        id: "ascension-2026-07-02-espagne-autriche-over-15",
+        providerSelectionId: "ascension-2026-07-02-espagne-autriche-over-15",
+        date: "2026-07-02",
+        sport: "Football",
+        competition: "Pronostic Ascension",
+        match: "Espagne vs Autriche",
+        kickoffTime: "À renseigner",
+        market: "Plus de 1,5 but dans le match",
+        recommendedMarket: "Plus de 1,5 but dans le match",
+        pick: "Plus de 1,5 but dans le match",
+        estimatedOdds: 1.21,
+        ascensionScore: 0,
+        confidenceLevel: "À suivre",
+        strengths: [],
+        risks: [],
+        conclusion: undefined,
+        explanation: "Pronostic du jour en attente du résultat officiel.",
+        status: "pending"
+      },
+      input: {
+        realOdds: "1.21",
+        stake: "2",
+        playStatus: "played"
+      },
+      savedAt: "2026-07-02T12:00:00.000Z"
     }
   ]
 };

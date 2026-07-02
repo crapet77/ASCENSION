@@ -104,6 +104,7 @@ function mergeStoredTicket(defaultTicket: AscensionTicket, storedTicket?: Ascens
     syncedAt: storedTicket.syncedAt,
     selection: {
       ...defaultTicket.selection,
+      comment: storedTicket.selection.comment,
       status: storedTicket.selection.status,
       scoreFinal: storedTicket.selection.scoreFinal,
       officialResult: storedTicket.selection.officialResult,

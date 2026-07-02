@@ -59,17 +59,6 @@ export const realAscensionHistoryBets: BankrollBet[] = [
     settledAt: "2026-06-25"
   },
   {
-    id: "real-ascension-2026-06-25-etats-unis-double-chance",
-    source: "ticket",
-    sourceId: "history-2026-06-25-etats-unis-double-chance",
-    event: "États-Unis ou match nul",
-    odds: 1.29,
-    stake: 2,
-    result: "lost",
-    placedAt: "2026-06-25",
-    settledAt: "2026-06-25"
-  },
-  {
     id: "real-ascension-2026-06-25-allemagne-double-chance-over-05",
     source: "ticket",
     sourceId: "history-2026-06-25-allemagne-double-chance-over-05",
@@ -85,17 +74,6 @@ export const realAscensionHistoryBets: BankrollBet[] = [
     source: "ticket",
     sourceId: "history-2026-06-27-argentine-gagne",
     event: "Argentine gagne",
-    odds: 1.15,
-    stake: 2,
-    result: "won",
-    placedAt: "2026-06-27",
-    settledAt: "2026-06-27"
-  },
-  {
-    id: "real-ascension-2026-06-27-angleterre-gagne",
-    source: "ticket",
-    sourceId: "history-2026-06-27-angleterre-gagne",
-    event: "Angleterre gagne",
     odds: 1.15,
     stake: 2,
     result: "won",
@@ -119,5 +97,9 @@ export const removedDemoBetIds = new Set([
   "ticket-asc-ticket-psg-om",
   "ticket-asc-ticket-real-barca",
   "asc-ticket-psg-om",
-  "asc-ticket-real-barca"
+  "asc-ticket-real-barca",
+  "real-ascension-2026-06-25-etats-unis-double-chance",
+  "history-2026-06-25-etats-unis-double-chance",
+  "real-ascension-2026-06-27-angleterre-gagne",
+  "history-2026-06-27-angleterre-gagne"
 ]);

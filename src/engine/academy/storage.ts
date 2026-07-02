@@ -28,150 +28,213 @@ const localAcademyLevels: AcademyLevel[] = [
         "Construire une base solide avant de chercher à gagner plus.",
         [
           createLessonSeed(
-            "Pourquoi la discipline vaut plus que l'argent",
+            "La discipline : le premier investissement",
             "6 min",
-            "La discipline n'est pas une règle triste. C'est la force qui te permet de garder le cap quand la tentation arrive.",
-            "Une règle simple suivie chaque semaine vaut plus qu'une bonne idée de temps en temps.",
+            "Beaucoup pensent que les personnes riches ont commencé avec plus d'argent.\n\nPourtant, ce n'est presque jamais le cas.\n\nCertaines gagnent 1 500 € par mois et deviennent financièrement libres.\n\nD'autres gagnent 10 000 € par mois et terminent endettées.\n\nPourquoi ?\n\nParce que l'argent ne crée pas les habitudes.\n\nLes habitudes créent l'argent.",
+            "La liberté financière commence avec la discipline appliquée au premier euro gagné.",
             createQuizQuestions([
               {
-                question: "Quel comportement protège le plus la stabilité financière à court terme ?",
-                options: ["Suivre une règle simple et régulière", "Multiplier les dépenses", "Attendre un gain miraculeux"],
+                question: "Thomas gagne 2 000 € et dépense tout. Lucas gagne 2 000 € et met 10 € de côté par jour. Quelle différence compte vraiment ?",
+                options: ["Leur discipline", "Leur salaire", "Leur chance"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi la discipline aide-t-elle à mieux décider ?",
-                options: ["Parce qu'elle réduit les mouvements émotionnels", "Parce qu'elle supprime le besoin d'épargner", "Parce qu'elle garantit un rendement immédiat"],
+                question: "Pourquoi la phrase « J'investirai quand je gagnerai plus » est-elle dangereuse ?",
+                options: ["Parce qu'elle repousse l'habitude au lieu de la construire", "Parce qu'il ne faut jamais investir", "Parce qu'un gros salaire garantit toujours la liberté"],
                 correctOptionIndex: 0
               },
               {
-                question: "Que favorise une discipline financière claire ?",
-                options: ["Une vision plus stable de ses priorités", "Une hausse artificielle des dépenses", "Une dépendance aux impulsions"],
+                question: "Si tu économises 5 € par jour pendant un an, que prouves-tu surtout ?",
+                options: ["Qu'une petite routine peut devenir un vrai résultat", "Que 5 € ne servent jamais à rien", "Que seule une grosse somme compte"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à la philosophie Ascension ?",
+                options: ["Les habitudes créent l'argent", "L'argent crée automatiquement les habitudes", "La motivation suffit toujours"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle action montre le mieux que tu commences à contrôler ton argent ?",
+                options: ["Noter toutes tes dépenses pendant 7 jours", "Attendre d'avoir plus de revenus", "Ignorer les petits achats"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Tu n'as pas besoin d'être motivé à chaque instant pour avancer.",
-                "Une règle claire te protège quand l'émotion prend le dessus."
+                "La motivation est une émotion.",
+                "La discipline est une habitude.",
+                "Les personnes qui réussissent construisent des routines."
               ],
-              example: "Tu décides d'envoyer 50 € sur ton épargne chaque vendredi, même si tu as envie d'acheter autre chose.",
-              takeaway: "Une règle simple suivie chaque semaine vaut plus qu'une bonne idée de temps en temps."
+              example: "Thomas et Lucas gagnent chacun 2 000 €. Thomas dépense tout. Lucas met simplement 10 € de côté chaque jour.",
+              takeaway: "La liberté financière ne commence pas avec un gros salaire.\n\nElle commence le jour où tu contrôles le premier euro que tu gagnes."
               }
             ),
           createLessonSeed(
             "Les intérêts composés",
-            "7 min",
-            "L'argent ne grandit pas seulement parce que tu en mets. Il grandit parce que tu lui laisses du temps.",
-            "Le plus tôt tu commences, plus le temps devient ton allié.",
+            "8 min",
+            "Beaucoup pensent qu'il faut investir beaucoup pour devenir riche.\n\nEn réalité, les personnes qui réussissent commencent souvent avec de petites sommes.\n\nLeur véritable avantage n'est pas l'argent.\n\nC'est le temps.\n\nChaque année, leur argent travaille pendant qu'elles continuent leur vie.",
+            "Le temps est l'investissement que personne ne peut acheter.",
             createQuizQuestions([
               {
-                question: "Quel rôle joue le temps dans les intérêts composés ?",
-                options: ["Il fait grossir progressivement le capital", "Il annule les intérêts", "Il remplace l'épargne"],
+                question: "Lucas commence à investir à 20 ans. Thomas commence à 35 ans. Pourquoi Lucas peut-il finir avec beaucoup plus ?",
+                options: ["Son argent travaille plus longtemps", "Il investit forcément plus chaque mois", "Il évite tous les risques"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi commencer tôt est-il précieux ?",
-                options: ["Parce que chaque petite somme a plus de temps pour fructifier", "Parce que le rendement devient instantané", "Parce que les frais disparaissent tout de suite"],
+                question: "Quelle idée résume le mieux les intérêts composés ?",
+                options: ["Les intérêts produisent à leur tour des intérêts", "L'argent reste toujours identique", "Seules les grosses sommes peuvent progresser"],
                 correctOptionIndex: 0
               },
               {
-                question: "Quel geste profite le plus aux intérêts composés ?",
-                options: ["Ajouter régulièrement une petite somme", "Retirer tout l'argent d'un coup", "Éviter tout placement"],
+                question: "Pourquoi attendre d'avoir plus d'argent peut coûter cher ?",
+                options: ["Parce qu'on perd des années de croissance", "Parce qu'investir tôt supprime toutes les pertes", "Parce que les petites sommes sont inutiles"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Si tu ne peux investir que 20 € par mois aujourd'hui, quelle est souvent la meilleure décision ?",
+                options: ["Commencer quand même pour créer l'habitude", "Attendre une somme parfaite", "Ne jamais investir"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["Commencer tôt est souvent plus puissant que commencer gros", "Le rendement est toujours garanti", "Le temps ne change rien"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Un petit montant récurrent peut devenir puissant à long terme.",
-                "Le vrai levier, c'est la régularité et la patience."
+                "Les intérêts produisent des intérêts.",
+                "Ces nouveaux intérêts produisent encore d'autres intérêts.",
+                "Le temps fait une grande partie du travail."
               ],
-              example: "Tu mets 30 € par mois sur un placement simple et tu laisses l'effet du temps faire le reste.",
-              takeaway: "Le plus tôt tu commences, plus le temps devient ton allié."
+              example: "100 € investis chaque mois avec un rendement moyen de 8 % par an peuvent devenir environ 18 000 € après 10 ans, 59 000 € après 20 ans et 149 000 € après 30 ans.",
+              takeaway: "Le temps est l'investissement que personne ne peut acheter.\n\nPlus tu commences tôt,\n\nplus ton argent aura le temps de travailler pour toi."
               }
             ),
           createLessonSeed(
-            "Budget personnel",
-            "7 min",
-            "Chaque euro que tu reçois doit avoir une mission.\n\nLe budget est l'outil qui te permet de décider où ton argent va travailler.",
-            "Chaque euro doit avoir une mission avant d'être dépensé.",
+            "Le budget : donne une mission à chaque euro",
+            "8 min",
+            "Quand on entend le mot \"budget\", on pense souvent à des restrictions.\n\nMoins sortir.\n\nMoins acheter.\n\nMoins profiter.\n\nPourtant...\n\nLes personnes financièrement libres utilisent un budget pour une raison totalement différente.\n\nElles veulent décider où va leur argent.\n\nPas se demander où il est parti.",
+            "Chaque euro sans mission est un euro qui risque de disparaître.",
             createQuizQuestions([
               {
-                question: "Quel est l'objectif principal d'un budget personnel ?",
-                options: ["Voir où chaque euro est utilisé", "Augmenter les dépenses de façon spontanée", "Supprimer toutes les priorités"],
+                question: "Emma dépense puis épargne ce qu'il reste. Julien répartit son salaire dès le premier jour. Quelle différence explique leur résultat ?",
+                options: ["L'organisation de leur argent", "Le montant de leur salaire", "La chance uniquement"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi faut-il relire son budget ?",
-                options: ["Pour ajuster les dépenses à ses vrais priorités", "Pour justifier des achats impulsifs", "Pour ignorer les écarts"],
+                question: "Pourquoi un budget n'est-il pas une punition ?",
+                options: ["Parce qu'il donne une direction à l'argent", "Parce qu'il interdit tout plaisir", "Parce qu'il supprime toutes les dépenses"],
                 correctOptionIndex: 0
               },
               {
-                question: "Avant de dépenser, que permet un budget ?",
-                options: ["De décider si cette dépense sert vraiment un objectif", "De supprimer toute planification", "De multiplier les imprévus"],
-                correctOptionIndex: 0
-              }
-            ])
-          ),
-          createLessonSeed(
-            "Épargne de sécurité",
-            "6 min",
-            "Une réserve n'est pas un frein. C'est la protection qui te permet d'avancer sans paniquer.",
-            "Une petite sécurité aujourd'hui évite de grosses décisions sous pression demain.",
-            createQuizQuestions([
-              {
-                question: "À quoi sert principalement une épargne de sécurité ?",
-                options: ["À absorber les surprises sans casser le plan", "À remplacer tous les investissements", "À financer des dépenses inutiles"],
+                question: "Pourquoi la phrase « J'épargnerai à la fin du mois » échoue souvent ?",
+                options: ["Parce qu'il ne reste souvent plus rien", "Parce qu'épargner est inutile", "Parce que le budget doit être fait une fois par an"],
                 correctOptionIndex: 0
               },
               {
-                question: "Quel type d'événement cette épargne aide-t-elle à couvrir ?",
-                options: ["Une réparation d'urgence ou une baisse de revenus", "Un achat impulsif de luxe", "Un gain de hasard"],
+                question: "Tu reçois 2 000 €. Quelle méthode donne le plus de contrôle ?",
+                options: ["Attribuer une mission à chaque euro dès le départ", "Dépenser d'abord et regarder ensuite", "Éviter de suivre les petites dépenses"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi garder une réserve est-il rassurant ?",
-                options: ["Parce qu'on évite de paniquer face à l'imprévu", "Parce qu'on n'a plus besoin de budget", "Parce qu'on peut dépenser sans limite"],
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["Le budget construit la liberté", "Le budget empêche de vivre", "Un budget sert seulement quand on gagne beaucoup"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "La sécurité n'est pas un luxe, c'est une base pour rester calme.",
-                "Quand l'imprévu arrive, tu veux déjà avoir une réponse simple."
+                "Un budget consiste à donner une mission à chaque euro.",
+                "Cette mission se décide avant même que le mois commence.",
+                "Ton argent doit travailler pour toi."
               ],
-              example: "Tu gardes 300 € de côté pour couvrir une réparation ou une baisse de revenus sans bouleverser ton plan.",
-              takeaway: "Une petite sécurité aujourd'hui évite de grosses décisions sous pression demain."
+              example: "Avec un salaire de 2 000 €, tu peux répartir 1 100 € en dépenses fixes, 250 € en loisirs, 250 € en épargne de sécurité, 300 € en investissements et 100 € en plaisir ou projets.",
+              takeaway: "Chaque euro sans mission est un euro qui risque de disparaître.\n\nLe budget ne limite pas ta liberté.\n\nIl la construit."
             }
           ),
           createLessonSeed(
-            "Les mauvaises dettes",
-            "7 min",
-            "Toutes les dettes ne se ressemblent pas. Certaines ralentissent ta vie, d'autres servent un vrai projet.",
-            "Une dette doit toujours être pensée comme un coût de temps, d'énergie et de paix mentale.",
+            "L'épargne de sécurité : ton premier bouclier financier",
+            "8 min",
+            "Une panne de voiture.\n\nUne machine à laver qui casse.\n\nUne facture imprévue.\n\nCes situations arrivent à tout le monde.\n\nLa différence n'est pas le problème.\n\nLa différence, c'est la préparation.\n\nUne épargne de sécurité transforme une urgence en simple contretemps.",
+            "Une épargne de sécurité transforme une urgence en simple contretemps.",
             createQuizQuestions([
               {
-                question: "Quelle dette mérite le plus d'attention ?",
-                options: ["La dette qui finance un consommable sans retour durable", "La dette liée à un actif productif", "La dette contractée avec un plan clair"],
+                question: "Sophie paie une réparation de 900 € avec sa réserve. Marc s'endette. Quelle différence compte vraiment ?",
+                options: ["La préparation", "Le montant de la réparation", "La chance uniquement"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi une mauvaise dette peut ralentir la progression ?",
-                options: ["Parce qu'elle consomme de l'énergie et du cash-flow", "Parce qu'elle augmente automatiquement les revenus", "Parce qu'elle rend la planification inutile"],
+                question: "Pourquoi une épargne de sécurité n'est-elle pas un investissement ?",
+                options: ["Parce qu'elle sert d'abord à protéger", "Parce qu'elle doit rapporter le plus possible", "Parce qu'elle doit être risquée"],
                 correctOptionIndex: 0
               },
               {
-                question: "Que faut-il regarder avant d'emprunter ?",
-                options: ["Si l'argent emprunté crée un vrai bénéfice ou un simple confort", "Si la dette peut être cachée longtemps", "Si les mensualités sont toujours petites"],
+                question: "Pourquoi investir tout son argent sans réserve peut être dangereux ?",
+                options: ["Parce qu'un imprévu peut forcer à vendre au mauvais moment", "Parce qu'investir est toujours interdit", "Parce qu'une réserve empêche de progresser"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Tu disposes de 2 000 € et aucune réserve. Quelle décision est souvent la plus solide ?",
+                options: ["Construire une réserve avant d'investir", "Investir immédiatement tout l'argent", "Dépenser pour éviter de réfléchir"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["La sécurité permet d'investir plus sereinement", "La sécurité remplace tous les objectifs", "Une réserve ne sert jamais"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Une dette ne doit pas être un réflexe de confort.",
-                "Avant d'emprunter, demande-toi si ça sert vraiment ton projet."
+                "Une épargne de sécurité n'est pas là pour rapporter de l'argent.",
+                "Elle protège ton équilibre financier.",
+                "Elle évite de vendre tes investissements dans l'urgence."
               ],
-              example: "Tu refuses un crédit pour un achat qui ne te rendra rien à long terme et tu attendes d'avoir un vrai besoin.",
-              takeaway: "Une dette doit toujours être pensée comme un coût de temps, d'énergie et de paix mentale."
+              example: "Si tes dépenses mensuelles sont de 1 600 €, un mois de réserve représente 1 600 €, trois mois 4 800 € et six mois 9 600 €.",
+              takeaway: "Une épargne de sécurité ne te rend pas riche.\n\nElle t'empêche simplement de redevenir pauvre au premier imprévu."
+            }
+          ),
+          createLessonSeed(
+            "Les mauvaises dettes : l'argent qui travaille contre toi",
+            "8 min",
+            "Emprunter n'est pas forcément une erreur.\n\nLe véritable danger est d'emprunter pour acheter quelque chose qui perd de la valeur ou qui ne t'apporte rien à long terme.\n\nChaque mensualité réduit une partie de ta liberté.\n\nAvant de signer un crédit, pose-toi une question :\n\n\"Est-ce que cet achat améliore vraiment mon avenir ?\"",
+            "Une mauvaise dette ne te vole pas seulement de l'argent.",
+            createQuizQuestions([
+              {
+                question: "Julie emprunte 3 000 € pour un téléphone alors que le sien fonctionne. Quel est le vrai risque ?",
+                options: ["Créer une contrainte durable pour un plaisir court", "Améliorer automatiquement son avenir", "Supprimer toutes ses dépenses"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Pourquoi « ce n'est que 40 € par mois » peut être dangereux ?",
+                options: ["Parce que plusieurs petites mensualités peuvent peser lourd", "Parce que 40 € ne comptent jamais", "Parce qu'une mensualité ne dure jamais longtemps"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Avant un crédit, quelle question protège le mieux ta liberté ?",
+                options: ["Est-ce que cet achat améliore vraiment mon avenir ?", "Est-ce que je peux ignorer le coût total ?", "Est-ce que la mensualité semble petite ?"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Un téléphone coûte 1 500 € comptant ou 1 680 € à crédit. Que faut-il regarder ?",
+                options: ["Le coût total et la valeur réelle de l'achat", "Uniquement la mensualité", "Uniquement l'envie du moment"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["Une mauvaise dette réduit tes choix futurs", "Toute dette est forcément mauvaise", "Une dette rend toujours plus libre"],
+                correctOptionIndex: 0
+              }
+            ]),
+            {
+              sections: [
+                "Une mauvaise dette sert souvent à financer un plaisir immédiat.",
+                "Le plaisir dure quelques jours.",
+                "Les mensualités peuvent durer plusieurs années."
+              ],
+              example: "Un téléphone à 1 500 € peut coûter 1 680 € avec 24 mensualités de 70 €, pendant que le téléphone perd de la valeur.",
+              takeaway: "Une mauvaise dette ne te vole pas seulement de l'argent.\n\nElle réduit aussi tes choix futurs."
             }
           )
         ]
@@ -183,95 +246,128 @@ const localAcademyLevels: AcademyLevel[] = [
         [
           createLessonSeed(
             "Les bonnes habitudes financières",
-            "6 min",
-            "Une bonne habitude n'a pas besoin d'être spectaculaire. Elle doit juste être répétée assez souvent pour devenir naturelle.",
-            "Le vrai levier, c'est la régularité, pas la motivation d'un instant.",
+            "8 min",
+            "Beaucoup de personnes pensent qu'il faut une idée géniale ou un énorme salaire pour réussir.\n\nEn réalité, ce sont souvent les petits gestes répétés chaque semaine qui font toute la différence.\n\nÉpargner.\n\nSuivre ses dépenses.\n\nInvestir régulièrement.\n\nLire quelques pages.\n\nCes habitudes semblent insignifiantes aujourd'hui, mais elles deviennent puissantes avec le temps.",
+            "Tu n'as pas besoin d'être parfait.",
             createQuizQuestions([
               {
-                question: "Quelle qualité a le plus d'impact sur la progression financière ?",
-                options: ["La régularité de petits gestes", "L'achat impulsif", "La multiplication des promesses"],
+                question: "Sarah dépense d'abord. Nicolas épargne, investit et suit son budget chaque mois. Qu'est-ce qui explique surtout l'écart futur ?",
+                options: ["Leurs habitudes répétées", "Une seule grande décision", "La chance uniquement"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi une habitude simple est-elle plus efficace qu'un effort isolé ?",
-                options: ["Parce qu'elle se répète et devient durable", "Parce qu'elle supprime toute réflexion", "Parce qu'elle élimine la nécessité de planifier"],
+                question: "Pourquoi une petite action répétée peut dépasser une grande action occasionnelle ?",
+                options: ["Parce que la répétition crée un effet durable", "Parce que les petites actions sont toujours faciles", "Parce qu'une seule action suffit toujours"],
                 correctOptionIndex: 0
               },
               {
-                question: "Quel est le meilleur levier pour construire une habitude financière solide ?",
-                options: ["Une routine légère mais répétée", "Un changement radical chaque semaine", "Un manque de suivi"],
+                question: "Quel est le meilleur premier pas pour créer une habitude financière ?",
+                options: ["Choisir une seule habitude durable", "Changer dix choses en même temps", "Attendre d'être parfait"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quel comportement a le plus de chances de construire un patrimoine ?",
+                options: ["Investir un petit montant chaque mois pendant des années", "Investir beaucoup une seule fois sans routine", "Agir seulement quand la motivation arrive"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["La régularité compte plus que la perfection", "La perfection est obligatoire", "Les habitudes ne changent rien"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Les habitudes simples sont plus faciles à garder que les grands plans.",
-                "Quand le geste est petit, tu as plus de chances de le refaire."
+                "Une habitude est une action répétée jusqu'à devenir presque automatique.",
+                "Quand une bonne habitude devient naturelle, tu n'as plus besoin d'y penser.",
+                "Elle travaille pour toi."
               ],
-              example: "Tu commandes un transfert automatique de 20 € chaque semaine au lieu d'attendre d'avoir envie de faire l'effort.",
-              takeaway: "Le vrai levier, c'est la régularité, pas la motivation d'un instant."
+              example: "Une routine mensuelle peut contenir : épargner 10 %, investir 10 %, vérifier son budget, lire 10 minutes sur la finance et mettre à jour ses objectifs.",
+              takeaway: "Tu n'as pas besoin d'être parfait.\n\nTu as seulement besoin d'être régulier."
               }
             ),
           createLessonSeed(
             "Les erreurs des débutants",
-            "6 min",
-            "Le problème n'est pas toujours le manque d'effort. C'est souvent le fait de vouloir changer trop de choses à la fois.",
-            "Le meilleur progrès vient souvent de la simplicité et de la patience.",
+            "8 min",
+            "Personne ne naît en sachant gérer son argent.\n\nLes investisseurs expérimentés, les entrepreneurs et les personnes financièrement libres ont tous fait des erreurs.\n\nLa différence, ce n'est pas qu'ils en ont fait moins.\n\nC'est qu'ils en ont tiré des leçons.",
+            "Les erreurs sont inévitables. Les répéter est un choix.",
             createQuizQuestions([
               {
-                question: "Quelle erreur est fréquente chez les débutants ?",
-                options: ["Essayer de corriger tout d'un coup", "Suivre un plan très simple", "Établir une réserve de sécurité"],
+                question: "Paul perd 200 € et abandonne. Claire perd 200 € et analyse son erreur. Quelle différence compte le plus ?",
+                options: ["La capacité à apprendre de l'erreur", "Le montant perdu uniquement", "Le fait de ne plus jamais agir"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi trop de changements en même temps peuvent nuire ?",
-                options: ["Parce qu'ils dispersent l'attention et l'énergie", "Parce qu'ils rendent l'épargne automatique", "Parce qu'ils simplifient la prise de décision"],
+                question: "Pourquoi une erreur faite tôt peut-elle coûter moins cher ?",
+                options: ["Parce qu'elle permet d'apprendre avant de gérer de plus gros montants", "Parce qu'elle n'a aucune conséquence", "Parce qu'elle garantit les prochains gains"],
                 correctOptionIndex: 0
               },
               {
-                question: "Quel est le meilleur réflexe face à un début difficile ?",
-                options: ["Rester simple et progresser étape par étape", "Tout abandonner immédiatement", "Multiplier les risques"],
+                question: "Quel est le plus grand danger après une erreur financière ?",
+                options: ["Répéter la même erreur sans l'analyser", "La reconnaître rapidement", "Adapter sa méthode"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Tu fais un mauvais investissement. Quelle réaction est la plus constructive ?",
+                options: ["Comprendre ce qui n'a pas fonctionné avant de continuer", "Abandonner définitivement", "Recommencer immédiatement sans réflexion"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase correspond le mieux à cette leçon ?",
+                options: ["Les erreurs sont inévitables, les répéter est un choix", "Une erreur prouve que tu es mauvais", "Il faut éviter tout apprentissage risqué"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Le plus gros piège, c'est souvent l'excès d'ambition.",
-                "Quand tu changes trop de choses, tu finis par ne rien faire vraiment."
+                "Une erreur est une information.",
+                "Elle te montre ce qu'il faut améliorer.",
+                "Les personnes qui réussissent évitent surtout de refaire les mêmes erreurs."
               ],
-              example: "Au lieu de réformer tous tes frais d'un coup, tu choisis d'abord une seule règle à suivre pendant 2 semaines.",
-              takeaway: "Le meilleur progrès vient souvent de la simplicité et de la patience."
+              example: "Paul et Claire perdent chacun 200 €. Paul abandonne. Claire analyse son erreur et investit ensuite avec plus d'expérience.",
+              takeaway: "Les erreurs sont inévitables.\n\nLes répéter est un choix."
               }
             ),
           createLessonSeed(
             "Le pouvoir du temps",
-            "7 min",
-            "Le temps ne fait pas tout seul. Il fait surtout des choses possibles quand tu restes régulier.",
-            "Une action régulière, même petite, devient un moteur de transformation.",
+            "8 min",
+            "Beaucoup de personnes pensent qu'elles ont encore le temps.\n\n\"Elles commenceront plus tard.\"\n\nPourtant, chaque année qui passe est une année que ton argent ne pourra jamais récupérer.\n\nLe temps est une ressource que personne ne peut acheter.",
+            "Le temps est le seul investissement que personne ne peut te rendre.",
             createQuizQuestions([
               {
-                question: "Pourquoi le temps est-il un allié dans la construction de richesse ?",
-                options: ["Parce qu'il accroît l'effet des actions régulières", "Parce qu'il supprime la nécessité de choisir", "Parce qu'il rend les erreurs inoffensives"],
+                question: "Camille commence à investir à 20 ans. Léo commence à 35 ans. Quelle différence compte le plus ?",
+                options: ["Camille laisse plus de temps à son argent pour travailler", "Camille investit forcément plus chaque mois", "Léo ne peut jamais progresser"],
                 correctOptionIndex: 0
               },
               {
-                question: "Que permet une action régulière sur le long terme ?",
-                options: ["De transformer de petits efforts en résultats plus grands", "De remplacer toute stratégie par du hasard", "D'éliminer le besoin de patience"],
+                question: "Pourquoi commencer tôt vaut souvent mieux que commencer avec beaucoup d'argent plus tard ?",
+                options: ["Parce que les petites actions ont plus d'années pour produire des effets", "Parce que le temps garantit tous les rendements", "Parce qu'il ne faut jamais augmenter ses montants"],
                 correctOptionIndex: 0
               },
               {
-                question: "Quel message ce chapitre transmet-il le plus clairement ?",
-                options: ["Il faut commencer tôt et persévérer", "Il faut attendre le bon moment parfait", "Il faut éviter toute répétition"],
+                question: "Quel est le risque de dire « je commencerai quand j'aurai un meilleur salaire » ?",
+                options: ["Attendre une situation parfaite qui n'arrive jamais", "Commencer trop tôt avec une méthode simple", "Créer une habitude immédiatement"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle stratégie est souvent la plus efficace ?",
+                options: ["Commencer aujourd'hui avec une petite somme", "Attendre cinq ans pour investir davantage", "Reporter jusqu'à être certain de tout"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase résume le mieux cette leçon ?",
+                options: ["Chaque jour compte", "Le temps peut être racheté plus tard", "Seules les grosses sommes comptent"],
                 correctOptionIndex: 0
               }
             ]),
             {
               sections: [
-                "Ce qui se répète finit par compter.",
-                "Le temps transforme les petits gestes en résultats visibles."
+                "Le temps permet à ton épargne, à tes investissements et à tes intérêts composés de travailler.",
+                "Chaque année supplémentaire augmente leur puissance.",
+                "Plus tu attends, plus tu dois investir pour obtenir le même résultat."
               ],
-              example: "Tu continues à mettre 20 € chaque mois, même quand le résultat n'est pas encore spectaculaire.",
-              takeaway: "Une action régulière, même petite, devient un moteur de transformation."
+              example: "100 € par mois commencés à 20 ans peuvent créer environ 350 000 € à 60 ans, contre environ 110 000 € en commençant à 35 ans.",
+              takeaway: "Le temps est le seul investissement que personne ne peut te rendre.\n\nChaque jour compte."
               }
             ),
           createLessonSeed(
@@ -450,14 +546,19 @@ export async function loadAcademyProfile() {
     modules: storedProfile?.modules?.length ? storedProfile.modules : createModulesFromLevels(storedProfile?.levels ?? localAcademyProfile.levels),
     updatedAt: storedProfile?.updatedAt ?? new Date().toISOString()
   };
+  const syncedProfile = syncPremiumAcademyLessons(repairedProfile);
 
-  if (!hasLessonContent(repairedProfile.modules)) {
+  if (!hasLessonContent(syncedProfile.modules)) {
     const fallbackProfile = buildFallbackAcademyProfile(storedProfile);
     await saveAcademyProfile(fallbackProfile);
     return fallbackProfile;
   }
 
-  return repairedProfile;
+  if (JSON.stringify(syncedProfile) !== JSON.stringify(repairedProfile)) {
+    await saveAcademyProfile(syncedProfile);
+  }
+
+  return syncedProfile;
 }
 
 export async function saveAcademyProfile(profile: AcademyProfile) {
@@ -479,6 +580,74 @@ function buildFallbackAcademyProfile(storedProfile: AcademyProfile | null | unde
     modules: localAcademyProfile.modules,
     missions: storedProfile?.missions ?? localAcademyProfile.missions,
     badges: storedProfile?.badges ?? localAcademyProfile.badges,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
+  const firstLevelSeed = localAcademyProfile.levels[0];
+  const premiumLessonIndexes = new Set([0, 1, 2, 3, 4, 5, 6, 7]);
+
+  if (!firstLevelSeed) {
+    return profile;
+  }
+
+  const levels = profile.levels.map((level, levelIndex) => {
+    if (levelIndex !== 0) {
+      return level;
+    }
+
+    return {
+      ...firstLevelSeed,
+      status: level.status,
+      certification: level.certification,
+      chapters: firstLevelSeed.chapters.map((chapter, chapterIndex) => {
+        const storedChapter = level.chapters[chapterIndex];
+        if (chapterIndex !== 0 || !chapter.lessons?.length) {
+          return storedChapter ? { ...chapter, status: storedChapter.status, completedAt: storedChapter.completedAt } : chapter;
+        }
+
+        return {
+          ...chapter,
+          status: storedChapter?.status ?? chapter.status,
+          completedAt: storedChapter?.completedAt,
+          lessons: chapter.lessons.map((lesson, lessonIndex) => {
+            const storedLesson = storedChapter?.lessons?.[lessonIndex];
+            return premiumLessonIndexes.has(lessonIndex)
+              ? { ...lesson, status: storedLesson?.status ?? lesson.status, completedAt: storedLesson?.completedAt }
+              : storedLesson ? { ...storedLesson } : lesson;
+          })
+        };
+      })
+    };
+  });
+
+  const modules = profile.modules.map((module, moduleIndex) => {
+    if (moduleIndex !== 0) {
+      return module;
+    }
+
+    return {
+      ...module,
+      lessons: module.lessons.map((lesson, lessonIndex) => {
+        const lessonSeed = localAcademyProfile.modules[0]?.lessons[lessonIndex];
+        return premiumLessonIndexes.has(lessonIndex) && lessonSeed
+          ? { ...lessonSeed, status: lesson.status, completedAt: lesson.completedAt }
+          : lesson;
+      }),
+      quiz: {
+        ...module.quiz,
+        questions: localAcademyProfile.modules[0]?.lessons[0]?.quizQuestions?.length
+          ? localAcademyProfile.modules[0].lessons[0].quizQuestions
+          : module.quiz.questions
+      }
+    };
+  });
+
+  return {
+    ...profile,
+    levels,
+    modules,
     updatedAt: new Date().toISOString()
   };
 }
@@ -562,6 +731,7 @@ function createModulesFromLevels(levels: AcademyLevel[]): AcademyModule[] {
     const firstChapter = level.chapters[0];
     const firstChapterQuestions = firstChapter?.content?.quizQuestions ?? firstChapter?.quiz.questions;
     const lessonSeeds = level.chapters.flatMap((chapter) => chapter.lessons ?? []);
+    const firstLessonQuestions = lessonSeeds[0]?.quizQuestions;
 
     return {
       id: level.id,
@@ -617,7 +787,11 @@ function createModulesFromLevels(levels: AcademyLevel[]): AcademyModule[] {
       quiz: {
         ...level.certification,
         status: level.certification.status === "certified" ? "passed" : level.certification.status === "locked" ? "locked" : "available",
-        questions: level.order === 1 && firstChapterQuestions?.length ? firstChapterQuestions : level.chapters.flatMap((chapter) => chapter.quiz.questions)
+        questions: level.order === 1 && firstLessonQuestions?.length
+          ? firstLessonQuestions
+          : level.order === 1 && firstChapterQuestions?.length
+            ? firstChapterQuestions
+            : level.chapters.flatMap((chapter) => chapter.quiz.questions)
       },
       unlocks: level.unlocks
     };

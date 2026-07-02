@@ -70,6 +70,34 @@ const manualResultOptions: Array<{
 ];
 const academyRoute = "/(tabs)/academy" as never;
 
+type ManualPronosticForm = {
+  date: string;
+  sport: string;
+  competition: string;
+  match: string;
+  market: string;
+  pick: string;
+  realOdds: string;
+  stake: string;
+  ascensionScore: string;
+  confidenceLevel: string;
+  comment: string;
+};
+
+const emptyManualPronosticForm: ManualPronosticForm = {
+  date: new Date().toISOString().slice(0, 10),
+  sport: "Football",
+  competition: "",
+  match: "",
+  market: "",
+  pick: "",
+  realOdds: "",
+  stake: "",
+  ascensionScore: "",
+  confidenceLevel: "",
+  comment: ""
+};
+
 function getTicketStatusLabel(ticket: AscensionTicket) {
   return pronosticStatusLabel[getPronosticStatus(ticket)];
 }
@@ -108,6 +136,25 @@ function safeInputValue(value: string | null | undefined) {
   return String(value);
 }
 
+function parseFormAmount(value: string) {
+  const parsed = Number(value.replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function slugifyManualTicket(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function buildManualTicketId(form: ManualPronosticForm) {
+  return `manual-${form.date}-${slugifyManualTicket(form.match)}-${slugifyManualTicket(form.market || form.pick)}`;
+}
+
 export default function TicketScreen() {
   const router = useRouter();
   const [tickets, setTickets] = useState<AscensionTicket[]>([]);
@@ -118,6 +165,8 @@ export default function TicketScreen() {
   const [tomorrowItems, setTomorrowItems] = useState<TomorrowPrediction[]>([]);
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [importJsonInput, setImportJsonInput] = useState("");
+  const [isManualModalVisible, setIsManualModalVisible] = useState(false);
+  const [manualForm, setManualForm] = useState<ManualPronosticForm>(emptyManualPronosticForm);
   const [hasSportPremiumAccess, setHasSportPremiumAccess] = useState(false);
 
   const applyOfficialResults = useCallback(async (currentTickets: AscensionTicket[]) => {
@@ -241,6 +290,86 @@ export default function TicketScreen() {
     updateTicket(ticket.selection.id, (current) => settleTicket(current, status));
   }
 
+  function updateManualForm(field: keyof ManualPronosticForm, value: string) {
+    setManualForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function resetManualForm() {
+    setManualForm({
+      ...emptyManualPronosticForm,
+      date: new Date().toISOString().slice(0, 10)
+    });
+  }
+
+  function saveManualPronostic() {
+    const date = manualForm.date.trim();
+    const sport = manualForm.sport.trim();
+    const competition = manualForm.competition.trim();
+    const match = manualForm.match.trim();
+    const market = manualForm.market.trim();
+    const pick = manualForm.pick.trim();
+    const realOdds = manualForm.realOdds.trim();
+    const stake = manualForm.stake.trim();
+    const ascensionScore = Number(manualForm.ascensionScore.replace(",", "."));
+    const hasOdds = realOdds.length > 0;
+    const hasStake = stake.length > 0;
+
+    if (!date || !sport || !competition || !match || !market || !pick) {
+      Alert.alert("Champs manquants", "Renseigne au minimum la date, le sport, la compétition, le match, le marché et le pronostic.");
+      return;
+    }
+
+    if (!Number.isFinite(ascensionScore) || ascensionScore < 0 || ascensionScore > 100) {
+      Alert.alert("Score invalide", "Le score Ascension doit être compris entre 0 et 100.");
+      return;
+    }
+
+    if (hasOdds !== hasStake) {
+      Alert.alert("Cote ou mise manquante", "Renseigne la cote réelle et la mise ensemble, ou laisse les deux champs vides.");
+      return;
+    }
+
+    if (hasOdds && (parseFormAmount(realOdds) <= 0 || parseFormAmount(stake) <= 0)) {
+      Alert.alert("Cote ou mise invalide", "La cote réelle et la mise doivent être supérieures à 0.");
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const id = buildManualTicketId(manualForm);
+    const nextTicket: AscensionTicket = {
+      selection: {
+        id,
+        providerSelectionId: id,
+        date,
+        sport,
+        competition,
+        match,
+        kickoffTime: "À renseigner",
+        market,
+        recommendedMarket: market,
+        pick,
+        ascensionScore,
+        confidenceLevel: manualForm.confidenceLevel.trim() || "À jouer",
+        explanation: manualForm.comment.trim() || "Pronostic Ascension ajouté manuellement.",
+        comment: manualForm.comment.trim() || undefined,
+        status: "pending"
+      },
+      input: {
+        realOdds,
+        stake,
+        playStatus: hasOdds && hasStake ? "played" : "not_decided"
+      },
+      savedAt: now
+    };
+
+    setTickets((currentTickets) => [
+      nextTicket,
+      ...currentTickets.filter((ticket) => ticket.selection.id !== id)
+    ]);
+    resetManualForm();
+    setIsManualModalVisible(false);
+  }
+
   async function refreshTicketResults() {
     const syncedTickets = await applyOfficialResults(tickets);
     const syncedBankroll = bankroll ? syncTicketsToBankroll(bankroll, syncedTickets) : null;
@@ -350,6 +479,9 @@ export default function TicketScreen() {
         <Text style={styles.explanation}>
           Cote estimée : {ticket.selection.estimatedOdds?.toFixed(2) ?? "À jouer"}
         </Text>
+        {ticket.selection.comment ? (
+          <Text style={styles.explanation}>Commentaire : {ticket.selection.comment}</Text>
+        ) : null}
         {isPendingMode ? (
           <>
             <View style={styles.historyNumbers}>
@@ -517,16 +649,57 @@ export default function TicketScreen() {
           </LinearGradient>
         </View>
       </Modal>
+      <Modal visible={isManualModalVisible} transparent animationType="fade">
+        <View style={styles.modalBackdrop}>
+          <LinearGradient colors={["#111111", "#050505"]} style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Ajouter un pronostic Ascension</Text>
+            <Text style={styles.modalText}>
+              Si tu renseignes une cote réelle et une mise, le ticket sera ajouté aux paris en cours et synchronisé avec la bankroll.
+            </Text>
+            <View style={styles.formGrid}>
+              <TextInput value={manualForm.date} onChangeText={(value) => updateManualForm("date", value)} placeholder="Date YYYY-MM-DD" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.sport} onChangeText={(value) => updateManualForm("sport", value)} placeholder="Sport" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.competition} onChangeText={(value) => updateManualForm("competition", value)} placeholder="Compétition" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.match} onChangeText={(value) => updateManualForm("match", value)} placeholder="Match" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.market} onChangeText={(value) => updateManualForm("market", value)} placeholder="Marché" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.pick} onChangeText={(value) => updateManualForm("pick", value)} placeholder="Pronostic" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.realOdds} onChangeText={(value) => updateManualForm("realOdds", value)} placeholder="Cote réelle" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
+              <TextInput value={manualForm.stake} onChangeText={(value) => updateManualForm("stake", value)} placeholder="Mise" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
+              <TextInput value={manualForm.ascensionScore} onChangeText={(value) => updateManualForm("ascensionScore", value)} placeholder="Score Ascension /100" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
+              <TextInput value={manualForm.confidenceLevel} onChangeText={(value) => updateManualForm("confidenceLevel", value)} placeholder="Niveau de confiance" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+            </View>
+            <TextInput
+              value={manualForm.comment}
+              onChangeText={(value) => updateManualForm("comment", value)}
+              placeholder="Commentaire libre"
+              placeholderTextColor="#7D7D7D"
+              multiline
+              textAlignVertical="top"
+              style={[styles.modalInput, styles.commentInput]}
+            />
+            <PremiumButton label="Enregistrer" icon="checkmark-circle" onPress={saveManualPronostic} />
+            <Pressable onPress={() => setIsManualModalVisible(false)} style={styles.segment}>
+              <Text style={styles.segmentText}>Annuler</Text>
+            </Pressable>
+          </LinearGradient>
+        </View>
+      </Modal>
 
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Pronostics</Text>
           <Text style={styles.subtitle}>Sélection officielle et suivi des tickets.</Text>
         </View>
-        <Pressable onPress={() => setIsImportModalVisible(true)} style={styles.importButton}>
-          <Ionicons name="download-outline" size={15} color={colors.gold} />
-          <Text style={styles.importButtonText}>Importer</Text>
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable onPress={() => setIsManualModalVisible(true)} style={styles.importButton}>
+            <Ionicons name="add-circle-outline" size={15} color={colors.gold} />
+            <Text style={styles.importButtonText}>Ajouter</Text>
+          </Pressable>
+          <Pressable onPress={() => setIsImportModalVisible(true)} style={styles.importButton}>
+            <Ionicons name="download-outline" size={15} color={colors.gold} />
+            <Text style={styles.importButtonText}>Importer</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -604,6 +777,9 @@ export default function TicketScreen() {
                 {finalResult ? (
                   <Text style={styles.historyNumber}>Résultat : {finalResult}</Text>
                 ) : null}
+                {sourceTicket?.selection.comment ? (
+                  <Text style={styles.historyNumber}>Commentaire : {sourceTicket.selection.comment}</Text>
+                ) : null}
                 <View style={styles.historyNumbers}>
                   <Text style={styles.historyNumber}>Cote {bet.odds.toFixed(2)}</Text>
                   <Text style={styles.historyNumber}>Mise {formatCurrency(bet.stake)}</Text>
@@ -625,6 +801,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: spacing.md
+  },
+  headerActions: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+    gap: spacing.xs
   },
   title: {
     color: colors.white,
@@ -1037,5 +1220,26 @@ const styles = StyleSheet.create({
   importInput: {
     minHeight: 180,
     paddingTop: spacing.md
+  },
+  commentInput: {
+    minHeight: 110,
+    paddingTop: spacing.md
+  },
+  formGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm
+  },
+  formInput: {
+    width: "48%",
+    minHeight: 48,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.10)",
+    borderRadius: radii.md,
+    backgroundColor: "#050505",
+    color: colors.white,
+    paddingHorizontal: spacing.sm,
+    fontSize: 13,
+    fontWeight: "600"
   },
 });

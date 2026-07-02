@@ -31,6 +31,7 @@ export type AscensionSelection = {
   risks?: string[];
   conclusion?: string;
   explanation: string;
+  comment?: string;
   status: AscensionTicketResultStatus;
   scoreFinal?: string;
   officialResult?: AscensionTicketResultStatus;
