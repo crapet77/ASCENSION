@@ -1,5 +1,5 @@
-import { PropsWithChildren } from "react";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { PropsWithChildren, useEffect, useRef } from "react";
+import { Animated, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -15,16 +15,45 @@ type GlassCardProps = PropsWithChildren<{
 export function GlassCard({ children, style, contentStyle, elevated = true }: GlassCardProps) {
   const { theme } = useAscensionTheme();
   const isCosmos = theme.id === "cosmos";
+  const entrance = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(entrance, {
+      toValue: 1,
+      duration: 360,
+      useNativeDriver: true
+    }).start();
+  }, [entrance]);
+
+  const entranceStyle = {
+    opacity: entrance,
+    transform: [
+      {
+        translateY: entrance.interpolate({
+          inputRange: [0, 1],
+          outputRange: [8, 0]
+        })
+      },
+      {
+        scale: entrance.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.992, 1]
+        })
+      }
+    ]
+  };
 
   return (
-    <View
+    <Animated.View
       style={[
         styles.shell,
+        entranceStyle,
         {
           borderColor: theme.accentBorder,
           shadowColor: theme.accent,
-          shadowOpacity: isCosmos ? (elevated ? 0.30 : 0.12) : elevated ? 0.20 : 0.08,
-          shadowRadius: isCosmos ? 38 : 30
+          shadowOpacity: isCosmos ? (elevated ? 0.32 : 0.14) : elevated ? 0.22 : 0.09,
+          shadowRadius: isCosmos ? 42 : 32,
+          backgroundColor: theme.surface
         },
         style
       ]}
@@ -47,7 +76,7 @@ export function GlassCard({ children, style, contentStyle, elevated = true }: Gl
       <View pointerEvents="none" style={[styles.topTint, { backgroundColor: theme.overlay }]} />
       <View pointerEvents="none" style={[styles.innerGlow, isCosmos && styles.cosmosInnerGlow, { backgroundColor: isCosmos ? theme.glow : theme.glowSoft }]} />
       {contentStyle ? <View style={contentStyle}>{children}</View> : children}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -58,7 +87,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     shadowRadius: 30,
     shadowOffset: { width: 0, height: 18 },
-    elevation: 4
+    elevation: 5
   },
   reflection: {
     position: "absolute",
@@ -73,7 +102,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 64
+    height: 72,
+    opacity: 0.72
   },
   innerGlow: {
     position: "absolute",

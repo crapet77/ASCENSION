@@ -44,8 +44,8 @@ export function PremiumButton({ label, icon, onPress, style, disabled = false }:
 
 const styles = StyleSheet.create({
   pressable: {
-    minHeight: 38,
-    borderRadius: 17,
+    minHeight: 36,
+    borderRadius: 16,
     shadowColor: "#F1C66F",
     shadowOpacity: 0.20,
     shadowRadius: 20,
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     opacity: 0.55
   },
   inner: {
-    minHeight: 38,
-    borderRadius: 17,
-    paddingHorizontal: 14,
+    minHeight: 36,
+    borderRadius: 16,
+    paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
@@ -91,9 +91,10 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.black,
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: typography.fontFamily,
     fontWeight: "600",
-    letterSpacing: 0.7
+    letterSpacing: 0.85,
+    textTransform: "uppercase"
   }
 });

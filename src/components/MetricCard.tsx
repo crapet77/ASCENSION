@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     minWidth: 156
   },
   content: {
-    padding: 18,
+    padding: 19,
     gap: spacing.xs,
     overflow: "hidden"
   },
@@ -63,10 +63,11 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.textMuted,
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: typography.fontFamily,
     fontWeight: "400",
-    letterSpacing: 0.08,
+    letterSpacing: 0.55,
+    textTransform: "uppercase",
     lineHeight: 17
   },
   value: {

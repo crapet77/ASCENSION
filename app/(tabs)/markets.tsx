@@ -7,7 +7,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { GlassCard } from "@/components/GlassCard";
 import { PremiumButton } from "@/components/PremiumButton";
-import { colors, radii, spacing } from "@/constants/theme";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine } from "@/engine/academy";
 import { MarketEngine, MarketEngineOpportunity } from "@/engine/markets";
 import { MarketStats } from "@/engine/markets/marketStats";
@@ -221,7 +221,9 @@ const styles = StyleSheet.create({
   title: {
     color: colors.white,
     fontSize: 25,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.4
   },
   subtitle: {
     color: "#C8C8C8",
@@ -261,8 +263,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: colors.white,
-    fontSize: 18,
-    fontWeight: "700"
+    fontSize: typography.titleSize,
+    fontFamily: typography.fontFamily,
+    fontWeight: typography.titleWeight,
+    letterSpacing: typography.titleTracking,
+    textTransform: "uppercase"
   },
   sectionMeta: {
     color: "#C8C8C8",
@@ -274,10 +279,7 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     minHeight: 160,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
-    backgroundColor: "#050505",
+    borderRadius: radii.lg,
     padding: spacing.lg,
     alignItems: "center",
     justifyContent: "center",
@@ -297,18 +299,14 @@ const styles = StyleSheet.create({
   },
   lockedPanel: {
     minHeight: 240,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     padding: spacing.lg,
     alignItems: "center",
     justifyContent: "center",
     gap: spacing.md
   },
   card: {
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     padding: spacing.md,
     gap: spacing.sm
   },

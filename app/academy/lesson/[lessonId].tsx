@@ -6,11 +6,14 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { GlassCard } from "@/components/GlassCard";
 import { PremiumButton } from "@/components/PremiumButton";
-import { colors, radii, spacing } from "@/constants/theme";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine, AcademyEngineState, AcademyLesson, AcademyModule } from "@/engine/academy";
+import { getLessonCoachSummary } from "@/features/intelligence/coach";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 
 export default function AcademyLessonDetailScreen() {
   const router = useRouter();
+  const { theme } = useAscensionTheme();
   const params = useLocalSearchParams<{ lessonId?: string; moduleId?: string }>();
   const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -82,22 +85,15 @@ export default function AcademyLessonDetailScreen() {
   const currentLessonIndex = chapterLessons.findIndex((item) => item.id === lessonId);
   const isLastLesson = currentLessonIndex >= 0 && currentLessonIndex === chapterLessons.length - 1;
   const nextActionLabel = isLastLesson ? "Commencer le quiz du chapitre" : "Leçon suivante →";
+  const showCoachCard = isPremiumInteractiveLesson && (isFirstQuizFinished || isCompleted);
+  const lessonCoach = useMemo(() => getLessonCoachSummary(lesson, module), [lesson, module]);
   const lessonNumber = useMemo(() => {
     const index = module?.lessons.findIndex((item) => item.id === lessonId);
     return index !== undefined && index >= 0 ? index + 1 : 1;
   }, [module, lessonId]);
 
-  async function completeLesson() {
-    if (!moduleId || !lessonId) {
-      return;
-    }
-
-    setIsCompleting(true);
-    const nextState = await AcademyEngine.completeLesson(moduleId, lessonId);
-    setAcademyState(nextState);
-    setIsCompleting(false);
-
-    const nextModule = nextState.modules.find((item) => item.id === moduleId) ?? null;
+  function continueAfterLesson(state: AcademyEngineState | null = academyState) {
+    const nextModule = state?.modules.find((item) => item.id === moduleId) ?? null;
     const nextLessons = nextModule?.lessons ?? [];
 
     if (isLastLesson) {
@@ -111,6 +107,18 @@ export default function AcademyLessonDetailScreen() {
     if (nextLessonId) {
       router.push(`/academy/lesson/${nextLessonId}?moduleId=${moduleId}`);
     }
+  }
+
+  async function completeLesson() {
+    if (!moduleId || !lessonId) {
+      return;
+    }
+
+    setIsCompleting(true);
+    const nextState = await AcademyEngine.completeLesson(moduleId, lessonId);
+    setAcademyState(nextState);
+    setIsCompleting(false);
+    continueAfterLesson(nextState);
   }
 
   function selectFirstQuizAnswer(optionIndex: number) {
@@ -322,21 +330,43 @@ export default function AcademyLessonDetailScreen() {
         )}
 
         <View style={styles.actions}>
-          {isPremiumInteractiveLesson && (isFirstQuizFinished || isCompleted) ? (
-            <View style={styles.lessonCompletedPanel}>
-              <View style={styles.xpBadge}>
-                <Ionicons name="sparkles-outline" size={18} color={colors.gold} />
-                <Text style={styles.xpBadgeText}>+20 XP</Text>
+          {showCoachCard ? (
+            <View style={[styles.coachCard, { borderColor: theme.accentBorder, backgroundColor: theme.overlay }]}>
+              <View style={styles.coachHeader}>
+                <View style={[styles.xpBadge, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+                  <Ionicons name="sparkles-outline" size={18} color={theme.accentSoft} />
+                  <Text style={[styles.xpBadgeText, { color: theme.accentSoft }]}>+20 XP</Text>
+                </View>
+                <Text style={[styles.lessonCompletedTitle, { color: theme.text }]}>Coach Ascension</Text>
               </View>
-              <Text style={styles.lessonCompletedTitle}>Leçon terminée</Text>
+              <View style={styles.coachSummaryList}>
+                {lessonCoach.summary.map((line) => (
+                  <Text key={line} style={[styles.coachLine, { color: theme.textMuted }]}>{line}</Text>
+                ))}
+              </View>
+              <View style={styles.coachQuestions}>
+                <Text style={[styles.coachSectionTitle, { color: theme.accentSoft }]}>3 questions pour vérifier</Text>
+                {lessonCoach.questions.map((question, index) => (
+                  <Text key={question} style={[styles.coachQuestion, { color: theme.text }]}>{index + 1}. {question}</Text>
+                ))}
+              </View>
+              <Text style={[styles.coachNextStep, { color: theme.textMuted }]}>{lessonCoach.nextStep}</Text>
+              <PremiumButton
+                label="Continuer"
+                icon="arrow-forward"
+                onPress={isCompleted ? () => continueAfterLesson() : completeLesson}
+                disabled={isCompleting}
+              />
             </View>
           ) : null}
-          <PremiumButton
-            label={isCompleted ? "Leçon déjà validée" : isFirstDisciplineLesson ? "Continuer vers la Leçon 2" : isCompoundInterestLesson ? "Continuer vers la Leçon 3" : isBudgetMissionLesson ? "Continuer vers la Leçon 4" : isSafetySavingsLesson ? "Continuer vers la Leçon 5" : isBadDebtLesson ? "Continuer vers la Leçon 6" : isGoodHabitsLesson ? "Continuer vers la Leçon 7" : isBeginnerMistakesLesson ? "Continuer vers la Leçon 8" : isTimePowerLesson ? "Continuer vers la Leçon 9" : isFinalFoundationsLesson ? "Débloquer le Niveau 2" : isInvestmentLevelLesson && isLastLesson ? "Débloquer le Niveau 3" : isInvestmentLevelLesson ? `Continuer vers la Leçon ${lessonNumber + 1}` : nextActionLabel}
-            icon="checkmark-circle"
-            onPress={completeLesson}
-            disabled={isCompleting || isCompleted || (isPremiumInteractiveLesson && !isFirstQuizFinished)}
-          />
+          {!showCoachCard ? (
+            <PremiumButton
+              label={isCompleted ? "Leçon déjà validée" : isFirstDisciplineLesson ? "Continuer vers la Leçon 2" : isCompoundInterestLesson ? "Continuer vers la Leçon 3" : isBudgetMissionLesson ? "Continuer vers la Leçon 4" : isSafetySavingsLesson ? "Continuer vers la Leçon 5" : isBadDebtLesson ? "Continuer vers la Leçon 6" : isGoodHabitsLesson ? "Continuer vers la Leçon 7" : isBeginnerMistakesLesson ? "Continuer vers la Leçon 8" : isTimePowerLesson ? "Continuer vers la Leçon 9" : isFinalFoundationsLesson ? "Débloquer le Niveau 2" : isInvestmentLevelLesson && isLastLesson ? "Débloquer le Niveau 3" : isInvestmentLevelLesson ? `Continuer vers la Leçon ${lessonNumber + 1}` : nextActionLabel}
+              icon="checkmark-circle"
+              onPress={completeLesson}
+              disabled={isCompleting || isCompleted || (isPremiumInteractiveLesson && !isFirstQuizFinished)}
+            />
+          ) : null}
         </View>
       </GlassCard>
 
@@ -2785,6 +2815,49 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "800"
+  },
+  coachCard: {
+    borderWidth: 1,
+    borderRadius: radii.lg,
+    padding: spacing.md,
+    gap: spacing.md
+  },
+  coachHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.sm
+  },
+  coachSummaryList: {
+    gap: 6
+  },
+  coachLine: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "400",
+    lineHeight: 19
+  },
+  coachQuestions: {
+    gap: spacing.xs
+  },
+  coachSectionTitle: {
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: typography.titleWeight,
+    letterSpacing: typography.titleTracking,
+    textTransform: "uppercase"
+  },
+  coachQuestion: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 19
+  },
+  coachNextStep: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 19
   },
   contentRow: {
     flexDirection: "row",

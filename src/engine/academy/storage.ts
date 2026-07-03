@@ -781,7 +781,7 @@ function buildFallbackAcademyProfile(storedProfile: AcademyProfile | null | unde
 function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
   const firstLevelSeed = localAcademyProfile.levels[0];
   const secondLevelSeed = localAcademyProfile.levels[1];
-  const premiumLessonIndexes = new Set([0, 1, 2, 3, 4, 5, 6, 7, 9]);
+  const premiumLessonIndexes = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
   if (!firstLevelSeed) {
     return profile;
@@ -1119,12 +1119,31 @@ function createInvestmentLesson(params: {
 }
 
 function createQuizQuestions(questions: Array<{ question: string; options: string[]; correctOptionIndex: number }>) {
-  return questions.map((q, index) => ({
-    id: `quiz-question-${index + 1}`,
-    question: q.question,
-    options: q.options,
-    correctOptionIndex: q.correctOptionIndex
-  }));
+  const targetPattern = questions.length === 5 ? [0, 1, 2, 1, 2] : [0, 1, 2];
+
+  return questions.map((q, index) => {
+    const targetIndex = Math.min(targetPattern[index % targetPattern.length], q.options.length - 1);
+    const normalizedQuestion = moveCorrectAnswer(q.options, q.correctOptionIndex, targetIndex);
+
+    return {
+      id: `quiz-question-${index + 1}`,
+      question: q.question,
+      options: normalizedQuestion.options,
+      correctOptionIndex: normalizedQuestion.correctOptionIndex
+    };
+  });
+}
+
+function moveCorrectAnswer(options: string[], correctOptionIndex: number, targetIndex: number) {
+  const correctAnswer = options[correctOptionIndex] ?? options[0] ?? "";
+  const otherOptions = options.filter((_, index) => index !== correctOptionIndex);
+  const nextOptions = [...otherOptions];
+  nextOptions.splice(targetIndex, 0, correctAnswer);
+
+  return {
+    options: nextOptions,
+    correctOptionIndex: targetIndex
+  };
 }
 
 function createLessonContent(

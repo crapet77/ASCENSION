@@ -18,7 +18,7 @@ import { PremiumDashboardHighlights } from "@/components/PremiumDashboardHighlig
 import { brand } from "@/constants/brand";
 import { colors, radii, spacing, typography } from "@/constants/theme";
 import { dailyObjectives, habits as seedHabits } from "@/data/seed";
-import { AcademyEngine } from "@/engine/academy";
+import { AcademyEngine, AcademyEngineState } from "@/engine/academy";
 import { ObjectiveEngine } from "@/engine/objectives";
 import { getBankrollBetProfit, getBankrollStats } from "@/features/bankroll/math";
 import { loadBankrollState } from "@/features/bankroll/storage";
@@ -30,6 +30,7 @@ import {
 } from "@/features/discipline/disciplineProfile";
 import { loadHabits } from "@/features/discipline/storage";
 import { useAscensionTheme } from "@/features/theme/ascensionTheme";
+import { getAcademyCoachRecommendation } from "@/features/intelligence/coach";
 import { loadTickets } from "@/features/tickets/storage";
 import {
   calculateXpProfile,
@@ -322,6 +323,7 @@ export default function DashboardScreen() {
   const [habits, setHabits] = useState<Habit[]>(seedHabits);
   const [disciplineProfile, setDisciplineProfile] = useState<DisciplineProfile>(defaultDisciplineProfile);
   const [xpProfile, setXpProfile] = useState<XpProfile>(defaultXpProfile);
+  const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
   const completedObjectives = dailyObjectives.filter((objective) => objective.done).length;
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const dashboardDate = useMemo(
@@ -360,6 +362,7 @@ export default function DashboardScreen() {
 
     return "Une journée d'équilibre vaut mieux qu'un coup de chaleur. Reprends le cap avec douceur.";
   }, [disciplineProfile.score, stats.profit]);
+  const coachRecommendation = useMemo(() => getAcademyCoachRecommendation(academyState), [academyState]);
   const targetAmount = 5000;
   const currentAmount = Math.min(stats.currentCapital, targetAmount);
   const remainingAmount = targetAmount - currentAmount;
@@ -405,6 +408,7 @@ export default function DashboardScreen() {
         setHabits(loadedHabits);
         setDisciplineProfile(nextDisciplineProfile);
         setXpProfile(nextXpProfile);
+        setAcademyState(academyState);
         saveDisciplineProfile(nextDisciplineProfile);
         saveXpProfile(nextXpProfile);
       });
@@ -689,7 +693,15 @@ export default function DashboardScreen() {
           <View style={styles.cardHeader}>
             <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>ASCENSION INTELLIGENCE</Text>
           </View>
-          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>L'IA analyse en permanence :</Text>
+          <View style={[styles.coachRecommendation, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+            <View style={styles.coachRecommendationTop}>
+              <Ionicons name="school-outline" size={16} color={theme.accentSoft} />
+              <Text style={[styles.coachLevel, { color: theme.textMuted }]}>{coachRecommendation.level}</Text>
+            </View>
+            <Text style={[styles.coachTitle, { color: theme.text }]}>{coachRecommendation.title}</Text>
+            <Text style={[styles.coachAction, { color: theme.textMuted }]}>{coachRecommendation.action}</Text>
+          </View>
+          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>Mode local · analyse Academy :</Text>
           <View style={styles.intelligenceGrid}>
             {["Sport", "Marchés", "Patrimoine", "Objectifs"].map((item) => (
               <View key={item} style={[styles.intelligenceItem, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
@@ -1632,6 +1644,36 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily,
     fontWeight: "400",
     lineHeight: 19
+  },
+  coachRecommendation: {
+    borderWidth: 1,
+    borderRadius: radii.md,
+    padding: spacing.md,
+    gap: 7
+  },
+  coachRecommendationTop: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.xs
+  },
+  coachLevel: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.7,
+    textTransform: "uppercase"
+  },
+  coachTitle: {
+    fontSize: 15,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    lineHeight: 21
+  },
+  coachAction: {
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "400",
+    lineHeight: 18
   },
   intelligenceGrid: {
     flexDirection: "row",

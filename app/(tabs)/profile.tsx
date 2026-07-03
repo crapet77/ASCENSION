@@ -22,7 +22,7 @@ import {
 import { loadDisciplineProfile, DisciplineProfile } from "@/features/discipline/disciplineProfile";
 import { loadXpProfile, XpProfile } from "@/features/xp/xpSystem";
 import { useAscensionTheme } from "@/features/theme/ascensionTheme";
-import { colors, radii, spacing } from "@/constants/theme";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 
 const universeLabels: Record<OnboardingUniverse, string> = {
   carbon: "Carbone",
@@ -294,7 +294,9 @@ const styles = StyleSheet.create({
   identityName: {
     color: colors.white,
     fontSize: 24,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.35
   },
   identityMotto: {
     color: colors.gold,
@@ -305,7 +307,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm
   },
   row: {
-    minHeight: 68
+    minHeight: 68,
+    borderRadius: radii.lg
   },
   rowInner: {
     flexDirection: "row",
@@ -331,7 +334,9 @@ const styles = StyleSheet.create({
   rowLabel: {
     color: colors.white,
     fontSize: 15,
-    fontWeight: "600"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.2
   },
   rowValue: {
     color: "#C8C8C8",
@@ -345,7 +350,9 @@ const styles = StyleSheet.create({
   versionTitle: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: typography.labelTracking
   },
   versionText: {
     color: "#C8C8C8",

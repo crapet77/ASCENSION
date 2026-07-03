@@ -170,7 +170,7 @@ export default function TabsLayout() {
               tabBarInactiveTintColor: theme.textMuted,
               animation: "fade",
               tabBarLabelStyle: styles.label,
-              tabBarIconStyle: styles.icon,
+              tabBarItemStyle: styles.tabItem,
               tabBarStyle: [
                 styles.tabBar,
                 {
@@ -186,49 +186,49 @@ export default function TabsLayout() {
               name="index"
               options={{
                 title: "Accueil",
-                tabBarIcon: ({ color }) => <Ionicons name="home-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="home-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="ticket"
               options={{
                 title: "Pronostics",
-                tabBarIcon: ({ color }) => <Ionicons name="receipt-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="receipt-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="markets"
               options={{
                 title: "Marchés",
-                tabBarIcon: ({ color }) => <Ionicons name="trending-up-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="trending-up-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="ascension-ai-market"
               options={{
                 title: "AI Master",
-                tabBarIcon: ({ color }) => <Ionicons name="sparkles-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="sparkles-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="academy"
               options={{
                 title: "Academy",
-                tabBarIcon: ({ color }) => <Ionicons name="book-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="book-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="discipline"
               options={{
                 title: "Objectifs",
-                tabBarIcon: ({ color }) => <Ionicons name="checkmark-circle-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="checkmark-circle-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
               name="profile"
               options={{
                 title: "Profil",
-                tabBarIcon: ({ color }) => <Ionicons name="person-outline" color={color} size={20} />
+                tabBarIcon: ({ color, focused }) => <TabIcon name="person-outline" color={color} focused={focused} />
               }}
             />
             <Tabs.Screen
@@ -241,6 +241,26 @@ export default function TabsLayout() {
         </Animated.View>
       </View>
     </GestureDetector>
+  );
+}
+
+function TabIcon({ name, color, focused }: { name: keyof typeof Ionicons.glyphMap; color: string; focused: boolean }) {
+  const { theme } = useAscensionTheme();
+
+  return (
+    <View
+      style={[
+        styles.tabIconShell,
+        focused && {
+          borderColor: theme.accentBorder,
+          backgroundColor: theme.glowSoft,
+          shadowColor: theme.accent
+        }
+      ]}
+    >
+      <Ionicons name={name} color={color} size={19} />
+      {focused ? <View style={[styles.tabActiveDot, { backgroundColor: theme.accentSoft, shadowColor: theme.accent }]} /> : null}
+    </View>
   );
 }
 
@@ -325,7 +345,8 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     position: "absolute",
-    minHeight: 74,
+    minHeight: 76,
+    paddingTop: 6,
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 229, 166, 0.24)",
     backgroundColor: "rgba(3, 3, 3, 0.72)",
@@ -334,13 +355,35 @@ const styles = StyleSheet.create({
     shadowRadius: 30,
     shadowOffset: { width: 0, height: -10 }
   },
-  icon: {
-    marginTop: 3
+  tabItem: {
+    paddingTop: 5
+  },
+  tabIconShell: {
+    width: 38,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowOpacity: 0.18,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 }
+  },
+  tabActiveDot: {
+    position: "absolute",
+    bottom: 2,
+    width: 13,
+    height: 2,
+    borderRadius: radii.pill,
+    shadowOpacity: 0.45,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 }
   },
   label: {
-    fontSize: 11,
+    fontSize: 10.5,
     fontWeight: "500",
-    letterSpacing: 0.25,
+    letterSpacing: 0.38,
     marginTop: 1
   }
 });

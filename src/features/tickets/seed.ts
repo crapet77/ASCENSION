@@ -15,6 +15,9 @@ type RealAscensionTicketSeed = {
   score: string;
   status: AscensionTicketResultStatus;
   kickoffTime?: string;
+  ascensionScore?: number;
+  confidenceLevel?: string;
+  comment?: string;
 };
 
 const realAscensionTicketSeeds: RealAscensionTicketSeed[] = [
@@ -170,6 +173,30 @@ const realAscensionTicketSeeds: RealAscensionTicketSeed[] = [
     odds: 1.21,
     score: "à venir",
     status: "pending"
+  },
+  {
+    id: "real-2026-07-03-argentine-cap-vert-argentine-over-15",
+    date: "2026-07-03",
+    match: "Argentine vs Cap-Vert",
+    market: "Argentine + plus de 1,5 but dans le match",
+    odds: 1.18,
+    score: "à venir",
+    status: "pending",
+    ascensionScore: 90,
+    confidenceLevel: "Élevée",
+    comment: "Marché préféré sur ce match. Scénarios probables : 2-0, 3-0, 3-1."
+  },
+  {
+    id: "real-2026-07-03-colombie-ghana-colombie-qualifiee",
+    date: "2026-07-03",
+    match: "Colombie vs Ghana",
+    market: "Colombie qualifiée",
+    odds: 1.18,
+    score: "à venir",
+    status: "pending",
+    ascensionScore: 86,
+    confidenceLevel: "Élevée",
+    comment: "Favori logique, mais Ghana plus dangereux que le Cap-Vert, donc confiance légèrement plus basse."
   }
 ];
 
@@ -221,12 +248,13 @@ function createRealAscensionTicket(seed: RealAscensionTicketSeed): AscensionTick
       recommendedMarket: seed.market,
       pick: seed.market,
       estimatedOdds: seed.odds,
-      ascensionScore: 0,
-      confidenceLevel: isPending ? "En attente" : "Résultat officiel",
+      ascensionScore: seed.ascensionScore ?? 0,
+      confidenceLevel: seed.confidenceLevel ?? (isPending ? "En attente" : "Résultat officiel"),
       strengths: [],
       risks: [],
       conclusion: isPending ? undefined : `Ticket ${seed.status === "won" ? "gagné" : "perdu"} selon le résultat officiel.`,
-      explanation: isPending ? "Score officiel à venir." : `Score officiel : ${seed.score}.`,
+      explanation: seed.comment ?? (isPending ? "Score officiel à venir." : `Score officiel : ${seed.score}.`),
+      comment: seed.comment,
       status: seed.status,
       scoreFinal: isPending ? undefined : seed.score,
       officialResult: isPending ? undefined : seed.status,

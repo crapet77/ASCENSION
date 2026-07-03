@@ -6,10 +6,12 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { AppScreen } from "@/components/AppScreen";
 import { GlassCard } from "@/components/GlassCard";
 import { PremiumButton } from "@/components/PremiumButton";
-import { colors, radii, spacing } from "@/constants/theme";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine, AcademyEngineState, AcademyModule } from "@/engine/academy";
 import { resetAcademyProfile } from "@/engine/academy/storage";
 import { UserAccessService, UserAccessState, UserLevel } from "@/features/access/userAccess";
+import { getAcademyCoachAdvice } from "@/features/intelligence/coach";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 
 const featureLabels = {
   sport: "Sport",
@@ -19,6 +21,7 @@ const featureLabels = {
 
 export default function AcademyScreen() {
   const router = useRouter();
+  const { theme } = useAscensionTheme();
   const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
   const [accessState, setAccessState] = useState<UserAccessState | null>(null);
 
@@ -70,6 +73,7 @@ export default function AcademyScreen() {
   }
 
   const progressPercent = academyState?.progressPercent ?? 0;
+  const coachAdvice = getAcademyCoachAdvice(academyState);
 
   return (
     <AppScreen>
@@ -120,6 +124,19 @@ export default function AcademyScreen() {
         <Text style={styles.progressHint}>
           XP Academy : {academyState?.profile.xp ?? 0} · Modules validés : {academyState?.completedModules.length ?? 0}
         </Text>
+      </GlassCard>
+
+      <GlassCard style={styles.coachCard}>
+        <View style={styles.coachHeader}>
+          <View style={[styles.coachIcon, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="sparkles-outline" size={16} color={theme.accentSoft} />
+          </View>
+          <View style={styles.coachCopy}>
+            <Text style={[styles.progressTitle, { color: theme.accentSoft }]}>{coachAdvice.title}</Text>
+            <Text style={[styles.coachProgress, { color: theme.textMuted }]}>{coachAdvice.progressLabel}</Text>
+          </View>
+        </View>
+        <Text style={[styles.progressHint, { color: theme.textMuted }]}>{coachAdvice.text}</Text>
       </GlassCard>
 
       <View style={styles.unlockRow}>
@@ -326,7 +343,9 @@ const styles = StyleSheet.create({
   heading: {
     color: colors.white,
     fontSize: 22,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.4
   },
   badge: {
     minHeight: 26,
@@ -365,11 +384,38 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   progressCard: {
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     padding: spacing.md,
     gap: spacing.sm
+  },
+  coachCard: {
+    borderRadius: radii.lg,
+    padding: spacing.md,
+    gap: spacing.sm
+  },
+  coachHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  coachIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  coachCopy: {
+    flex: 1,
+    gap: 2
+  },
+  coachProgress: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.7,
+    textTransform: "uppercase"
   },
   modeTop: {
     alignItems: "center",
@@ -406,8 +452,11 @@ const styles = StyleSheet.create({
   },
   progressTitle: {
     color: colors.white,
-    fontSize: 18,
-    fontWeight: "700"
+    fontSize: typography.titleSize,
+    fontFamily: typography.fontFamily,
+    fontWeight: typography.titleWeight,
+    letterSpacing: typography.titleTracking,
+    textTransform: "uppercase"
   },
   progressText: {
     color: colors.gold,
@@ -502,9 +551,7 @@ const styles = StyleSheet.create({
     gap: spacing.md
   },
   moduleCard: {
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     padding: spacing.md,
     gap: spacing.md
   },

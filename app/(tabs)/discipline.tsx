@@ -9,7 +9,7 @@ import { Header } from "@/components/Header";
 import { MetricCard } from "@/components/MetricCard";
 import { PremiumButton } from "@/components/PremiumButton";
 import { Section } from "@/components/Section";
-import { colors, radii, spacing } from "@/constants/theme";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import { loadHabits, saveHabits } from "@/features/discipline/storage";
 import { Habit } from "@/types/domain";
 
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     minHeight: 52,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     backgroundColor: "#050505",
     color: colors.white,
     paddingHorizontal: spacing.md,
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
   },
   habitRow: {
     minHeight: 76,
+    borderRadius: radii.lg,
     padding: spacing.md,
     flexDirection: "row",
     alignItems: "center",
@@ -187,7 +188,9 @@ const styles = StyleSheet.create({
   habitTitle: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 0.2
   },
   habitMeta: {
     color: "#C8C8C8",

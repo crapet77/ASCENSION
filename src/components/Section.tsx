@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.white,
-    fontSize: 14,
+    fontSize: typography.titleSize,
     fontFamily: typography.fontFamily,
-    fontWeight: "500",
-    letterSpacing: 1.7,
+    fontWeight: typography.titleWeight,
+    letterSpacing: typography.titleTracking,
     lineHeight: 21,
     textTransform: "uppercase"
   }
