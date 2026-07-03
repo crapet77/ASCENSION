@@ -12,6 +12,7 @@ import { brand } from "@/constants/brand";
 import { resetAscensionData } from "@/features/appReset/reset";
 import { UserAccessService, UserAccessState } from "@/features/access/userAccess";
 import { AcademyEngine, AcademyEngineState } from "@/engine/academy";
+import { ObjectiveEngine, ObjectiveEngineState } from "@/engine/objectives";
 import {
   loadOnboardingPreferences,
   OnboardingGoal,
@@ -23,6 +24,11 @@ import { loadDisciplineProfile, DisciplineProfile } from "@/features/discipline/
 import { loadXpProfile, XpProfile } from "@/features/xp/xpSystem";
 import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 import { colors, radii, spacing, typography } from "@/constants/theme";
+import { loadBankrollState } from "@/features/bankroll/storage";
+import { BankrollState } from "@/features/bankroll/types";
+import { loadTickets } from "@/features/tickets/storage";
+import { AscensionTicket } from "@/features/tickets/types";
+import { calculateAscensionIQ } from "@/features/ascensionIQ/ascensionIQ";
 
 const universeLabels: Record<OnboardingUniverse, string> = {
   carbon: "Carbone",
@@ -46,6 +52,9 @@ export default function ProfileScreen() {
   const [preferences, setPreferences] = useState<OnboardingPreferences | null>(null);
   const [xpProfile, setXpProfile] = useState<XpProfile | null>(null);
   const [disciplineProfile, setDisciplineProfile] = useState<DisciplineProfile | null>(null);
+  const [bankroll, setBankroll] = useState<BankrollState | null>(null);
+  const [tickets, setTickets] = useState<AscensionTicket[]>([]);
+  const [objectiveState, setObjectiveState] = useState<ObjectiveEngineState | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -54,16 +63,30 @@ export default function ProfileScreen() {
         AcademyEngine.getState(),
         loadOnboardingPreferences(),
         loadXpProfile(),
-        loadDisciplineProfile()
-      ]).then(([nextAccessState, nextAcademyState, nextPreferences, nextXpProfile, nextDisciplineProfile]) => {
+        loadDisciplineProfile(),
+        loadBankrollState(),
+        loadTickets(),
+        ObjectiveEngine.getState()
+      ]).then(([nextAccessState, nextAcademyState, nextPreferences, nextXpProfile, nextDisciplineProfile, nextBankroll, nextTickets, nextObjectiveState]) => {
         setAccessState(nextAccessState);
         setAcademyState(nextAcademyState);
         setPreferences(nextPreferences);
         setXpProfile(nextXpProfile);
         setDisciplineProfile(nextDisciplineProfile);
+        setBankroll(nextBankroll);
+        setTickets(nextTickets);
+        setObjectiveState(nextObjectiveState);
       });
     }, [])
   );
+  const ascensionIQ = calculateAscensionIQ({
+    academyState,
+    xpProfile,
+    bankroll,
+    tickets,
+    objectiveState,
+    disciplineProfile
+  });
 
   function handleReset() {
     Alert.alert(
@@ -148,6 +171,59 @@ export default function ProfileScreen() {
       <GlassCard style={styles.identity}>
         <Text style={styles.identityName}>{brand.name}</Text>
         <Text style={styles.identityMotto}>{brand.motto}</Text>
+      </GlassCard>
+
+      <GlassCard style={styles.iqCard}>
+        <View style={styles.iqHeader}>
+          <View>
+            <Text style={[styles.iqKicker, { color: theme.accentSoft }]}>ASCENSION IQ</Text>
+            <Text style={styles.iqScore}>{ascensionIQ.score} IQ Finance</Text>
+            <Text style={styles.iqLevel}>{ascensionIQ.level}</Text>
+          </View>
+          <View style={[styles.iqOrb, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="analytics-outline" size={26} color={theme.accentSoft} />
+          </View>
+        </View>
+
+        <View style={styles.iqColumns}>
+          <View style={styles.iqColumn}>
+            <Text style={[styles.iqColumnTitle, { color: theme.accentSoft }]}>FORCES</Text>
+            {ascensionIQ.strengths.map((skill) => (
+              <Text key={skill.id} style={styles.iqListText}>{skill.label}</Text>
+            ))}
+          </View>
+          <View style={styles.iqColumn}>
+            <Text style={[styles.iqColumnTitle, { color: theme.accentSoft }]}>À AMÉLIORER</Text>
+            {ascensionIQ.improvements.map((skill) => (
+              <Text key={skill.id} style={styles.iqListText}>{skill.label}</Text>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.skillRadar}>
+          {ascensionIQ.skills.map((skill) => (
+            <View key={skill.id} style={styles.skillRow}>
+              <View style={styles.skillMeta}>
+                <Text style={styles.skillLabel}>{skill.label}</Text>
+                <Text style={[styles.skillValue, { color: theme.accentSoft }]}>{skill.progress}%</Text>
+              </View>
+              <View style={[styles.skillTrack, { backgroundColor: theme.overlay }]}>
+                <View style={[styles.skillFill, { width: `${skill.progress}%`, backgroundColor: theme.accentSoft }]} />
+              </View>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.badgeGrid}>
+          {ascensionIQ.badges.map((badge) => (
+            <View key={badge.id} style={[styles.iqBadge, { borderColor: badge.unlocked ? theme.accentBorder : theme.line, backgroundColor: badge.unlocked ? theme.glowSoft : theme.overlay }]}>
+              <Ionicons name={badge.unlocked ? "ribbon-outline" : "lock-closed-outline"} size={13} color={badge.unlocked ? theme.accentSoft : theme.textMuted} />
+              <Text style={[styles.iqBadgeText, { color: badge.unlocked ? theme.text : theme.textMuted }]}>{badge.title}</Text>
+            </View>
+          ))}
+        </View>
+
+        <Text style={styles.iqCoach}>{ascensionIQ.coachRecommendation}</Text>
       </GlassCard>
 
       <Section title="👤 Personnalisation">
@@ -302,6 +378,129 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontSize: 14,
     fontWeight: "500"
+  },
+  iqCard: {
+    padding: spacing.lg,
+    gap: spacing.md
+  },
+  iqHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.md
+  },
+  iqKicker: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: typography.eyebrowTracking,
+    textTransform: "uppercase"
+  },
+  iqScore: {
+    color: colors.white,
+    fontSize: 28,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: 0.2,
+    lineHeight: 36
+  },
+  iqLevel: {
+    color: "#C8C8C8",
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500"
+  },
+  iqOrb: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  iqColumns: {
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  iqColumn: {
+    flex: 1,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    padding: spacing.sm,
+    gap: 5
+  },
+  iqColumnTitle: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: typography.eyebrowTracking,
+    textTransform: "uppercase"
+  },
+  iqListText: {
+    color: colors.white,
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 17
+  },
+  skillRadar: {
+    gap: spacing.sm
+  },
+  skillRow: {
+    gap: 5
+  },
+  skillMeta: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  skillLabel: {
+    color: colors.white,
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500"
+  },
+  skillValue: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600"
+  },
+  skillTrack: {
+    height: 6,
+    borderRadius: radii.pill,
+    overflow: "hidden"
+  },
+  skillFill: {
+    height: "100%",
+    borderRadius: radii.pill
+  },
+  badgeGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.xs
+  },
+  iqBadge: {
+    minHeight: 30,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 5
+  },
+  iqBadgeText: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600"
+  },
+  iqCoach: {
+    color: "#C8C8C8",
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 19
   },
   list: {
     gap: spacing.sm

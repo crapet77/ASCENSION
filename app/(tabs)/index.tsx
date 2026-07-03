@@ -19,7 +19,7 @@ import { brand } from "@/constants/brand";
 import { colors, radii, spacing, typography } from "@/constants/theme";
 import { dailyObjectives, habits as seedHabits } from "@/data/seed";
 import { AcademyEngine, AcademyEngineState } from "@/engine/academy";
-import { ObjectiveEngine } from "@/engine/objectives";
+import { ObjectiveEngine, ObjectiveEngineState } from "@/engine/objectives";
 import { getBankrollBetProfit, getBankrollStats } from "@/features/bankroll/math";
 import { loadBankrollState } from "@/features/bankroll/storage";
 import { BankrollBet, BankrollState } from "@/features/bankroll/types";
@@ -30,8 +30,9 @@ import {
 } from "@/features/discipline/disciplineProfile";
 import { loadHabits } from "@/features/discipline/storage";
 import { useAscensionTheme } from "@/features/theme/ascensionTheme";
-import { getAcademyCoachRecommendation } from "@/features/intelligence/coach";
+import { generateAscensionIntelligenceCoach } from "@/features/intelligence/coach";
 import { loadTickets } from "@/features/tickets/storage";
+import { AscensionTicket } from "@/features/tickets/types";
 import {
   calculateXpProfile,
   defaultXpProfile,
@@ -324,6 +325,8 @@ export default function DashboardScreen() {
   const [disciplineProfile, setDisciplineProfile] = useState<DisciplineProfile>(defaultDisciplineProfile);
   const [xpProfile, setXpProfile] = useState<XpProfile>(defaultXpProfile);
   const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
+  const [objectiveState, setObjectiveState] = useState<ObjectiveEngineState | null>(null);
+  const [tickets, setTickets] = useState<AscensionTicket[]>([]);
   const completedObjectives = dailyObjectives.filter((objective) => objective.done).length;
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const dashboardDate = useMemo(
@@ -362,7 +365,19 @@ export default function DashboardScreen() {
 
     return "Une journée d'équilibre vaut mieux qu'un coup de chaleur. Reprends le cap avec douceur.";
   }, [disciplineProfile.score, stats.profit]);
-  const coachRecommendation = useMemo(() => getAcademyCoachRecommendation(academyState), [academyState]);
+  const intelligenceCoach = useMemo(
+    () =>
+      generateAscensionIntelligenceCoach({
+        academyState,
+        xpProfile,
+        bankroll,
+        tickets,
+        objectiveState,
+        disciplineProfile,
+        today: currentDate
+      }),
+    [academyState, bankroll, currentDate, disciplineProfile, objectiveState, tickets, xpProfile]
+  );
   const targetAmount = 5000;
   const currentAmount = Math.min(stats.currentCapital, targetAmount);
   const remainingAmount = targetAmount - currentAmount;
@@ -406,9 +421,11 @@ export default function DashboardScreen() {
 
         setBankroll(loadedBankroll);
         setHabits(loadedHabits);
+        setTickets(loadedTickets);
         setDisciplineProfile(nextDisciplineProfile);
         setXpProfile(nextXpProfile);
         setAcademyState(academyState);
+        setObjectiveState(objectiveState);
         saveDisciplineProfile(nextDisciplineProfile);
         saveXpProfile(nextXpProfile);
       });
@@ -696,12 +713,22 @@ export default function DashboardScreen() {
           <View style={[styles.coachRecommendation, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
             <View style={styles.coachRecommendationTop}>
               <Ionicons name="school-outline" size={16} color={theme.accentSoft} />
-              <Text style={[styles.coachLevel, { color: theme.textMuted }]}>{coachRecommendation.level}</Text>
+              <Text style={[styles.coachLevel, { color: theme.textMuted }]}>{intelligenceCoach.contextLabel}</Text>
             </View>
-            <Text style={[styles.coachTitle, { color: theme.text }]}>{coachRecommendation.title}</Text>
-            <Text style={[styles.coachAction, { color: theme.textMuted }]}>{coachRecommendation.action}</Text>
+            <Text style={[styles.coachTitle, { color: theme.text }]}>{intelligenceCoach.recommendation}</Text>
+            <View style={styles.coachGrid}>
+              <View style={styles.coachMiniBlock}>
+                <Text style={[styles.coachMiniLabel, { color: theme.accentSoft }]}>MISSION</Text>
+                <Text style={[styles.coachAction, { color: theme.textMuted }]}>{intelligenceCoach.mission}</Text>
+              </View>
+              <View style={styles.coachMiniBlock}>
+                <Text style={[styles.coachMiniLabel, { color: theme.accentSoft }]}>PROCHAINE ÉTAPE</Text>
+                <Text style={[styles.coachAction, { color: theme.textMuted }]}>{intelligenceCoach.nextStep}</Text>
+              </View>
+            </View>
+            <Text style={[styles.coachEncouragement, { color: theme.text }]}>{intelligenceCoach.encouragement}</Text>
           </View>
-          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>Mode local · analyse Academy :</Text>
+          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>Mode local · analyse personnelle :</Text>
           <View style={styles.intelligenceGrid}>
             {["Sport", "Marchés", "Patrimoine", "Objectifs"].map((item) => (
               <View key={item} style={[styles.intelligenceItem, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
@@ -1674,6 +1701,25 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily,
     fontWeight: "400",
     lineHeight: 18
+  },
+  coachGrid: {
+    gap: spacing.sm
+  },
+  coachMiniBlock: {
+    gap: 3
+  },
+  coachMiniLabel: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: typography.eyebrowTracking,
+    textTransform: "uppercase"
+  },
+  coachEncouragement: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 19
   },
   intelligenceGrid: {
     flexDirection: "row",

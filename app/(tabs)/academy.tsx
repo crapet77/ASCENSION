@@ -137,6 +137,11 @@ export default function AcademyScreen() {
           </View>
         </View>
         <Text style={[styles.progressHint, { color: theme.textMuted }]}>{coachAdvice.text}</Text>
+        <View style={[styles.coachNextBox, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+          <Text style={[styles.coachNextLabel, { color: theme.accentSoft }]}>PROCHAINE LEÇON</Text>
+          <Text style={[styles.coachNextText, { color: theme.text }]}>{coachAdvice.nextLesson}</Text>
+        </View>
+        <Text style={[styles.coachReminder, { color: theme.textMuted }]}>{coachAdvice.reminder}</Text>
       </GlassCard>
 
       <View style={styles.unlockRow}>
@@ -416,6 +421,31 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 0.7,
     textTransform: "uppercase"
+  },
+  coachNextBox: {
+    borderWidth: 1,
+    borderRadius: radii.md,
+    padding: spacing.sm,
+    gap: 4
+  },
+  coachNextLabel: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: typography.eyebrowTracking,
+    textTransform: "uppercase"
+  },
+  coachNextText: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    lineHeight: 19
+  },
+  coachReminder: {
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "400",
+    lineHeight: 18
   },
   modeTop: {
     alignItems: "center",
