@@ -64,7 +64,7 @@ export function PremiumDashboardHighlights({
   return (
     <View style={styles.stack}>
       <GlassCard style={styles.welcomeCard}>
-        <View pointerEvents="none" style={styles.floatGlow} />
+        <View pointerEvents="none" style={[styles.floatGlow, { backgroundColor: theme.glow }]} />
         <View style={styles.welcomeHeader}>
           <View style={styles.welcomeCopy}>
             <DailyWelcome title={greeting} subtitle={dashboardDate} />
@@ -81,8 +81,8 @@ export function PremiumDashboardHighlights({
           )}
         </View>
         <View style={styles.motivationWrap}>
-          <Text style={styles.motivationLabel}>Pensée du jour</Text>
-          <Text style={styles.motivationText}>{dailyMotivation}</Text>
+          <Text style={[styles.motivationLabel, { color: theme.accentSoft }]}>Pensée du jour</Text>
+          <Text style={[styles.motivationText, { color: theme.text }]}>{dailyMotivation}</Text>
         </View>
       </GlassCard>
 
@@ -101,11 +101,11 @@ export function PremiumDashboardHighlights({
         <View style={styles.disciplineMetaRow}>
           <View>
             <Text style={styles.metaLabel}>Niveau</Text>
-            <Text style={styles.metaValue}>{xpProfile.level}</Text>
+            <Text style={[styles.metaValue, { color: theme.text }]}>{xpProfile.level}</Text>
           </View>
           <View>
             <Text style={styles.metaLabel}>Progression</Text>
-            <Text style={styles.metaValue}>{disciplineProfile.score}%</Text>
+            <Text style={[styles.metaValue, { color: theme.text }]}>{disciplineProfile.score}%</Text>
           </View>
         </View>
 
@@ -128,9 +128,9 @@ export function PremiumDashboardHighlights({
           </View>
           <Text style={styles.cardKicker}>Mission du jour</Text>
         </View>
-        <Text style={styles.missionText}>{missionLabel}</Text>
+        <Text style={[styles.missionText, { color: theme.text }]}>{missionLabel}</Text>
         <View style={styles.statusRow}>
-          <Text style={styles.statusText}>{missionCompleted ? "Mission validée" : "À lancer"}</Text>
+          <Text style={[styles.statusText, { color: theme.textMuted }]}>{missionCompleted ? "Mission validée" : "À lancer"}</Text>
           <Ionicons name={missionCompleted ? "checkmark-circle" : "arrow-forward-circle-outline"} size={17} color={theme.accentSoft} />
         </View>
       </GlassCard>
@@ -142,10 +142,10 @@ export function PremiumDashboardHighlights({
           </View>
           <Text style={styles.cardKicker}>Objectif financier</Text>
         </View>
-        <Text style={styles.goalText}>{goalLabel}</Text>
+        <Text style={[styles.goalText, { color: theme.text }]}>{goalLabel}</Text>
         <View style={styles.goalLine}>
-          <Text style={styles.goalValue}>{goalValue}</Text>
-          <Text style={styles.goalPercent}>{Math.round(goalPercent)}%</Text>
+          <Text style={[styles.goalValue, { color: theme.text }]}>{goalValue}</Text>
+          <Text style={[styles.goalPercent, { color: theme.accentSoft }]}>{Math.round(goalPercent)}%</Text>
         </View>
         <View style={styles.progressTrack}>
           <LinearGradient
@@ -162,9 +162,9 @@ export function PremiumDashboardHighlights({
           <View style={styles.inlineIcon}>
             <Ionicons name="hardware-chip-outline" size={16} color={theme.accentSoft} />
           </View>
-          <Text style={styles.cardKicker}>Conseil IA Ascension</Text>
+          <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>CONSEIL IA ASCENSION</Text>
         </View>
-        <Text style={styles.aiText}>{advice}</Text>
+        <Text style={[styles.aiText, { color: theme.textMuted }]}>{advice}</Text>
       </GlassCard>
     </View>
   );
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     color: colors.goldSoft,
     fontSize: 11,
     letterSpacing: 1.1,
-    fontWeight: "700",
+    fontWeight: "500",
     textTransform: "uppercase",
     fontFamily: typography.fontFamily,
     marginBottom: 4
@@ -248,14 +248,22 @@ const styles = StyleSheet.create({
     color: colors.goldSoft,
     fontSize: 11,
     letterSpacing: 1.2,
-    fontWeight: "700",
+    fontWeight: "500",
     textTransform: "uppercase",
     fontFamily: typography.fontFamily
+  },
+  premiumHomeTitle: {
+    fontSize: 14,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 2,
+    lineHeight: 20,
+    textTransform: "uppercase"
   },
   cardTitle: {
     color: colors.text,
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "500",
     fontFamily: typography.fontFamily,
     marginTop: 2
   },
@@ -271,7 +279,7 @@ const styles = StyleSheet.create({
   streakValue: {
     color: colors.goldSoft,
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "600",
     fontFamily: typography.fontFamily
   },
   streakLabel: {
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
   metaValue: {
     color: colors.text,
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     fontFamily: typography.fontFamily,
     marginTop: 2
   },
@@ -359,14 +367,14 @@ const styles = StyleSheet.create({
   goalValue: {
     color: colors.text,
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: "600",
     fontFamily: typography.fontFamily
   },
   goalPercent: {
     color: colors.goldSoft,
     fontSize: 13,
     fontFamily: typography.fontFamily,
-    fontWeight: "700"
+    fontWeight: "600"
   },
   aiCard: {
     padding: spacing.lg,

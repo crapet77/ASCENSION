@@ -14,7 +14,6 @@ import Svg, {
 import { AppScreen } from "@/components/AppScreen";
 import { AscensionLogo } from "@/components/AscensionLogo";
 import { GlassCard } from "@/components/GlassCard";
-import { PremiumButton } from "@/components/PremiumButton";
 import { PremiumDashboardHighlights } from "@/components/PremiumDashboardHighlights";
 import { brand } from "@/constants/brand";
 import { colors, radii, spacing, typography } from "@/constants/theme";
@@ -30,8 +29,7 @@ import {
   saveDisciplineProfile
 } from "@/features/discipline/disciplineProfile";
 import { loadHabits } from "@/features/discipline/storage";
-import { OnboardingUniverse } from "@/features/onboarding/onboardingStorage";
-import { getAscensionTheme, useAscensionTheme } from "@/features/theme/ascensionTheme";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 import { loadTickets } from "@/features/tickets/storage";
 import {
   calculateXpProfile,
@@ -59,20 +57,6 @@ const defaultDisciplineProfile: DisciplineProfile = {
   })),
   updatedAt: ""
 };
-
-const dashboardUniverses: Array<{
-  id: OnboardingUniverse;
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  time: string;
-  note: string;
-}> = [
-  { id: "aurora", icon: "partly-sunny-outline", title: "Aurore", time: "06:00 - 11:00", note: "Commencer chaque matin." },
-  { id: "elegance", icon: "sunny-outline", title: "Élégance", time: "11:00 - 18:00", note: "Chaque action compte." },
-  { id: "carbon", icon: "cloudy-night-outline", title: "Carbone", time: "18:00 - 22:00", note: "La discipline construit." },
-  { id: "ocean", icon: "moon-outline", title: "Océan", time: "22:00 - 02:00", note: "Garder le cap." },
-  { id: "cosmos", icon: "sparkles-outline", title: "Cosmos", time: "02:00 - 06:00", note: "Voir plus grand." }
-];
 
 const dailyMotivations = [
   "La discipline construit les résultats.",
@@ -189,6 +173,9 @@ type BankrollCurve = {
   areaPath: string;
   linePath: string;
   endPoint: { x: number; y: number };
+  zeroY: number;
+  minProfit: number;
+  maxProfit: number;
 };
 
 function getBankrollCurve(bankroll: BankrollState): BankrollCurve {
@@ -201,17 +188,17 @@ function getBankrollCurve(bankroll: BankrollState): BankrollCurve {
   const settledBets = [...bankroll.bets]
     .filter((bet) => bet.result === "won" || bet.result === "lost" || bet.result === "void")
     .sort((left, right) => getBetDate(left).localeCompare(getBetDate(right)));
-  const initialCapital = bankroll.initialCapital ?? 0;
   const values = settledBets.reduce<number[]>(
     (curveValues, bet) => {
-      const previousValue = curveValues[curveValues.length - 1] ?? initialCapital;
+      const previousValue = curveValues[curveValues.length - 1] ?? 0;
       return [...curveValues, previousValue + getBankrollBetProfit(bet)];
     },
-    [initialCapital]
+    [0]
   );
-  const minValue = Math.min(...values);
-  const maxValue = Math.max(...values);
+  const minValue = Math.min(0, ...values);
+  const maxValue = Math.max(0, ...values);
   const range = Math.max(maxValue - minValue, 1);
+  const zeroY = chart.bottom - ((0 - minValue) / range) * (chart.bottom - chart.top);
   const horizontalStep = values.length > 1 ? (chart.right - chart.left) / (values.length - 1) : 0;
   const points = values.map((value, index) => {
     const x = values.length > 1 ? chart.left + index * horizontalStep : chart.left;
@@ -224,8 +211,11 @@ function getBankrollCurve(bankroll: BankrollState): BankrollCurve {
 
   return {
     linePath,
-    areaPath: `${linePath} L${endPoint.x.toFixed(2)} 66 L${chart.left} 66 Z`,
-    endPoint
+    areaPath: `${linePath} L${endPoint.x.toFixed(2)} ${zeroY.toFixed(2)} L${chart.left} ${zeroY.toFixed(2)} Z`,
+    endPoint,
+    zeroY,
+    minProfit: minValue,
+    maxProfit: maxValue
   };
 }
 
@@ -234,6 +224,7 @@ function getBetDate(bet: BankrollBet) {
 }
 
 function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: BankrollCurve }) {
+  const { theme } = useAscensionTheme();
   const revealStyle = {
     opacity: progress,
     transform: [
@@ -250,12 +241,12 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
     <Animated.View style={[styles.chartReveal, revealStyle]}>
       <Svg width="100%" height={66} viewBox="0 0 280 66">
         <Defs>
-          <SvgLinearGradient id="progressMotionGold" x1="4" y1="54" x2="276" y2="14">
-            <Stop offset="0" stopColor={champagneDeep} stopOpacity="0.34" />
-            <Stop offset="0.34" stopColor={champagneGold} />
-            <Stop offset="0.58" stopColor={champagneLight} />
-            <Stop offset="0.76" stopColor={colors.white} />
-            <Stop offset="1" stopColor={champagneGold} />
+          <SvgLinearGradient id="progressMotionTheme" x1="4" y1="54" x2="276" y2="14">
+            <Stop offset="0" stopColor={theme.accent} stopOpacity="0.34" />
+            <Stop offset="0.34" stopColor={theme.accent} />
+            <Stop offset="0.64" stopColor={theme.accentSoft} />
+            <Stop offset="0.80" stopColor={colors.white} stopOpacity="0.92" />
+            <Stop offset="1" stopColor={theme.accent} />
           </SvgLinearGradient>
           <SvgLinearGradient id="progressMotionWhite" x1="92" y1="38" x2="276" y2="10">
             <Stop offset="0" stopColor={colors.white} stopOpacity="0" />
@@ -263,10 +254,10 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
             <Stop offset="0.72" stopColor={colors.white} stopOpacity="0.90" />
             <Stop offset="1" stopColor={colors.white} stopOpacity="0" />
           </SvgLinearGradient>
-          <SvgLinearGradient id="progressAreaGold" x1="8" y1="16" x2="276" y2="66">
-            <Stop offset="0" stopColor={champagneLight} stopOpacity="0.20" />
-            <Stop offset="0.45" stopColor={champagneGold} stopOpacity="0.085" />
-            <Stop offset="1" stopColor={champagneGold} stopOpacity="0" />
+          <SvgLinearGradient id="progressAreaTheme" x1="8" y1="16" x2="276" y2="66">
+            <Stop offset="0" stopColor={theme.accentSoft} stopOpacity="0.20" />
+            <Stop offset="0.45" stopColor={theme.accent} stopOpacity="0.085" />
+            <Stop offset="1" stopColor={theme.accent} stopOpacity="0" />
           </SvgLinearGradient>
         </Defs>
         {[18, 32, 46, 60].map((y) => (
@@ -276,12 +267,19 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
           <Path key={`grid-x-${x}`} d={`M${x} 10 L${x} 66`} stroke="rgba(255,255,255,0.025)" strokeWidth="0.8" />
         ))}
         <Path
+          d={`M4 ${curve.zeroY.toFixed(2)} L276 ${curve.zeroY.toFixed(2)}`}
+          stroke={theme.accentBorder}
+          strokeWidth="1.15"
+          strokeDasharray="4 5"
+          opacity="0.92"
+        />
+        <Path
           d={curve.areaPath}
-          fill="url(#progressAreaGold)"
+          fill="url(#progressAreaTheme)"
         />
         <Path
           d={curve.linePath}
-          stroke={champagneLight}
+          stroke={theme.accentSoft}
           strokeWidth="10"
           strokeLinecap="round"
           fill="none"
@@ -289,7 +287,7 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
         />
         <Path
           d={curve.linePath}
-          stroke="url(#progressMotionGold)"
+          stroke="url(#progressMotionTheme)"
           strokeWidth="2.35"
           strokeLinecap="round"
           fill="none"
@@ -301,14 +299,14 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
           strokeLinecap="round"
           fill="none"
         />
-        <Circle cx={curve.endPoint.x} cy={curve.endPoint.y} r="3.2" fill={champagneLight} opacity="0.92" />
+        <Circle cx={curve.endPoint.x} cy={curve.endPoint.y} r="3.2" fill={theme.accentSoft} opacity="0.92" />
       </Svg>
     </Animated.View>
   );
 }
 
 export default function DashboardScreen() {
-  const { theme, setUniverse } = useAscensionTheme();
+  const { theme } = useAscensionTheme();
   const entrance = useRef(new Animated.Value(0)).current;
   const logoPulse = useRef(new Animated.Value(0)).current;
   const missionProgress = useRef(new Animated.Value(0)).current;
@@ -604,7 +602,8 @@ export default function DashboardScreen() {
           onOpenProfile={() => router.push("/profile")}
         />
 
-        <GlassCard style={[styles.opportunityCard, styles.cardDepth]}>
+        <Pressable onPress={() => router.push("/(tabs)/ticket" as never)}>
+          <GlassCard style={[styles.opportunityCard, styles.cardDepth]}>
           <View pointerEvents="none" style={styles.cardInnerHalo} />
           <View pointerEvents="none" style={styles.cardReflection} />
           <View pointerEvents="none" style={styles.cardCarbonA} />
@@ -612,26 +611,25 @@ export default function DashboardScreen() {
           <View style={styles.cardHeader}>
             <View style={styles.headerWithIcon}>
               <View style={styles.headerIcon}>
-                <Ionicons name="globe-outline" size={17} color={champagneLight} />
+                <Ionicons name="globe-outline" size={17} color={theme.accentSoft} />
               </View>
               <View>
-                <Text style={styles.cardTitleLarge}>Opportunités du jour</Text>
-                <Text style={styles.cardMuted}>Sport, marchés et patrimoine.</Text>
+                <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>OPPORTUNITÉS DU JOUR</Text>
+                <Text style={[styles.cardMuted, { color: theme.textMuted }]}>Sport, marchés et patrimoine.</Text>
               </View>
             </View>
-            <PremiumButton label="Voir" icon="arrow-forward" onPress={() => router.push("/(tabs)/ticket" as never)} />
           </View>
           {totalOpportunities === 0 ? (
-            <Text style={styles.opportunityEmpty}>Aucune opportunité aujourd'hui.</Text>
+            <Text style={[styles.opportunityEmpty, { color: theme.textMuted }]}>Aucune opportunité aujourd'hui.</Text>
           ) : (
             <View style={styles.opportunityRows}>
               {opportunityGroups.map((group) => (
                 <View key={group.label} style={styles.opportunityRow}>
                   <View style={styles.opportunityIcon}>
-                    <Ionicons name={group.icon} size={16} color={colors.gold} />
+                    <Ionicons name={group.icon} size={16} color={theme.accentSoft} />
                   </View>
-                  <Text style={styles.opportunityLabel}>{group.label}</Text>
-                  <Text style={styles.opportunityValue}>
+                  <Text style={[styles.opportunityLabel, { color: theme.text }]}>{group.label}</Text>
+                  <Text style={[styles.opportunityValue, { color: theme.accentSoft }]}>
                     {group.count === 0
                       ? "Aucune opportunité"
                       : `${group.count} ${group.suffix}${group.count > 1 ? "s" : ""}`}
@@ -640,39 +638,40 @@ export default function DashboardScreen() {
               ))}
             </View>
           )}
-        </GlassCard>
+          </GlassCard>
+        </Pressable>
 
         <GlassCard style={[styles.performancePanel, styles.cardDepth]}>
-          <View pointerEvents="none" style={styles.progressAura} />
+          <View pointerEvents="none" style={[styles.progressAura, { backgroundColor: theme.glowSoft, shadowColor: theme.accentSoft }]} />
           <View pointerEvents="none" style={styles.cardReflection} />
           <View pointerEvents="none" style={styles.cardCarbonA} />
           <View pointerEvents="none" style={styles.cardCarbonB} />
-          <LinearGradient colors={["rgba(31, 30, 25, 0.82)", "rgba(7, 8, 8, 0.96)", "rgba(3, 3, 3, 0.99)"]} style={styles.progressCard}>
+          <LinearGradient colors={theme.cardGradient} style={styles.progressCard}>
             <View style={styles.cardHeader}>
               <View style={styles.headerWithIcon}>
                 <View style={styles.headerIconSmall}>
-                  <Ionicons name="bar-chart" size={15} color={champagneLight} />
+                  <Ionicons name="bar-chart" size={15} color={theme.accentSoft} />
                 </View>
                 <View style={styles.progressTitleBlock}>
-                  <Text style={styles.progressTitle}>Progression</Text>
-                  <Text style={styles.progressMuted}>Ce mois</Text>
-                  <Text style={styles.progressMicro}>Évolution réelle locale</Text>
+                  <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>PROGRESSION</Text>
+                  <Text style={[styles.progressMuted, { color: theme.textMuted }]}>Ce mois</Text>
+                  <Text style={[styles.progressMicro, { color: theme.textMuted }]}>Évolution réelle locale</Text>
                 </View>
               </View>
-              <Text style={styles.positive}>{formatPercent(stats.roi)}</Text>
+              <Text style={[styles.positive, { color: stats.roi >= 0 ? theme.success : theme.danger, textShadowColor: stats.roi >= 0 ? `${theme.success}22` : `${theme.danger}22` }]}>{formatPercent(stats.roi)}</Text>
             </View>
             <ProgressLine progress={progressDraw} curve={bankrollCurve} />
           </LinearGradient>
 
-          <View style={styles.financialGrid}>
+          <View style={[styles.financialGrid, { borderTopColor: theme.line, backgroundColor: theme.surface }]}>
             {financialStats.map((item) => (
-              <View key={item.label} style={styles.financialTile}>
-                <Text style={styles.statLabel}>{item.label}</Text>
+              <View key={item.label} style={[styles.financialTile, { borderBottomColor: theme.line, borderRightColor: theme.line }]}>
+                <Text style={[styles.statLabel, { color: theme.textMuted }]}>{item.label}</Text>
                 <Text
                   style={[
                     styles.statValue,
-                    item.tone === "neutral" && styles.statValueNeutral,
-                    item.tone === "danger" && styles.statValueDanger
+                    { color: item.tone === "danger" ? theme.danger : item.tone === "neutral" ? theme.text : theme.success },
+                    item.tone === "neutral" && styles.statValueNeutral
                   ]}
                 >
                   {item.value}
@@ -688,52 +687,19 @@ export default function DashboardScreen() {
           <View pointerEvents="none" style={styles.cardCarbonA} />
           <View pointerEvents="none" style={styles.cardCarbonB} />
           <View style={styles.cardHeader}>
-            <Text style={styles.intelligenceTitle}>Ascension Intelligence</Text>
+            <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>ASCENSION INTELLIGENCE</Text>
           </View>
-          <Text style={styles.intelligenceText}>L'IA analyse en permanence :</Text>
+          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>L'IA analyse en permanence :</Text>
           <View style={styles.intelligenceGrid}>
             {["Sport", "Marchés", "Patrimoine", "Objectifs"].map((item) => (
-              <View key={item} style={styles.intelligenceItem}>
-                <Ionicons name="sparkles-outline" size={15} color={colors.gold} />
-                <Text style={styles.intelligenceItemText}>{item}</Text>
+              <View key={item} style={[styles.intelligenceItem, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+                <Ionicons name="sparkles-outline" size={15} color={theme.accentSoft} />
+                <Text style={[styles.intelligenceItemText, { color: theme.text }]}>{item}</Text>
               </View>
             ))}
           </View>
-          <View style={styles.intelligenceBadge}>
-            <Text style={styles.comingSoon}>Mode local actif</Text>
-          </View>
-        </GlassCard>
-
-        <GlassCard style={[styles.universePanel, styles.cardDepth]}>
-          <View style={styles.universePanelIntro}>
-            <Text style={styles.universeKicker}>UNIVERS ASCENSION</Text>
-            <Text style={styles.universeSubtitle}>Choisis ton ambiance.</Text>
-          </View>
-          <View style={styles.universeOptions}>
-            {dashboardUniverses.map((universe) => {
-              const optionTheme = getAscensionTheme(universe.id);
-              const isActive = theme.id === universe.id;
-
-              return (
-                <Pressable
-                  key={universe.id}
-                  style={[
-                    styles.universeOption,
-                    {
-                      borderColor: isActive ? optionTheme.accentBorder : "rgba(255,255,255,0.10)",
-                      backgroundColor: isActive ? optionTheme.glowSoft : "rgba(255,255,255,0.030)"
-                    }
-                  ]}
-                  onPress={() => setUniverse(universe.id)}
-                >
-                  <Ionicons name={universe.icon} size={23} color={optionTheme.accentSoft} />
-                  <View style={styles.universeOptionCopy}>
-                    <Text style={styles.universeName}>{universe.title}</Text>
-                    <Text style={styles.universeTime}>{universe.time}</Text>
-                  </View>
-                </Pressable>
-              );
-            })}
+          <View style={[styles.intelligenceBadge, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Text style={[styles.comingSoon, { color: theme.accentSoft }]}>Mode local actif</Text>
           </View>
         </GlassCard>
 
@@ -1055,13 +1021,8 @@ const styles = StyleSheet.create({
   },
   opportunityCard: {
     minHeight: 148,
-    borderWidth: 1,
-    borderColor: "rgba(255, 229, 166, 0.34)",
-    borderRadius: 18,
     padding: 22,
-    gap: 20,
-    backgroundColor: "rgba(6, 6, 6, 0.82)",
-    overflow: "hidden"
+    gap: 20
   },
   headerWithIcon: {
     flex: 1,
@@ -1532,10 +1493,6 @@ const styles = StyleSheet.create({
     lineHeight: 18
   },
   performancePanel: {
-    borderWidth: 1,
-    borderColor: "rgba(255, 229, 166, 0.30)",
-    borderRadius: 18,
-    backgroundColor: "rgba(6, 6, 6, 0.82)",
     overflow: "hidden"
   },
   progressAura: {
@@ -1571,6 +1528,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: typography.titleTracking,
     lineHeight: 27
+  },
+  premiumHomeTitle: {
+    fontSize: 14,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: 2,
+    lineHeight: 20,
+    textTransform: "uppercase"
   },
   progressMuted: {
     color: "#C8C8C8",
@@ -1642,13 +1607,8 @@ const styles = StyleSheet.create({
   },
   intelligenceCard: {
     minHeight: 134,
-    borderWidth: 1,
-    borderColor: "rgba(255, 229, 166, 0.30)",
-    borderRadius: 18,
     padding: 22,
-    gap: 14,
-    backgroundColor: "rgba(6, 6, 6, 0.82)",
-    overflow: "hidden"
+    gap: 14
   },
   intelligenceTitle: {
     color: colors.white,
@@ -1706,70 +1666,6 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily,
     fontWeight: "600",
     letterSpacing: typography.labelTracking
-  },
-  universePanel: {
-    borderWidth: 1,
-    borderColor: "rgba(255, 229, 166, 0.24)",
-    borderRadius: 18,
-    padding: 18,
-    gap: 15,
-    backgroundColor: "rgba(6, 6, 6, 0.72)",
-    overflow: "hidden"
-  },
-  universePanelIntro: {
-    gap: 3
-  },
-  universeKicker: {
-    color: colors.goldSoft,
-    fontSize: 12,
-    fontFamily: typography.fontFamily,
-    fontWeight: "700",
-    letterSpacing: 0.8
-  },
-  universeSubtitle: {
-    color: "#D2CCC4",
-    fontSize: 13,
-    fontFamily: typography.fontFamily,
-    fontWeight: "400",
-    lineHeight: 18
-  },
-  universeOptions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10
-  },
-  universeOption: {
-    width: "48%",
-    minHeight: 68,
-    borderRadius: 16,
-    borderWidth: 1,
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 11,
-    paddingHorizontal: 13,
-    shadowColor: colors.gold,
-    shadowOpacity: 0.10,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 }
-  },
-  universeOptionCopy: {
-    flex: 1,
-    gap: 2
-  },
-  universeName: {
-    color: colors.white,
-    fontSize: 14,
-    fontFamily: typography.fontFamily,
-    fontWeight: "600",
-    letterSpacing: typography.labelTracking,
-    lineHeight: 19
-  },
-  universeTime: {
-    color: "#C7C1B8",
-    fontSize: 11,
-    fontFamily: typography.fontFamily,
-    fontWeight: "400",
-    lineHeight: 16
   },
   footerBrand: {
     color: colors.gold,

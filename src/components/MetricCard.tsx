@@ -13,7 +13,7 @@ type MetricCardProps = {
 
 export function MetricCard({ label, value, detail, tone = "neutral" }: MetricCardProps) {
   const { theme } = useAscensionTheme();
-  const accent = tone === "success" ? colors.success : tone === "danger" ? colors.danger : theme.accent;
+  const accent = tone === "success" ? theme.success : tone === "danger" ? theme.danger : theme.accent;
 
   return (
     <GlassCard style={styles.card} contentStyle={styles.content}>
@@ -21,7 +21,7 @@ export function MetricCard({ label, value, detail, tone = "neutral" }: MetricCar
       <View style={styles.carbonLineB} />
       <View style={[styles.accent, { backgroundColor: accent }]} />
       <Text style={[styles.label, { color: theme.textMuted }]}>{label}</Text>
-      <Text style={[styles.value, { color: theme.text, textShadowColor: theme.glow }]}>{value}</Text>
+      <Text style={[styles.value, { color: tone === "success" ? theme.success : tone === "danger" ? theme.danger : theme.text, textShadowColor: theme.glow }]}>{value}</Text>
       {detail ? <Text style={[styles.detail, { color: theme.textMuted }]}>{detail}</Text> : null}
     </GlassCard>
   );
@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 24,
     fontFamily: typography.fontFamily,
-    fontWeight: "700",
-    letterSpacing: -0.05,
+    fontWeight: "600",
+    letterSpacing: 0.1,
     lineHeight: 31,
     textShadowColor: "rgba(228, 169, 69, 0.20)",
     textShadowRadius: 12

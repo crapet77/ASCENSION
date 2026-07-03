@@ -35,7 +35,7 @@ export function PremiumButton({ label, icon, onPress, style, disabled = false }:
       >
         <View style={styles.lightLine} />
         <View style={styles.metalReflection} />
-        <Ionicons name={icon} color={theme.isLight ? colors.white : colors.black} size={14} />
+        <Ionicons name={icon} color={theme.isLight ? colors.white : colors.black} size={15} />
         <Text style={[styles.label, { color: theme.isLight ? colors.white : colors.black }]}>{label}</Text>
       </LinearGradient>
     </Pressable>
@@ -44,11 +44,11 @@ export function PremiumButton({ label, icon, onPress, style, disabled = false }:
 
 const styles = StyleSheet.create({
   pressable: {
-    minHeight: 34,
-    borderRadius: 15,
+    minHeight: 38,
+    borderRadius: 17,
     shadowColor: "#F1C66F",
-    shadowOpacity: 0.22,
-    shadowRadius: 18,
+    shadowOpacity: 0.20,
+    shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
     elevation: 4
   },
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     opacity: 0.55
   },
   inner: {
-    minHeight: 34,
-    borderRadius: 15,
-    paddingHorizontal: 9,
+    minHeight: 38,
+    borderRadius: 17,
+    paddingHorizontal: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.black,
-    fontSize: 11.5,
+    fontSize: 12,
     fontFamily: typography.fontFamily,
-    fontWeight: "700",
-    letterSpacing: typography.labelTracking
+    fontWeight: "600",
+    letterSpacing: 0.7
   }
 });

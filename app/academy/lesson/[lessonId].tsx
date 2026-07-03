@@ -69,7 +69,9 @@ export default function AcademyLessonDetailScreen() {
   const isGoodHabitsLesson = lesson?.title === "Les bonnes habitudes financières";
   const isBeginnerMistakesLesson = lesson?.title === "Les erreurs des débutants";
   const isTimePowerLesson = lesson?.title === "Le pouvoir du temps";
-  const isPremiumInteractiveLesson = isFirstDisciplineLesson || isCompoundInterestLesson || isBudgetMissionLesson || isSafetySavingsLesson || isBadDebtLesson || isGoodHabitsLesson || isBeginnerMistakesLesson || isTimePowerLesson;
+  const isFinalFoundationsLesson = lesson?.title === "Construire ton avenir financier";
+  const isInvestmentLevelLesson = module?.id === "level-2-investment";
+  const isPremiumInteractiveLesson = isInvestmentLevelLesson || isFirstDisciplineLesson || isCompoundInterestLesson || isBudgetMissionLesson || isSafetySavingsLesson || isBadDebtLesson || isGoodHabitsLesson || isBeginnerMistakesLesson || isTimePowerLesson || isFinalFoundationsLesson;
   const firstQuizQuestions = lesson?.quizQuestions ?? [];
   const firstQuizCurrentQuestion = firstQuizQuestions[firstQuizQuestionIndex] ?? null;
   const firstQuizSelectedOption = firstQuizAnswers[firstQuizQuestionIndex] ?? null;
@@ -148,7 +150,7 @@ export default function AcademyLessonDetailScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen preserveScrollPosition>
       <View style={styles.headerRow}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={18} color={colors.white} />
@@ -291,6 +293,30 @@ export default function AcademyLessonDetailScreen() {
             onSelectQuizAnswer={selectFirstQuizAnswer}
             onAdvanceQuiz={advanceFirstQuiz}
           />
+        ) : isFinalFoundationsLesson ? (
+          <FinalFoundationsLessonLayout
+            questions={firstQuizQuestions}
+            questionIndex={firstQuizQuestionIndex}
+            selectedOption={firstQuizSelectedOption}
+            isQuizSubmitted={isFirstQuizSubmitted}
+            isQuizFinished={isFirstQuizFinished}
+            quizScore={firstQuizScore}
+            onSelectQuizAnswer={selectFirstQuizAnswer}
+            onAdvanceQuiz={advanceFirstQuiz}
+          />
+        ) : isInvestmentLevelLesson ? (
+          <InvestmentLessonLayout
+            lessonMeta={lessonMeta}
+            questions={firstQuizQuestions}
+            questionIndex={firstQuizQuestionIndex}
+            selectedOption={firstQuizSelectedOption}
+            isQuizSubmitted={isFirstQuizSubmitted}
+            isQuizFinished={isFirstQuizFinished}
+            quizScore={firstQuizScore}
+            isFinalLesson={isLastLesson}
+            onSelectQuizAnswer={selectFirstQuizAnswer}
+            onAdvanceQuiz={advanceFirstQuiz}
+          />
         ) : (
           <PremiumLessonLayout lessonMeta={lessonMeta} />
         )}
@@ -306,7 +332,7 @@ export default function AcademyLessonDetailScreen() {
             </View>
           ) : null}
           <PremiumButton
-            label={isCompleted ? "Leçon déjà validée" : isFirstDisciplineLesson ? "Continuer vers la Leçon 2" : isCompoundInterestLesson ? "Continuer vers la Leçon 3" : isBudgetMissionLesson ? "Continuer vers la Leçon 4" : isSafetySavingsLesson ? "Continuer vers la Leçon 5" : isBadDebtLesson ? "Continuer vers la Leçon 6" : isGoodHabitsLesson ? "Continuer vers la Leçon 7" : isBeginnerMistakesLesson ? "Continuer vers la Leçon 8" : isTimePowerLesson ? "Continuer vers la Leçon 9" : nextActionLabel}
+            label={isCompleted ? "Leçon déjà validée" : isFirstDisciplineLesson ? "Continuer vers la Leçon 2" : isCompoundInterestLesson ? "Continuer vers la Leçon 3" : isBudgetMissionLesson ? "Continuer vers la Leçon 4" : isSafetySavingsLesson ? "Continuer vers la Leçon 5" : isBadDebtLesson ? "Continuer vers la Leçon 6" : isGoodHabitsLesson ? "Continuer vers la Leçon 7" : isBeginnerMistakesLesson ? "Continuer vers la Leçon 8" : isTimePowerLesson ? "Continuer vers la Leçon 9" : isFinalFoundationsLesson ? "Débloquer le Niveau 2" : isInvestmentLevelLesson && isLastLesson ? "Débloquer le Niveau 3" : isInvestmentLevelLesson ? `Continuer vers la Leçon ${lessonNumber + 1}` : nextActionLabel}
             icon="checkmark-circle"
             onPress={completeLesson}
             disabled={isCompleting || isCompleted || (isPremiumInteractiveLesson && !isFirstQuizFinished)}
@@ -437,18 +463,18 @@ function FirstDisciplineLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux amis, deux destins</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Thomas</Text>
+            <Text style={styles.duelName}>Maximilien</Text>
             <Text style={styles.duelAmount}>2 000 €</Text>
             <Text style={styles.summary}>Il dépense tout.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Lucas</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>2 000 €</Text>
             <Text style={styles.summary}>Il met 10 € de côté chaque jour.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          Quelques années plus tard, Thomas possède très peu d'épargne. Lucas possède déjà un patrimoine important. Leur salaire était identique. Leur discipline ne l'était pas.
+          Quelques années plus tard, Maximilien possède très peu d'épargne. Martin possède déjà un patrimoine important. Leur salaire était identique. Leur discipline ne l'était pas.
         </Text>
       </View>
 
@@ -618,18 +644,18 @@ function CompoundInterestLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux investisseurs</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Lucas</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>20 ans</Text>
             <Text style={styles.summary}>Il investit 100 € par mois.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Thomas</Text>
+            <Text style={styles.duelName}>Maximilien</Text>
             <Text style={styles.duelAmount}>35 ans</Text>
             <Text style={styles.summary}>Il attend avant de commencer.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          Tous les deux investissent exactement la même somme chaque mois. À 60 ans, Lucas possède un patrimoine beaucoup plus important parce que son argent a eu 15 années supplémentaires pour travailler.
+          Tous les deux investissent exactement la même somme chaque mois. À 60 ans, Martin possède un patrimoine beaucoup plus important parce que son argent a eu 15 années supplémentaires pour travailler.
         </Text>
       </View>
 
@@ -810,13 +836,13 @@ function BudgetMissionLessonLayout({
             <Text style={styles.summary}>Elle dépense puis épargne ce qu'il reste.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Julien</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>2 000 €</Text>
             <Text style={styles.summary}>Il répartit son salaire dès le premier jour.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          Quelques mois plus tard, Emma termine régulièrement le mois à découvert. Julien sait exactement où est allé chaque euro. Le salaire est identique. L'organisation change tout.
+          Quelques mois plus tard, Emma termine régulièrement le mois à découvert. Martin sait exactement où est allé chaque euro. Le salaire est identique. L'organisation change tout.
         </Text>
       </View>
 
@@ -990,12 +1016,12 @@ function SafetySavingsLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux réactions différentes</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Sophie</Text>
+            <Text style={styles.duelName}>Maëlya</Text>
             <Text style={styles.duelAmount}>900 €</Text>
             <Text style={styles.summary}>Elle possède une réserve et paie immédiatement.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Marc</Text>
+            <Text style={styles.duelName}>Maximilien</Text>
             <Text style={styles.duelAmount}>900 €</Text>
             <Text style={styles.summary}>Il n'a aucune réserve et s'endette.</Text>
           </View>
@@ -1170,18 +1196,18 @@ function BadDebtLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux choix différents</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Julie</Text>
+            <Text style={styles.duelName}>Maëlya</Text>
             <Text style={styles.duelAmount}>3 000 €</Text>
             <Text style={styles.summary}>Elle emprunte pour changer de téléphone alors que le sien fonctionne encore.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Maxime</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>3 000 €</Text>
             <Text style={styles.summary}>Il garde son téléphone un an de plus et met cette somme de côté.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          Deux ans plus tard, Julie rembourse toujours son crédit. Maxime possède une épargne pour un projet important. Leur revenu est identique. Leurs décisions sont différentes.
+          Deux ans plus tard, Maëlya rembourse toujours son crédit. Martin possède une épargne pour un projet important. Leur revenu est identique. Leurs décisions sont différentes.
         </Text>
       </View>
 
@@ -1353,12 +1379,12 @@ function GoodHabitsLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux routines</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Sarah</Text>
+            <Text style={styles.duelName}>Maëlya</Text>
             <Text style={styles.duelAmount}>Salaire reçu</Text>
             <Text style={styles.summary}>Elle dépense d'abord et verra plus tard.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Nicolas</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>Routine</Text>
             <Text style={styles.summary}>Il épargne 10 %, investit une partie et suit son budget.</Text>
           </View>
@@ -1531,18 +1557,18 @@ function BeginnerMistakesLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux réactions</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Paul</Text>
+            <Text style={styles.duelName}>Maximilien</Text>
             <Text style={styles.duelAmount}>-200 €</Text>
             <Text style={styles.summary}>Il perd 200 € sur un mauvais investissement et abandonne immédiatement.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Claire</Text>
+            <Text style={styles.duelName}>Emma</Text>
             <Text style={styles.duelAmount}>-200 €</Text>
             <Text style={styles.summary}>Elle perd également 200 €, puis cherche à comprendre ce qui n'a pas fonctionné.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          Quelques années plus tard, Paul n'investit toujours plus. Claire investit avec beaucoup plus d'expérience. La même erreur. Deux résultats totalement différents.
+          Quelques années plus tard, Maximilien n'investit toujours plus. Emma investit avec beaucoup plus d'expérience. La même erreur. Deux résultats totalement différents.
         </Text>
       </View>
 
@@ -1710,18 +1736,18 @@ function TimePowerLessonLayout({
         <Text style={styles.sectionTitle}>📖 Deux décisions</Text>
         <View style={styles.duelGrid}>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Camille</Text>
+            <Text style={styles.duelName}>Maëlya</Text>
             <Text style={styles.duelAmount}>20 ans</Text>
             <Text style={styles.summary}>Elle commence à investir 100 € par mois.</Text>
           </View>
           <View style={styles.duelCard}>
-            <Text style={styles.duelName}>Léo</Text>
+            <Text style={styles.duelName}>Martin</Text>
             <Text style={styles.duelAmount}>35 ans</Text>
             <Text style={styles.summary}>Il attend, puis investit exactement la même somme chaque mois.</Text>
           </View>
         </View>
         <Text style={styles.summary}>
-          À 60 ans, Camille possède un patrimoine beaucoup plus important. Pas parce qu'elle était plus riche. Parce qu'elle a commencé plus tôt.
+          À 60 ans, Maëlya possède un patrimoine beaucoup plus important. Pas parce qu'elle était plus riche. Parce qu'elle a commencé plus tôt.
         </Text>
       </View>
 
@@ -1831,6 +1857,315 @@ function TimePowerLessonLayout({
   );
 }
 
+function FinalFoundationsLessonLayout({
+  questions,
+  questionIndex,
+  selectedOption,
+  isQuizSubmitted,
+  isQuizFinished,
+  quizScore,
+  onSelectQuizAnswer,
+  onAdvanceQuiz
+}: {
+  questions: NonNullable<AcademyLesson["quizQuestions"]>;
+  questionIndex: number;
+  selectedOption: number | null;
+  isQuizSubmitted: boolean;
+  isQuizFinished: boolean;
+  quizScore: number;
+  onSelectQuizAnswer: (optionIndex: number) => void;
+  onAdvanceQuiz: () => void;
+}) {
+  const foundationRows: PremiumExampleRow[] = [
+    { icon: "wallet-outline", label: "Budget", value: "donner une mission à chaque euro" },
+    { icon: "shield-checkmark-outline", label: "Sécurité", value: "éviter les mauvaises dettes" },
+    { icon: "repeat-outline", label: "Habitudes", value: "répéter les bonnes décisions" },
+    { icon: "time-outline", label: "Temps", value: "laisser les résultats grandir" }
+  ];
+  const exampleRows: PremiumExampleRow[] = [
+    { icon: "cash-outline", label: "Montant", value: "100 € / mois" },
+    { icon: "calendar-outline", label: "Durée", value: "20 ans" },
+    { icon: "trending-up-outline", label: "Effet", value: "plusieurs dizaines de milliers d'euros" }
+  ];
+  const challengeOptions = [
+    { id: "A", text: "Chercher à devenir riche très vite." },
+    { id: "B", text: "Construire progressivement de bonnes habitudes pendant plusieurs années." },
+    { id: "C", text: "Attendre le bon moment pour commencer." }
+  ];
+
+  return (
+    <>
+      <View style={styles.lessonHero}>
+        <Text style={styles.lessonHeroIcon}>🎬</Text>
+        <Text style={styles.lessonHeroTitle}>Tu viens de poser les fondations.</Text>
+        <Text style={styles.lessonHeroText}>
+          Une maison ne commence jamais par le toit.{"\n\n"}
+          Elle commence par des fondations solides.{"\n\n"}
+          C'est exactement ce que tu viens de construire.{"\n\n"}
+          Tu sais maintenant gérer un budget, éviter les mauvaises dettes, créer de bonnes habitudes, fixer des objectifs et comprendre que le temps est ton meilleur allié.{"\n\n"}
+          Tu possèdes déjà plus de connaissances financières que beaucoup de personnes n'en auront jamais.
+        </Text>
+        <View style={styles.exampleList}>
+          {foundationRows.map((row) => (
+            <View key={row.label} style={styles.exampleRow}>
+              <View style={styles.exampleIconWrap}>
+                <Ionicons name={row.icon} size={16} color={colors.gold} />
+              </View>
+              <View style={styles.exampleCopy}>
+                <Text style={styles.exampleLabel}>{row.label}</Text>
+                <Text style={styles.exampleAmount}>{row.value}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>📖 L'histoire</Text>
+        <View style={styles.duelGrid}>
+          <View style={styles.duelCard}>
+            <Text style={styles.duelName}>Martin</Text>
+            <Text style={styles.duelAmount}>Même salaire</Text>
+            <Text style={styles.summary}>Il dépense tout son salaire et vit toujours au mois le mois.</Text>
+          </View>
+          <View style={styles.duelCard}>
+            <Text style={styles.duelName}>Maximilien</Text>
+            <Text style={styles.duelAmount}>Même salaire</Text>
+            <Text style={styles.summary}>Il applique les principes appris dans l'Academy.</Text>
+          </View>
+        </View>
+        <Text style={styles.summary}>
+          Dix ans plus tard, Martin vit toujours au mois le mois. Maximilien possède une épargne, des investissements et prépare déjà son avenir. Ce n'est pas la chance. Ce sont les décisions prises chaque mois.
+        </Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🧠 Comprendre</Text>
+        <Text style={styles.summary}>
+          Chaque petite décision compte.{"\n\n"}
+          Un euro économisé.{"\n\n"}
+          Une dépense évitée.{"\n\n"}
+          Un investissement.{"\n\n"}
+          Une bonne habitude.{"\n\n"}
+          Séparément, ces actions semblent insignifiantes. Ensemble, elles changent une vie.
+        </Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>📊 Exemple</Text>
+        <Text style={styles.summary}>Imagine 100 € investis chaque mois pendant 20 ans.</Text>
+        <View style={styles.exampleList}>
+          {exampleRows.map((row) => (
+            <View key={row.label} style={styles.exampleRow}>
+              <View style={styles.exampleIconWrap}>
+                <Ionicons name={row.icon} size={16} color={colors.gold} />
+              </View>
+              <View style={styles.exampleCopy}>
+                <Text style={styles.exampleLabel}>{row.label}</Text>
+                <Text style={styles.exampleAmount}>{row.value}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+        <Text style={styles.summary}>Grâce aux intérêts composés, cette discipline peut représenter plusieurs dizaines de milliers d'euros. La richesse se construit lentement. Mais elle finit par accélérer.</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>Erreur fréquente</Text>
+        <Text style={styles.quoteText}>Vouloir devenir riche rapidement.</Text>
+        <Text style={styles.summary}>
+          La plupart des personnes qui recherchent des gains immédiats prennent des risques excessifs.{"\n\n"}
+          Les patrimoines solides se construisent avec du temps, de la discipline et de la patience.
+        </Text>
+      </View>
+
+      <View style={styles.quoteCard}>
+        <Text style={styles.sectionTitle}>💬 Citation</Text>
+        <Text style={styles.quoteText}>
+          "Le succès financier n'est pas une question de vitesse.{"\n\n"}
+          C'est une question de constance."
+        </Text>
+        <Text style={styles.quoteAuthor}>— Ascension</Text>
+      </View>
+
+      <View style={styles.actionBox}>
+        <Text style={styles.sectionTitle}>🎯 Mission</Text>
+        <Text style={styles.summary}>Prends un engagement envers toi-même.</Text>
+        <Text style={styles.summary}>
+          Écris une seule phrase.{"\n\n"}
+          "À partir d'aujourd'hui, je prends le contrôle de mon avenir financier."{"\n\n"}
+          Lis-la chaque fois que tu doutes.
+        </Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🧩 Défi</Text>
+        <Text style={styles.summary}>Quelle est la meilleure stratégie ?</Text>
+        <View style={styles.quizOptions}>
+          {challengeOptions.map((option) => (
+            <View key={option.id} style={[styles.quizOption, option.id === "B" && styles.quizOptionCorrect]}>
+              <Text style={[styles.quizOptionText, option.id === "B" && styles.quizOptionTextSelected]}>
+                {option.id}. {option.text}
+              </Text>
+            </View>
+          ))}
+        </View>
+        <View style={styles.resultBox}>
+          <Text style={styles.resultAmount}>B</Text>
+          <Text style={styles.summary}>Construire progressivement de bonnes habitudes est plus solide que chercher des résultats immédiats. La constance protège tes décisions.</Text>
+        </View>
+      </View>
+
+      <View style={styles.takeawayHero}>
+        <Text style={styles.calloutLabel}>⭐ À retenir</Text>
+        <Text style={styles.takeawayHeroText}>
+          La liberté financière ne dépend pas de ton salaire.{"\n\n"}
+          Elle dépend des décisions que tu prends régulièrement.{"\n\n"}
+          Commence aujourd'hui.{"\n\n"}
+          Ton futur toi te remerciera.
+        </Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🏆 Quiz</Text>
+        <PremiumInlineQuiz
+          questions={questions}
+          questionIndex={questionIndex}
+          selectedOption={selectedOption}
+          isQuizSubmitted={isQuizSubmitted}
+          isQuizFinished={isQuizFinished}
+          quizScore={quizScore}
+          onSelectQuizAnswer={onSelectQuizAnswer}
+          onAdvanceQuiz={onAdvanceQuiz}
+        />
+      </View>
+
+      <View style={styles.takeawayHero}>
+        <Text style={styles.calloutLabel}>🎉 Félicitations !</Text>
+        <Text style={styles.takeawayHeroText}>
+          Tu viens de terminer le Niveau 1 :{"\n\n"}
+          Les Fondations.{"\n\n"}
+          +20 XP{"\n\n"}
+          Niveau 2 débloqué : Épargne & Investissement.
+        </Text>
+      </View>
+    </>
+  );
+}
+
+function InvestmentLessonLayout({
+  lessonMeta,
+  questions,
+  questionIndex,
+  selectedOption,
+  isQuizSubmitted,
+  isQuizFinished,
+  quizScore,
+  isFinalLesson,
+  onSelectQuizAnswer,
+  onAdvanceQuiz
+}: {
+  lessonMeta: LessonMeta;
+  questions: NonNullable<AcademyLesson["quizQuestions"]>;
+  questionIndex: number;
+  selectedOption: number | null;
+  isQuizSubmitted: boolean;
+  isQuizFinished: boolean;
+  quizScore: number;
+  isFinalLesson: boolean;
+  onSelectQuizAnswer: (optionIndex: number) => void;
+  onAdvanceQuiz: () => void;
+}) {
+  const [story, explanation, example, mistake, mission, challenge, takeaway] = lessonMeta.sections;
+  const exampleRows: PremiumExampleRow[] = [
+    { icon: "wallet-outline", label: "Montant", value: getFirstAmount(example) },
+    { icon: "time-outline", label: "Horizon", value: getFirstDuration(example) },
+    { icon: "trending-up-outline", label: "Objectif", value: "Faire travailler l'argent" }
+  ];
+
+  return (
+    <>
+      <View style={styles.lessonHero}>
+        <Text style={styles.lessonHeroIcon}>🎬</Text>
+        <Text style={styles.lessonHeroTitle}>{lessonMeta.title}</Text>
+        <Text style={styles.lessonHeroText}>{lessonMeta.intro}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>📖 Histoire concrète</Text>
+        <Text style={styles.summary}>{story}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🧠 Comprendre simplement</Text>
+        <Text style={styles.summary}>{explanation}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>📊 Exemple chiffré</Text>
+        <Text style={styles.summary}>{example}</Text>
+        <View style={styles.exampleList}>
+          {exampleRows.map((row) => (
+            <View key={`${lessonMeta.title}-${row.label}`} style={styles.exampleRow}>
+              <View style={styles.exampleIconWrap}>
+                <Ionicons name={row.icon} size={16} color={colors.gold} />
+              </View>
+              <View style={styles.exampleCopy}>
+                <Text style={styles.exampleLabel}>{row.label}</Text>
+                <Text style={styles.exampleAmount}>{row.value}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>Erreur fréquente</Text>
+        <Text style={styles.summary}>{mistake}</Text>
+      </View>
+
+      <View style={styles.actionBox}>
+        <Text style={styles.sectionTitle}>🎯 Mission Ascension</Text>
+        <Text style={styles.summary}>{mission}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🧩 Défi</Text>
+        <Text style={styles.summary}>{challenge}</Text>
+      </View>
+
+      <View style={styles.takeawayHero}>
+        <Text style={styles.calloutLabel}>⭐ À retenir</Text>
+        <Text style={styles.takeawayHeroText}>{takeaway}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🏆 Quiz</Text>
+        <PremiumInlineQuiz
+          questions={questions}
+          questionIndex={questionIndex}
+          selectedOption={selectedOption}
+          isQuizSubmitted={isQuizSubmitted}
+          isQuizFinished={isQuizFinished}
+          quizScore={quizScore}
+          onSelectQuizAnswer={onSelectQuizAnswer}
+          onAdvanceQuiz={onAdvanceQuiz}
+        />
+      </View>
+
+      {isFinalLesson ? (
+        <View style={styles.takeawayHero}>
+          <Text style={styles.calloutLabel}>🎉 Niveau 2 terminé</Text>
+          <Text style={styles.takeawayHeroText}>
+            Tu sais maintenant comment commencer à faire travailler ton argent.{"\n\n"}
+            Niveau 3 débloqué : Gestion du risque.
+          </Text>
+        </View>
+      ) : null}
+    </>
+  );
+}
+
 function PremiumInlineQuiz({
   questions,
   questionIndex,
@@ -1923,6 +2258,14 @@ function PremiumInlineQuiz({
   );
 }
 
+function getFirstAmount(text: string) {
+  return text.match(/\d[\d\s]*\s?€/)?.[0] ?? "Plan simple";
+}
+
+function getFirstDuration(text: string) {
+  return text.match(/\d+\s?(ans|an|mois)/i)?.[0] ?? "Long terme";
+}
+
 function getLessonContent(module: AcademyModule | null, lesson: AcademyLesson | null) {
   const title = lesson?.title ?? "Leçon";
   const moduleTitle = module?.title ?? "Academy";
@@ -1938,6 +2281,7 @@ function getLessonContent(module: AcademyModule | null, lesson: AcademyLesson | 
   if (lesson?.intro && lesson.sections?.length && lesson.takeaway && lesson.example) {
     const sections = lesson.sections;
     return {
+      title,
       duration: `${lesson.estimatedMinutes ?? 7} min`,
       intro: lesson.intro,
       sections,
@@ -1963,6 +2307,7 @@ function getLessonContent(module: AcademyModule | null, lesson: AcademyLesson | 
       "Transposer la méthode à ta situation"
     ];
     return {
+      title,
       duration: "7 min",
       intro: title.toLowerCase().includes("budget")
         ? "Chaque euro que tu reçois doit avoir une mission.\n\nLe budget est l'outil qui te permet de décider où ton argent va travailler."
@@ -1990,6 +2335,7 @@ function getLessonContent(module: AcademyModule | null, lesson: AcademyLesson | 
       "Préserver ton capital et ta clarté"
     ];
     return {
+      title,
       duration: "8 min",
       intro: `Cette étape renforce ta capacité à ${title.toLowerCase()} avant de prendre une décision importante.`,
       sections,
@@ -2011,6 +2357,7 @@ function getLessonContent(module: AcademyModule | null, lesson: AcademyLesson | 
   ];
 
   return {
+    title,
     duration: "6 min",
     intro: `Cette leçon t’aide à intégrer les bases de ${moduleTitle.toLowerCase()} avec un contenu simple, concret et immédiatement applicable.`,
     sections,

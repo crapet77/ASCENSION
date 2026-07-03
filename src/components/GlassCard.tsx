@@ -14,6 +14,7 @@ type GlassCardProps = PropsWithChildren<{
 
 export function GlassCard({ children, style, contentStyle, elevated = true }: GlassCardProps) {
   const { theme } = useAscensionTheme();
+  const isCosmos = theme.id === "cosmos";
 
   return (
     <View
@@ -22,12 +23,13 @@ export function GlassCard({ children, style, contentStyle, elevated = true }: Gl
         {
           borderColor: theme.accentBorder,
           shadowColor: theme.accent,
-          shadowOpacity: elevated ? (theme.isLight ? 0.16 : 0.22) : 0.08
+          shadowOpacity: isCosmos ? (elevated ? 0.30 : 0.12) : elevated ? 0.20 : 0.08,
+          shadowRadius: isCosmos ? 38 : 30
         },
         style
       ]}
     >
-      <BlurView intensity={theme.isLight ? 24 : 34} tint={theme.isLight ? "light" : "dark"} style={StyleSheet.absoluteFill} />
+      <BlurView intensity={isCosmos ? 42 : theme.isLight ? 24 : 34} tint={theme.isLight ? "light" : "dark"} style={StyleSheet.absoluteFill} />
       <LinearGradient
         pointerEvents="none"
         colors={theme.cardGradient}
@@ -35,8 +37,15 @@ export function GlassCard({ children, style, contentStyle, elevated = true }: Gl
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      <View pointerEvents="none" style={[styles.reflection, { backgroundColor: theme.isLight ? "rgba(255, 255, 255, 0.72)" : "rgba(255, 255, 255, 0.20)" }]} />
-      <View pointerEvents="none" style={[styles.innerGlow, { backgroundColor: theme.glowSoft }]} />
+      <View
+        pointerEvents="none"
+        style={[
+          styles.reflection,
+          { backgroundColor: isCosmos ? "rgba(233, 213, 255, 0.30)" : theme.isLight ? "rgba(255, 255, 255, 0.72)" : "rgba(255, 255, 255, 0.24)" }
+        ]}
+      />
+      <View pointerEvents="none" style={[styles.topTint, { backgroundColor: theme.overlay }]} />
+      <View pointerEvents="none" style={[styles.innerGlow, isCosmos && styles.cosmosInnerGlow, { backgroundColor: isCosmos ? theme.glow : theme.glowSoft }]} />
       {contentStyle ? <View style={contentStyle}>{children}</View> : children}
     </View>
   );
@@ -45,10 +54,10 @@ export function GlassCard({ children, style, contentStyle, elevated = true }: Gl
 const styles = StyleSheet.create({
   shell: {
     borderWidth: 1,
-    borderRadius: radii.md,
+    borderRadius: radii.lg,
     overflow: "hidden",
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 16 },
+    shadowRadius: 30,
+    shadowOffset: { width: 0, height: 18 },
     elevation: 4
   },
   reflection: {
@@ -59,6 +68,13 @@ const styles = StyleSheet.create({
     height: 1,
     borderRadius: radii.pill
   },
+  topTint: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 64
+  },
   innerGlow: {
     position: "absolute",
     top: -30,
@@ -66,6 +82,12 @@ const styles = StyleSheet.create({
     width: 140,
     height: 100,
     borderRadius: 70
+  },
+  cosmosInnerGlow: {
+    width: 170,
+    height: 126,
+    borderRadius: 85,
+    opacity: 0.42
   },
   content: {}
 });

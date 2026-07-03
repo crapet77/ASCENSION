@@ -28,9 +28,9 @@ export const spacing = {
 };
 
 export const radii = {
-  sm: 8,
-  md: 14,
-  lg: 22,
+  sm: 10,
+  md: 18,
+  lg: 24,
   pill: 999
 };
 
@@ -41,9 +41,9 @@ export const typography = {
     web: "Inter, Manrope, Outfit, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif",
     default: "System"
   }),
-  titleTracking: 0.25,
-  labelTracking: 0.18,
-  eyebrowTracking: 0.7
+  titleTracking: 1.2,
+  labelTracking: 0.55,
+  eyebrowTracking: 1.8
 };
 
 export const shadows = {

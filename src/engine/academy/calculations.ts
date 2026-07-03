@@ -163,6 +163,30 @@ export function completeAcademyLesson(
     }
 
     const chapters = level.chapters.map((chapter) => {
+      if (chapter.lessons?.some((lesson) => lesson.id === lessonId)) {
+        const lessons = chapter.lessons.map((lesson) =>
+          lesson.id === lessonId && lesson.status !== "completed" && lesson.status !== "locked"
+            ? { ...lesson, status: "completed" as const, completedAt: now }
+            : lesson
+        );
+        const allLessonsCompleted = lessons.every((lesson) => lesson.status === "completed");
+
+        return {
+          ...chapter,
+          lessons,
+          status: allLessonsCompleted ? "validated" as const : chapter.status,
+          completedAt: allLessonsCompleted ? now : chapter.completedAt,
+          quiz: allLessonsCompleted
+            ? {
+                ...chapter.quiz,
+                status: "passed" as const,
+                score: 100,
+                completedAt: now
+              }
+            : chapter.quiz
+        };
+      }
+
       if (chapter.id !== lessonId || chapter.status === "validated" || chapter.status === "certified" || chapter.status === "locked") {
         return chapter;
       }

@@ -35,8 +35,7 @@ export async function loadTickets() {
 
   const parsedTickets = (JSON.parse(rawTickets) as AscensionTicket[])
     .filter((ticket) => !removedLocalTicketIds.has(ticket.selection.id))
-    .map(normalizeTicketInput)
-    .map(clearInvalidSimulatedResult);
+    .map(normalizeTicketInput);
   const byId = new Map(parsedTickets.map((ticket) => [ticket.selection.id, ticket]));
   const defaultIds = new Set(defaultTickets.map((ticket) => ticket.selection.id));
   const storedOnlyTickets = parsedTickets.filter((ticket) => !defaultIds.has(ticket.selection.id));
@@ -45,28 +44,6 @@ export async function loadTickets() {
     ...defaultTickets.map((ticket) => mergeStoredTicket(ticket, byId.get(ticket.selection.id))),
     ...storedOnlyTickets
   ];
-}
-
-function clearInvalidSimulatedResult(ticket: AscensionTicket): AscensionTicket {
-  if (
-    ticket.selection.id !== "ascension-today-2026-06-29-allemagne-paraguay" ||
-    ticket.selection.officialScore !== "Victoire de l'Allemagne"
-  ) {
-    return ticket;
-  }
-
-  return {
-    ...ticket,
-    syncedAt: undefined,
-    selection: {
-      ...ticket.selection,
-      status: "pending",
-      scoreFinal: undefined,
-      officialResult: undefined,
-      officialScore: undefined,
-      resultUpdatedAt: undefined
-    }
-  };
 }
 
 function normalizeTicketInput(ticket: AscensionTicket): AscensionTicket {

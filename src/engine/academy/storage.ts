@@ -34,7 +34,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "La liberté financière commence avec la discipline appliquée au premier euro gagné.",
             createQuizQuestions([
               {
-                question: "Thomas gagne 2 000 € et dépense tout. Lucas gagne 2 000 € et met 10 € de côté par jour. Quelle différence compte vraiment ?",
+                question: "Maximilien gagne 2 000 € et dépense tout. Martin gagne 2 000 € et met 10 € de côté par jour. Quelle différence compte vraiment ?",
                 options: ["Leur discipline", "Leur salaire", "Leur chance"],
                 correctOptionIndex: 0
               },
@@ -65,7 +65,7 @@ const localAcademyLevels: AcademyLevel[] = [
                 "La discipline est une habitude.",
                 "Les personnes qui réussissent construisent des routines."
               ],
-              example: "Thomas et Lucas gagnent chacun 2 000 €. Thomas dépense tout. Lucas met simplement 10 € de côté chaque jour.",
+              example: "Maximilien et Martin gagnent chacun 2 000 €. Maximilien dépense tout. Martin met simplement 10 € de côté chaque jour.",
               takeaway: "La liberté financière ne commence pas avec un gros salaire.\n\nElle commence le jour où tu contrôles le premier euro que tu gagnes."
               }
             ),
@@ -76,7 +76,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "Le temps est l'investissement que personne ne peut acheter.",
             createQuizQuestions([
               {
-                question: "Lucas commence à investir à 20 ans. Thomas commence à 35 ans. Pourquoi Lucas peut-il finir avec beaucoup plus ?",
+                question: "Martin commence à investir à 20 ans. Maximilien commence à 35 ans. Pourquoi Martin peut-il finir avec beaucoup plus ?",
                 options: ["Son argent travaille plus longtemps", "Il investit forcément plus chaque mois", "Il évite tous les risques"],
                 correctOptionIndex: 0
               },
@@ -118,7 +118,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "Chaque euro sans mission est un euro qui risque de disparaître.",
             createQuizQuestions([
               {
-                question: "Emma dépense puis épargne ce qu'il reste. Julien répartit son salaire dès le premier jour. Quelle différence explique leur résultat ?",
+                question: "Emma dépense puis épargne ce qu'il reste. Martin répartit son salaire dès le premier jour. Quelle différence explique leur résultat ?",
                 options: ["L'organisation de leur argent", "Le montant de leur salaire", "La chance uniquement"],
                 correctOptionIndex: 0
               },
@@ -160,7 +160,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "Une épargne de sécurité transforme une urgence en simple contretemps.",
             createQuizQuestions([
               {
-                question: "Sophie paie une réparation de 900 € avec sa réserve. Marc s'endette. Quelle différence compte vraiment ?",
+                question: "Maëlya paie une réparation de 900 € avec sa réserve. Maximilien s'endette. Quelle différence compte vraiment ?",
                 options: ["La préparation", "Le montant de la réparation", "La chance uniquement"],
                 correctOptionIndex: 0
               },
@@ -202,7 +202,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "Une mauvaise dette ne te vole pas seulement de l'argent.",
             createQuizQuestions([
               {
-                question: "Julie emprunte 3 000 € pour un téléphone alors que le sien fonctionne. Quel est le vrai risque ?",
+                question: "Maëlya emprunte 3 000 € pour un téléphone alors que le sien fonctionne. Quel est le vrai risque ?",
                 options: ["Créer une contrainte durable pour un plaisir court", "Améliorer automatiquement son avenir", "Supprimer toutes ses dépenses"],
                 correctOptionIndex: 0
               },
@@ -251,7 +251,7 @@ const localAcademyLevels: AcademyLevel[] = [
             "Tu n'as pas besoin d'être parfait.",
             createQuizQuestions([
               {
-                question: "Sarah dépense d'abord. Nicolas épargne, investit et suit son budget chaque mois. Qu'est-ce qui explique surtout l'écart futur ?",
+                question: "Maëlya dépense d'abord. Martin épargne, investit et suit son budget chaque mois. Qu'est-ce qui explique surtout l'écart futur ?",
                 options: ["Leurs habitudes répétées", "Une seule grande décision", "La chance uniquement"],
                 correctOptionIndex: 0
               },
@@ -293,9 +293,9 @@ const localAcademyLevels: AcademyLevel[] = [
             "Les erreurs sont inévitables. Les répéter est un choix.",
             createQuizQuestions([
               {
-                question: "Paul perd 200 € et abandonne. Claire perd 200 € et analyse son erreur. Quelle différence compte le plus ?",
-                options: ["La capacité à apprendre de l'erreur", "Le montant perdu uniquement", "Le fait de ne plus jamais agir"],
-                correctOptionIndex: 0
+                question: "Maximilien perd 200 € et abandonne. Emma perd 200 € et analyse son erreur. Quelle différence compte le plus ?",
+                options: ["Le montant perdu uniquement", "La capacité à apprendre de l'erreur", "Le fait de ne plus jamais agir"],
+                correctOptionIndex: 1
               },
               {
                 question: "Pourquoi une erreur faite tôt peut-elle coûter moins cher ?",
@@ -304,18 +304,18 @@ const localAcademyLevels: AcademyLevel[] = [
               },
               {
                 question: "Quel est le plus grand danger après une erreur financière ?",
-                options: ["Répéter la même erreur sans l'analyser", "La reconnaître rapidement", "Adapter sa méthode"],
-                correctOptionIndex: 0
+                options: ["La reconnaître rapidement", "Adapter sa méthode", "Répéter la même erreur sans l'analyser"],
+                correctOptionIndex: 2
               },
               {
                 question: "Tu fais un mauvais investissement. Quelle réaction est la plus constructive ?",
-                options: ["Comprendre ce qui n'a pas fonctionné avant de continuer", "Abandonner définitivement", "Recommencer immédiatement sans réflexion"],
-                correctOptionIndex: 0
+                options: ["Abandonner définitivement", "Comprendre ce qui n'a pas fonctionné avant de continuer", "Recommencer immédiatement sans réflexion"],
+                correctOptionIndex: 1
               },
               {
                 question: "Quelle phrase correspond le mieux à cette leçon ?",
-                options: ["Les erreurs sont inévitables, les répéter est un choix", "Une erreur prouve que tu es mauvais", "Il faut éviter tout apprentissage risqué"],
-                correctOptionIndex: 0
+                options: ["Une erreur prouve que tu es mauvais", "Il faut éviter tout apprentissage risqué", "Les erreurs sont inévitables, les répéter est un choix"],
+                correctOptionIndex: 2
               }
             ]),
             {
@@ -324,7 +324,7 @@ const localAcademyLevels: AcademyLevel[] = [
                 "Elle te montre ce qu'il faut améliorer.",
                 "Les personnes qui réussissent évitent surtout de refaire les mêmes erreurs."
               ],
-              example: "Paul et Claire perdent chacun 200 €. Paul abandonne. Claire analyse son erreur et investit ensuite avec plus d'expérience.",
+              example: "Maximilien et Emma perdent chacun 200 €. Maximilien abandonne. Emma analyse son erreur et investit ensuite avec plus d'expérience.",
               takeaway: "Les erreurs sont inévitables.\n\nLes répéter est un choix."
               }
             ),
@@ -335,9 +335,9 @@ const localAcademyLevels: AcademyLevel[] = [
             "Le temps est le seul investissement que personne ne peut te rendre.",
             createQuizQuestions([
               {
-                question: "Camille commence à investir à 20 ans. Léo commence à 35 ans. Quelle différence compte le plus ?",
-                options: ["Camille laisse plus de temps à son argent pour travailler", "Camille investit forcément plus chaque mois", "Léo ne peut jamais progresser"],
-                correctOptionIndex: 0
+                question: "Maëlya commence à investir à 20 ans. Martin commence à 35 ans. Quelle différence compte le plus ?",
+                options: ["Maëlya investit forcément plus chaque mois", "Maëlya laisse plus de temps à son argent pour travailler", "Martin ne peut jamais progresser"],
+                correctOptionIndex: 1
               },
               {
                 question: "Pourquoi commencer tôt vaut souvent mieux que commencer avec beaucoup d'argent plus tard ?",
@@ -346,18 +346,18 @@ const localAcademyLevels: AcademyLevel[] = [
               },
               {
                 question: "Quel est le risque de dire « je commencerai quand j'aurai un meilleur salaire » ?",
-                options: ["Attendre une situation parfaite qui n'arrive jamais", "Commencer trop tôt avec une méthode simple", "Créer une habitude immédiatement"],
-                correctOptionIndex: 0
+                options: ["Commencer trop tôt avec une méthode simple", "Créer une habitude immédiatement", "Attendre une situation parfaite qui n'arrive jamais"],
+                correctOptionIndex: 2
               },
               {
                 question: "Quelle stratégie est souvent la plus efficace ?",
-                options: ["Commencer aujourd'hui avec une petite somme", "Attendre cinq ans pour investir davantage", "Reporter jusqu'à être certain de tout"],
-                correctOptionIndex: 0
+                options: ["Attendre cinq ans pour investir davantage", "Commencer aujourd'hui avec une petite somme", "Reporter jusqu'à être certain de tout"],
+                correctOptionIndex: 1
               },
               {
                 question: "Quelle phrase résume le mieux cette leçon ?",
-                options: ["Chaque jour compte", "Le temps peut être racheté plus tard", "Seules les grosses sommes comptent"],
-                correctOptionIndex: 0
+                options: ["Le temps peut être racheté plus tard", "Seules les grosses sommes comptent", "Chaque jour compte"],
+                correctOptionIndex: 2
               }
             ]),
             {
@@ -402,34 +402,45 @@ const localAcademyLevels: AcademyLevel[] = [
               }
             ),
           createLessonSeed(
-            "Objectifs financiers",
-            "7 min",
-            "Un objectif clair n'est pas un rêve flou. C'est une direction que tu peux suivre sans te perdre.",
-            "Un bon objectif doit être simple, mesurable et réaliste.",
+            "Construire ton avenir financier",
+            "8 min",
+            "Une maison ne commence jamais par le toit.\n\nElle commence par des fondations solides.\n\nC'est exactement ce que tu viens de construire.\n\nTu sais maintenant gérer un budget, éviter les mauvaises dettes, créer de bonnes habitudes, fixer des objectifs et comprendre que le temps est ton meilleur allié.",
+            "La liberté financière ne dépend pas de ton salaire. Elle dépend des décisions que tu prends régulièrement.",
             createQuizQuestions([
               {
-                question: "Quel est le premier pas vers un objectif financier clair ?",
-                options: ["Définir une cible simple et mesurable", "Augmenter ses dépenses sans contrôle", "Reporter toute décision à plus tard"],
+                question: "Pourquoi la liberté financière ne se construit-elle pas en une semaine ?",
+                options: ["Parce qu'elle dépend de décisions répétées dans le temps", "Parce qu'elle dépend uniquement de la chance", "Parce qu'il faut forcément gagner beaucoup"],
                 correctOptionIndex: 0
               },
               {
-                question: "Pourquoi un objectif doit-il être précis ?",
-                options: ["Parce qu'il donne une direction visible et mesurable", "Parce qu'il supprime la nécessité d'agir", "Parce qu'il évite toute réflexion"],
+                question: "Quelle stratégie est la plus solide sur plusieurs années ?",
+                options: ["Chercher un gain très rapide", "Construire progressivement de bonnes habitudes", "Attendre le moment parfait"],
+                correctOptionIndex: 1
+              },
+              {
+                question: "Que montrent les petites décisions répétées ?",
+                options: ["Qu'elles sont inutiles séparément", "Qu'elles remplacent toute méthode", "Qu'ensemble, elles peuvent changer une vie"],
+                correctOptionIndex: 2
+              },
+              {
+                question: "Quelle erreur faut-il éviter après les fondations ?",
+                options: ["Vouloir devenir riche rapidement avec trop de risques", "Continuer à suivre son budget", "Investir avec patience"],
                 correctOptionIndex: 0
               },
               {
-                question: "Que permet un objectif financier bien formulé ?",
-                options: ["De choisir des actions cohérentes avec sa priorité", "De multiplier les dépenses impulsives", "D'ignorer l'échéancier"],
-                correctOptionIndex: 0
+                question: "Quelle phrase résume le mieux le Niveau 1 ?",
+                options: ["Le salaire décide de tout", "Les décisions régulières construisent l'avenir financier", "Il faut attendre avant de commencer"],
+                correctOptionIndex: 1
               }
             ]),
             {
               sections: [
-                "Un objectif vague ne donne pas de direction.",
-                "Quand la cible est claire, les choix deviennent plus simples."
+                "Chaque petite décision compte.",
+                "Séparément, ces actions semblent insignifiantes.",
+                "Ensemble, elles changent une vie."
               ],
-              example: "Tu te fixes un objectif simple : épargner 500 € d'ici trois mois pour créer une réserve.",
-              takeaway: "Un bon objectif doit être simple, mesurable et réaliste."
+              example: "100 € investis chaque mois pendant 20 ans peuvent représenter plusieurs dizaines de milliers d'euros grâce aux intérêts composés.",
+              takeaway: "Commence aujourd'hui.\n\nTon futur toi te remerciera."
             }
           )
         ]
@@ -439,17 +450,200 @@ const localAcademyLevels: AcademyLevel[] = [
   createLevel({
     id: "level-2-investment",
     order: 2,
-    title: "Niveau 2 : Investissement",
+    title: "Niveau 2 : Épargne & Investissement",
     category: "investment",
-    description: "Découvrir les bases de l'investissement long terme.",
+    description: "Comprendre comment faire travailler son argent simplement.",
     status: "locked",
     unlocks: [],
     chapters: [
-      createChapter("compound-interest", "Intérêts composés", "Comprendre comment le temps transforme une petite régularité en grand écart."),
-      createChapter("etf", "ETF", "Découvrir les fonds indiciels comme outil simple de diversification."),
-      createChapter("stocks", "Actions", "Comprendre ce que signifie devenir propriétaire d'une fraction d'entreprise."),
-      createChapter("diversification", "Diversification", "Répartir le risque pour éviter qu'une seule décision décide de tout."),
-      createChapter("inflation", "Inflation", "Comprendre pourquoi l'argent immobile perd du pouvoir d'achat.")
+      createChapter(
+        "savings-investment",
+        "Chapitre 1 : Faire travailler son argent",
+        "Passer de l'argent immobile à un plan simple, patient et régulier.",
+        [
+          createInvestmentLesson({
+            title: "Pourquoi épargner ?",
+            intro: "Épargner ne veut pas dire se priver de tout.\n\nÉpargner veut dire reprendre de l'avance sur la vie.\n\nQuand tu gardes une partie de ton argent, tu crées de la sécurité, des choix et de la liberté.",
+            story: "Emma reçoit 1 800 € par mois. Elle dépense tout et attend le mois suivant.\n\nMaëlya reçoit le même salaire, mais met 150 € de côté dès le début du mois.\n\nAprès un an, Emma n'a presque rien.\n\nMaëlya possède 1 800 € de réserve.\n\nLe salaire était identique. La décision ne l'était pas.",
+            explanation: "L'épargne est le premier argent qui travaille pour toi.\n\nAvant même d'investir, elle te protège des imprévus et t'évite de dépendre du prochain salaire.",
+            example: "150 € épargnés chaque mois pendant 12 mois représentent 1 800 €.\n\nCe n'est pas spectaculaire au début, mais c'est une vraie base.",
+            mistake: "Croire qu'il faut attendre de gagner beaucoup pour épargner.\n\nEn réalité, l'habitude compte plus que le montant de départ.",
+            mission: "Choisis un petit montant automatique à mettre de côté chaque mois.\n\nMême 20 € suffisent pour commencer.",
+            challenge: "Tu gagnes 1 800 € et tu épargnes 100 € par mois. Combien auras-tu mis de côté en un an ?\n\nRéponse : 1 200 €.",
+            takeaway: "L'épargne n'est pas de l'argent oublié.\n\nC'est de la liberté préparée à l'avance.",
+            quiz: [
+              ["Pourquoi épargner est-il utile ?", ["Pour créer de la sécurité et des choix", "Pour ne plus jamais dépenser", "Pour impressionner les autres"], 0],
+              ["Quelle habitude est la plus solide ?", ["Épargner seulement quand il reste quelque chose", "Épargner dès le début du mois", "Attendre un gros salaire"], 1],
+              ["Si tu mets 50 € de côté pendant 12 mois, combien obtiens-tu ?", ["300 €", "1 200 €", "600 €"], 2],
+              ["Que montre l'histoire d'Emma et Maëlya ?", ["Le salaire suffit toujours", "La chance décide de tout", "La décision répétée change le résultat"], 2],
+              ["Quelle phrase résume la leçon ?", ["Épargner crée de l'avance sur la vie", "Épargner empêche de vivre", "Épargner ne sert qu'aux riches"], 0]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Les intérêts composés",
+            intro: "Les intérêts composés sont simples à comprendre.\n\nTon argent produit des gains.\n\nPuis ces gains peuvent produire d'autres gains.\n\nAvec le temps, l'effet devient très puissant.",
+            story: "Martin commence avec 50 € par mois.\n\nMaximilien attend d'avoir plus d'argent.\n\nAu début, la différence semble petite.\n\nMais après plusieurs années, Martin a déjà laissé son argent travailler pendant longtemps.",
+            explanation: "Les intérêts composés récompensent surtout le temps.\n\nPlus ton argent reste investi longtemps, plus il a d'occasions de produire de nouveaux gains.",
+            example: "50 € investis chaque mois pendant 20 ans à 7 % par an peuvent devenir environ 26 000 €.\n\nLa somme versée est de 12 000 €.\n\nLe reste vient de la croissance.",
+            mistake: "Penser que les intérêts composés ne servent qu'aux grosses fortunes.\n\nIls commencent aussi avec de petites sommes régulières.",
+            mission: "Choisis un montant mensuel que tu pourrais investir sans stress.\n\nL'objectif est de comprendre le mécanisme, pas de viser la perfection.",
+            challenge: "Que vaut mieux faire : commencer petit aujourd'hui ou attendre dix ans pour commencer plus gros ?\n\nSouvent, commencer tôt gagne.",
+            takeaway: "Les intérêts composés transforment le temps en allié.",
+            quiz: [
+              ["Que sont les intérêts composés ?", ["Des intérêts qui peuvent produire d'autres intérêts", "Une dépense obligatoire", "Un rendement garanti"], 0],
+              ["Quel élément est le plus important au départ ?", ["Le hasard", "Le temps", "La mode"], 1],
+              ["Pourquoi commencer tôt aide ?", ["Parce que cela supprime tous les risques", "Parce que les prix baissent toujours", "Parce que l'argent travaille plus longtemps"], 2],
+              ["50 € par mois pendant 20 ans à 7 % peut devenir environ :", ["26 000 €", "2 600 €", "260 €"], 0],
+              ["Quelle erreur faut-il éviter ?", ["Commencer avec une petite somme", "Attendre la somme parfaite", "Comprendre avant d'agir"], 1]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Les différents placements",
+            intro: "Tous les placements ne servent pas au même objectif.\n\nCertains protègent.\n\nCertains font grandir.\n\nCertains sont plus risqués.\n\nComprendre leur rôle évite de tout mélanger.",
+            story: "Emma place toute son épargne sur un seul support sans comprendre.\n\nMaximilien sépare son argent : réserve de sécurité, projets à moyen terme et investissement long terme.\n\nIl sait pourquoi chaque euro est placé.",
+            explanation: "Un placement doit répondre à une question simple : à quoi sert cet argent ?\n\nSi tu en as besoin bientôt, tu ne le places pas comme un argent prévu pour dix ans.",
+            example: "Un fonds d'urgence peut rester disponible.\n\nUn projet dans deux ans peut demander un placement prudent.\n\nUn investissement sur quinze ans peut accepter plus de variations.",
+            mistake: "Chercher le placement qui fait tout.\n\nAucun placement n'est parfait pour tous les besoins.",
+            mission: "Classe ton argent en trois zones : sécurité, projets, long terme.",
+            challenge: "Tu veux acheter une voiture dans 6 mois. Est-ce un argent à risquer fortement ?\n\nNon, car l'échéance est proche.",
+            takeaway: "Le bon placement dépend toujours de l'objectif et du temps disponible.",
+            quiz: [
+              ["Pourquoi existe-t-il plusieurs placements ?", ["Parce qu'ils ont des rôles différents", "Parce qu'ils sont tous identiques", "Parce qu'un seul suffit toujours"], 0],
+              ["Un argent nécessaire dans 6 mois doit plutôt être :", ["Très risqué", "Prudent et disponible", "Bloqué pendant 20 ans"], 1],
+              ["Que faut-il définir avant de placer ?", ["La couleur de l'application", "Le dernier avis à la mode", "L'objectif de l'argent"], 2],
+              ["Quelle erreur est fréquente ?", ["Adapter le placement à l'objectif", "Chercher un placement magique pour tout", "Garder une réserve"], 1],
+              ["Quel exemple est cohérent ?", ["Sécurité, projets, long terme", "Tout sur un seul support inconnu", "Tout risquer pour aller plus vite"], 0]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "L'inflation",
+            intro: "L'inflation signifie que les prix augmentent avec le temps.\n\nQuand les prix montent, le même billet permet d'acheter moins de choses.",
+            story: "Maëlya garde 1 000 € sans plan pendant plusieurs années.\n\nMartin cherche à protéger progressivement son pouvoir d'achat.\n\nLe montant de Maëlya reste identique, mais ce qu'elle peut acheter diminue.",
+            explanation: "L'inflation ne fait pas disparaître ton argent.\n\nElle réduit doucement ce qu'il permet d'acheter.",
+            example: "Si les prix montent de 3 % par an, un panier qui coûte 100 € aujourd'hui peut coûter environ 103 € dans un an.\n\nTon argent doit donc avancer lui aussi.",
+            mistake: "Croire que l'argent immobile est toujours sans risque.\n\nIl peut perdre du pouvoir d'achat sans que le montant affiché change.",
+            mission: "Choisis un prix que tu connais bien et compare son évolution sur plusieurs années.",
+            challenge: "Si ton argent ne progresse jamais mais que les prix montent, que se passe-t-il ?\n\nTon pouvoir d'achat baisse.",
+            takeaway: "L'inflation rappelle que l'argent doit être protégé, pas seulement conservé.",
+            quiz: [
+              ["Que fait l'inflation ?", ["Elle augmente le pouvoir d'achat", "Elle peut réduire ce qu'un euro permet d'acheter", "Elle garantit les investissements"], 1],
+              ["Si les prix montent de 3 %, un achat de 100 € peut coûter :", ["103 €", "50 €", "100 € exactement pour toujours"], 0],
+              ["Quel est le risque d'un argent immobile ?", ["Il devient toujours plus puissant", "Il ne peut jamais perdre de valeur réelle", "Il peut perdre du pouvoir d'achat"], 2],
+              ["Que cherche-t-on à protéger face à l'inflation ?", ["Son pouvoir d'achat", "Ses envies impulsives", "Les prix des autres"], 0],
+              ["Quelle phrase est vraie ?", ["Le montant affiché suffit à tout comprendre", "L'inflation agit doucement dans le temps", "L'inflation supprime le besoin d'investir"], 1]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Les ETF",
+            intro: "Un ETF est un panier d'investissements.\n\nAu lieu d'acheter une seule entreprise, tu peux acheter un morceau d'un grand ensemble.",
+            story: "Maximilien veut investir mais ne sait pas choisir une action.\n\nEmma découvre qu'un ETF peut suivre des centaines d'entreprises à la fois.\n\nElle comprend que cela peut être plus simple pour débuter.",
+            explanation: "Un ETF permet souvent de diversifier avec un seul produit.\n\nC'est pour cela qu'il est souvent utilisé dans l'investissement long terme.",
+            example: "Un ETF Monde peut contenir des centaines ou milliers d'entreprises de plusieurs pays.\n\nTon argent n'est pas dépendant d'une seule entreprise.",
+            mistake: "Croire qu'un ETF est sans risque.\n\nIl peut baisser, surtout à court terme.",
+            mission: "Regarde ce que signifie ETF et note une phrase simple : panier d'investissements.",
+            challenge: "Pourquoi un ETF peut-il être plus simple qu'une seule action ?\n\nParce qu'il regroupe plusieurs investissements.",
+            takeaway: "Un ETF peut être une porte d'entrée simple vers l'investissement diversifié.",
+            quiz: [
+              ["Un ETF ressemble à :", ["Un panier d'investissements", "Une seule dépense", "Une garantie bancaire"], 0],
+              ["Pourquoi un ETF peut aider un débutant ?", ["Il évite tout risque", "Il peut diversifier simplement", "Il promet un gain rapide"], 1],
+              ["Un ETF Monde peut contenir :", ["Uniquement une entreprise", "Aucun actif", "Beaucoup d'entreprises de plusieurs pays"], 2],
+              ["Quelle erreur éviter ?", ["Comprendre avant d'acheter", "Croire qu'un ETF est sans risque", "Investir avec patience"], 1],
+              ["Quel horizon correspond souvent aux ETF ?", ["Long terme", "Une heure", "Un pari impulsif"], 0]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Le risque",
+            intro: "Investir implique toujours du risque.\n\nLe but n'est pas de le nier.\n\nLe but est de le comprendre et de le gérer.",
+            story: "Martin panique dès que son investissement baisse.\n\nMaëlya savait avant d'investir que la valeur pouvait varier.\n\nElle garde son plan parce qu'elle avait prévu le risque.",
+            explanation: "Le risque signifie que le résultat n'est pas certain.\n\nUn bon investisseur ne cherche pas à tout contrôler. Il prépare sa réaction.",
+            example: "Un placement peut faire -10 % une année et remonter ensuite.\n\nSi tu as besoin de l'argent demain, cette baisse peut être un problème.\n\nSi ton horizon est long, elle peut être plus acceptable.",
+            mistake: "Investir de l'argent dont tu as besoin rapidement.",
+            mission: "Écris pour chaque somme d'argent : j'en ai besoin quand ?",
+            challenge: "Quel argent peut accepter plus de variations : celui pour le loyer du mois prochain ou celui prévu pour dans 15 ans ?\n\nCelui prévu pour dans 15 ans.",
+            takeaway: "Le risque devient plus maîtrisable quand tu connais ton horizon.",
+            quiz: [
+              ["Que signifie le risque ?", ["Le résultat n'est pas certain", "Le gain est garanti", "La baisse est impossible"], 0],
+              ["Quel argent ne doit pas être fortement risqué ?", ["L'argent dont tu as besoin rapidement", "L'argent long terme", "L'argent déjà prévu dans un plan"], 0],
+              ["Pourquoi prévoir sa réaction ?", ["Pour paniquer plus vite", "Pour vendre sans réfléchir", "Pour rester cohérent avec son plan"], 2],
+              ["Un horizon long permet parfois :", ["D'accepter plus de variations", "D'éviter toute baisse", "De supprimer la réflexion"], 0],
+              ["Quelle erreur est dangereuse ?", ["Comprendre le risque", "Investir l'argent du loyer", "Avoir une réserve"], 1]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Diversifier",
+            intro: "Diversifier veut dire ne pas mettre tout son argent au même endroit.\n\nC'est une règle simple pour éviter qu'une seule erreur décide de tout.",
+            story: "Emma investit tout dans une seule entreprise.\n\nMaximilien répartit son argent entre plusieurs zones.\n\nSi une partie baisse, tout son avenir ne dépend pas d'une seule décision.",
+            explanation: "La diversification ne garantit pas de gagner.\n\nMais elle réduit la dépendance à un seul actif, un seul pays ou un seul secteur.",
+            example: "Au lieu d'avoir 100 % sur une seule action, un investisseur peut répartir entre ETF, épargne de sécurité et plusieurs zones géographiques.",
+            mistake: "Croire qu'aimer une entreprise suffit pour tout investir dessus.",
+            mission: "Regarde ton argent et demande-toi : dépend-il d'une seule chose ?",
+            challenge: "Quel portefeuille est le plus fragile : 100 % sur une action ou réparti sur plusieurs actifs ?\n\n100 % sur une action.",
+            takeaway: "Diversifier, c'est accepter de ne pas tout miser sur une seule idée.",
+            quiz: [
+              ["Diversifier signifie :", ["Tout mettre au même endroit", "Répartir son argent", "Ne jamais investir"], 1],
+              ["Pourquoi diversifier ?", ["Pour réduire la dépendance à une seule décision", "Pour garantir un gain", "Pour éviter d'apprendre"], 0],
+              ["Quel portefeuille est souvent plus fragile ?", ["Un portefeuille réparti", "Une réserve de sécurité", "100 % sur une seule action"], 2],
+              ["La diversification garantit-elle de gagner ?", ["Oui, toujours", "Non, elle aide surtout à gérer le risque", "Oui, si on investit vite"], 1],
+              ["Quelle phrase résume la leçon ?", ["Ne pas tout miser sur une seule idée", "Choisir une seule entreprise préférée", "Ignorer les risques"], 0]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Commencer avec 50 €",
+            intro: "Beaucoup de personnes pensent qu'investir commence avec de grosses sommes.\n\nC'est faux.\n\nCommencer petit peut suffire pour apprendre.",
+            story: "Martin attend d'avoir 5 000 € pour commencer.\n\nMaëlya commence avec 50 € par mois.\n\nAu bout d'un an, elle comprend mieux, elle a créé une routine et elle n'a pas attendu la situation parfaite.",
+            explanation: "Le premier objectif n'est pas d'être riche immédiatement.\n\nLe premier objectif est de construire l'habitude et de comprendre ce que tu fais.",
+            example: "50 € par mois représentent 600 € investis en un an.\n\nMais surtout, cela représente 12 décisions disciplinées.",
+            mistake: "Mépriser les petits montants.\n\nUn petit montant régulier peut former une grande habitude.",
+            mission: "Choisis un montant réaliste que tu pourrais investir sans te mettre en difficulté.",
+            challenge: "50 € par mois pendant 12 mois représentent combien ?\n\n600 €.",
+            takeaway: "Commencer petit vaut mieux que rester bloqué en attendant grand.",
+            quiz: [
+              ["Pourquoi commencer avec 50 € peut être utile ?", ["Pour apprendre et créer une routine", "Pour devenir riche en un mois", "Pour supprimer le risque"], 0],
+              ["50 € par mois pendant un an représentent :", ["50 €", "600 €", "5 000 €"], 1],
+              ["Quelle erreur faut-il éviter ?", ["Commencer prudemment", "Choisir un montant réaliste", "Mépriser les petits montants"], 2],
+              ["Quel est le premier objectif ?", ["Tout gagner vite", "Construire l'habitude", "Copier les autres"], 1],
+              ["Quelle phrase résume la leçon ?", ["Attendre grand est toujours mieux", "Les petits montants sont inutiles", "Commencer petit vaut mieux que rester bloqué"], 2]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Le pouvoir du temps",
+            intro: "Le temps est l'un des plus grands avantages d'un investisseur.\n\nTu ne peux pas l'acheter.\n\nTu peux seulement l'utiliser.",
+            story: "Emma commence à investir à 25 ans.\n\nMaximilien commence à 40 ans.\n\nMême si Maximilien investit plus tard avec sérieux, Emma a déjà quinze années d'avance.",
+            explanation: "Le temps permet aux habitudes, à l'épargne et aux intérêts composés de s'accumuler.\n\nIl transforme les petites décisions en grands écarts.",
+            example: "100 € par mois pendant 30 ans peuvent créer un résultat très différent de 100 € par mois pendant 10 ans.\n\nLa différence vient surtout des années.",
+            mistake: "Remettre à plus tard parce que le montant paraît trop petit aujourd'hui.",
+            mission: "Écris une date de début. Pas une date parfaite. Une date réelle.",
+            challenge: "Qu'est-ce qui est impossible à récupérer : un euro dépensé ou dix années perdues ?\n\nLes dix années perdues.",
+            takeaway: "Le temps récompense ceux qui commencent avant de se sentir prêts.",
+            quiz: [
+              ["Pourquoi le temps est-il puissant ?", ["Il laisse plus d'années aux décisions pour produire leurs effets", "Il garantit tous les gains", "Il annule tous les risques"], 0],
+              ["Que montre l'histoire d'Emma et Maximilien ?", ["Commencer plus tôt peut créer un grand avantage", "Attendre est toujours meilleur", "Investir tard annule tout effort"], 0],
+              ["Quelle erreur revient souvent ?", ["Choisir une date réelle", "Commencer petit", "Reporter car le montant paraît petit"], 2],
+              ["Que peut faire le temps ?", ["Transformer des petites décisions en grands écarts", "Supprimer la nécessité d'épargner", "Remplacer toute méthode"], 0],
+              ["Quelle phrase résume la leçon ?", ["Le temps récompense ceux qui commencent", "Il faut attendre d'être prêt", "Le temps ne change rien"], 0]
+            ]
+          }),
+          createInvestmentLesson({
+            title: "Ton premier plan d'investissement",
+            intro: "Un plan d'investissement n'a pas besoin d'être compliqué.\n\nIl doit surtout être clair, réaliste et facile à répéter.",
+            story: "Maëlya veut investir mais se perd dans trop d'informations.\n\nMartin écrit un plan simple : réserve d'abord, 50 € par mois, horizon long terme, ETF diversifié, point mensuel.\n\nSon plan tient en quelques lignes.",
+            explanation: "Un bon plan répond à quatre questions : combien, où, pourquoi et pendant combien de temps ?",
+            example: "Plan simple : garder 3 mois de réserve, investir 50 € par mois, choisir un support diversifié, revoir le plan une fois par mois.",
+            mistake: "Changer de stratégie à chaque nouvelle vidéo ou chaque nouvelle peur.",
+            mission: "Écris ton premier plan en quatre lignes : montant, support, horizon, règle de suivi.",
+            challenge: "Quel plan est le plus solide : simple et répété, ou compliqué et abandonné ?\n\nSimple et répété.",
+            takeaway: "Un plan imparfait mais suivi vaut mieux qu'une stratégie brillante jamais appliquée.\n\nTu sais maintenant comment commencer à faire travailler ton argent.",
+            quiz: [
+              ["Que doit être un premier plan ?", ["Clair, réaliste et répétable", "Secret et compliqué", "Basé sur l'émotion du jour"], 0],
+              ["Quelles questions doit-il poser ?", ["Combien, où, pourquoi, combien de temps", "Qui va gagner demain", "Quelle tendance copier"], 0],
+              ["Quelle erreur faut-il éviter ?", ["Suivre une règle simple", "Revoir son plan calmement", "Changer de stratégie à chaque peur"], 2],
+              ["Quel plan est plus solide ?", ["Un plan compliqué abandonné", "Un plan simple répété", "Aucun plan"], 1],
+              ["Que sais-tu à la fin du Niveau 2 ?", ["Comment commencer à faire travailler ton argent", "Comment garantir tous tes gains", "Comment éviter tout risque"], 0]
+            ],
+            successMessage: "Tu sais maintenant comment commencer à faire travailler ton argent."
+          })
+        ]
+      )
     ]
   }),
   createLevel({
@@ -586,13 +780,39 @@ function buildFallbackAcademyProfile(storedProfile: AcademyProfile | null | unde
 
 function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
   const firstLevelSeed = localAcademyProfile.levels[0];
-  const premiumLessonIndexes = new Set([0, 1, 2, 3, 4, 5, 6, 7]);
+  const secondLevelSeed = localAcademyProfile.levels[1];
+  const premiumLessonIndexes = new Set([0, 1, 2, 3, 4, 5, 6, 7, 9]);
 
   if (!firstLevelSeed) {
     return profile;
   }
 
   const levels = profile.levels.map((level, levelIndex) => {
+    if (levelIndex === 1 && secondLevelSeed) {
+      return {
+        ...secondLevelSeed,
+        status: level.status,
+        certification: level.certification,
+        chapters: secondLevelSeed.chapters.map((chapter, chapterIndex) => {
+          const storedChapter = level.chapters[chapterIndex];
+
+          return {
+            ...chapter,
+            status: storedChapter?.status ?? chapter.status,
+            completedAt: storedChapter?.completedAt,
+            lessons: chapter.lessons?.map((lesson, lessonIndex) => {
+              const storedLesson = storedChapter?.lessons?.[lessonIndex];
+              return {
+                ...lesson,
+                status: storedLesson?.status ?? lesson.status,
+                completedAt: storedLesson?.completedAt
+              };
+            })
+          };
+        })
+      };
+    }
+
     if (levelIndex !== 0) {
       return level;
     }
@@ -623,6 +843,27 @@ function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
   });
 
   const modules = profile.modules.map((module, moduleIndex) => {
+    if (moduleIndex === 1 && localAcademyProfile.modules[1]) {
+      return {
+        ...localAcademyProfile.modules[1],
+        status: module.status,
+        lessons: localAcademyProfile.modules[1].lessons.map((lesson, lessonIndex) => {
+          const storedLesson = module.lessons[lessonIndex];
+          return {
+            ...lesson,
+            status: storedLesson?.status ?? lesson.status,
+            completedAt: storedLesson?.completedAt
+          };
+        }),
+        quiz: {
+          ...localAcademyProfile.modules[1].quiz,
+          status: module.quiz.status,
+          score: module.quiz.score,
+          completedAt: module.quiz.completedAt
+        }
+      };
+    }
+
     if (moduleIndex !== 0) {
       return module;
     }
@@ -827,6 +1068,53 @@ function createLessonSeed(
     duration,
     quizQuestions,
     successMessage: `Bravo ! Tu as compris la leçon « ${title} ».`
+  };
+}
+
+function createInvestmentLesson(params: {
+  title: string;
+  intro: string;
+  story: string;
+  explanation: string;
+  example: string;
+  mistake: string;
+  mission: string;
+  challenge: string;
+  takeaway: string;
+  quiz: Array<[string, string[], number]>;
+  successMessage?: string;
+}) {
+  const lesson = createLessonSeed(
+    params.title,
+    "8 min",
+    params.intro,
+    params.takeaway,
+    createQuizQuestions(
+      params.quiz.map(([question, options, correctOptionIndex]) => ({
+        question,
+        options,
+        correctOptionIndex
+      }))
+    ),
+    {
+      intro: params.intro,
+      sections: [
+        params.story,
+        params.explanation,
+        params.example,
+        params.mistake,
+        params.mission,
+        params.challenge,
+        params.takeaway
+      ],
+      example: params.example,
+      takeaway: params.takeaway
+    }
+  );
+
+  return {
+    ...lesson,
+    successMessage: params.successMessage ?? lesson.successMessage
   };
 }
 

@@ -25,11 +25,10 @@ import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 import { colors, radii, spacing } from "@/constants/theme";
 
 const universeLabels: Record<OnboardingUniverse, string> = {
-  aurora: "Aurore",
   carbon: "Carbone",
-  elegance: "Élégance",
   nature: "Nature",
   ocean: "Océan",
+  blossom: "Blossom",
   cosmos: "Cosmos"
 };
 
@@ -100,11 +99,10 @@ export default function ProfileScreen() {
       "Changer d'univers",
       "Choisis l'ambiance visuelle d'Ascension.",
       [
-        { text: "Aurore", onPress: () => updateUniverse("aurora") },
-        { text: "Carbone", onPress: () => updateUniverse("carbon") },
-        { text: "Élégance", onPress: () => updateUniverse("elegance") },
         { text: "Nature", onPress: () => updateUniverse("nature") },
         { text: "Océan", onPress: () => updateUniverse("ocean") },
+        { text: "Carbone", onPress: () => updateUniverse("carbon") },
+        { text: "Blossom", onPress: () => updateUniverse("blossom") },
         { text: "Cosmos", onPress: () => updateUniverse("cosmos") },
         { text: "Annuler", style: "cancel" }
       ]

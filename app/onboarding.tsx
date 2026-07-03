@@ -21,11 +21,10 @@ const universes: Array<{
   description: string;
   tint: string;
 }> = [
-  { id: "aurora", icon: "partly-sunny-outline", title: "Aurore", description: "L'ascension commence chaque matin.", tint: "#FFB45E" },
   { id: "carbon", icon: "ellipse", title: "Carbone", description: "La puissance de la sobriété.", tint: colors.gold },
-  { id: "elegance", icon: "sparkles-outline", title: "Élégance", description: "La simplicité au service de la performance.", tint: colors.white },
   { id: "nature", icon: "leaf-outline", title: "Nature", description: "Grandir à son rythme.", tint: colors.success },
   { id: "ocean", icon: "water-outline", title: "Océan", description: "Garder le cap.", tint: colors.blue },
+  { id: "blossom", icon: "sparkles-outline", title: "Blossom", description: "La douceur premium, sans compromis.", tint: "#F58CCF" },
   { id: "cosmos", icon: "sparkles", title: "Cosmos", description: "Vis plus grand que tes excuses.", tint: "#B47CFF" }
 ];
 

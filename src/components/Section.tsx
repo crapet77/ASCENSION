@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { colors, spacing, typography } from "@/constants/theme";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -10,10 +11,12 @@ type SectionProps = PropsWithChildren<{
 }>;
 
 export function Section({ title, action, children }: SectionProps) {
+  const { theme } = useAscensionTheme();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { color: theme.accentSoft }]}>{title}</Text>
         {action}
       </View>
       {children}
@@ -33,10 +36,11 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: typography.fontFamily,
-    fontWeight: "600",
-    letterSpacing: typography.titleTracking,
-    lineHeight: 22
+    fontWeight: "500",
+    letterSpacing: 1.7,
+    lineHeight: 21,
+    textTransform: "uppercase"
   }
 });

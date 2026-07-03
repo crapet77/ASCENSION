@@ -2,6 +2,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 
 import {
   loadOnboardingPreferences,
+  normalizeOnboardingUniverse,
   OnboardingUniverse,
   saveOnboardingPreferences
 } from "@/features/onboarding/onboardingStorage";
@@ -22,31 +23,18 @@ export type AscensionTheme = {
   surface: string;
   glow: string;
   glowSoft: string;
+  success: string;
+  danger: string;
+  line: string;
+  overlay: string;
 };
 
 type AscensionThemeContextValue = {
   theme: AscensionTheme;
-  setUniverse: (universe: OnboardingUniverse) => Promise<void>;
+  setUniverse: (universe: OnboardingUniverse | string) => Promise<void>;
 };
 
 const themes: Record<OnboardingUniverse, AscensionTheme> = {
-  aurora: {
-    id: "aurora",
-    name: "Aurore",
-    isLight: false,
-    backgroundGradient: ["#060506", "#180D12", "#3B1B18", "#12212A", "#031017"],
-    surfaceGradient: ["#2B1816", "#07131B"],
-    cardGradient: ["rgba(87, 47, 38, 0.72)", "rgba(21, 24, 29, 0.92)", "rgba(4, 10, 14, 0.98)"],
-    buttonGradient: ["#FFF4CD", "#FFC96F", "#F08B49", "#7B3E1D"],
-    accent: "#FFB45E",
-    accentSoft: "#FFE0A3",
-    accentBorder: "rgba(255, 180, 94, 0.34)",
-    text: "#FFF8EF",
-    textMuted: "#D4BDB2",
-    surface: "#071017",
-    glow: "rgba(255, 148, 76, 0.18)",
-    glowSoft: "rgba(255, 180, 94, 0.060)"
-  },
   carbon: {
     id: "carbon",
     name: "Carbone",
@@ -62,24 +50,11 @@ const themes: Record<OnboardingUniverse, AscensionTheme> = {
     textMuted: "#A7A7AA",
     surface: "#050505",
     glow: "rgba(240, 184, 78, 0.16)",
-    glowSoft: "rgba(240, 184, 78, 0.046)"
-  },
-  elegance: {
-    id: "elegance",
-    name: "Élégance",
-    isLight: true,
-    backgroundGradient: ["#F7F4EE", "#EEE8DD", "#FDFBF7", "#E7E0D4", "#F9F6F0"],
-    surfaceGradient: ["#FFFFFF", "#EFE8DD"],
-    cardGradient: ["rgba(255, 255, 255, 0.96)", "rgba(243, 238, 229, 0.98)", "rgba(228, 220, 206, 0.96)"],
-    buttonGradient: ["#2A241C", "#66533B", "#B9975B", "#F5D896"],
-    accent: "#B9975B",
-    accentSoft: "#FFF5CF",
-    accentBorder: "rgba(185, 151, 91, 0.34)",
-    text: "#171513",
-    textMuted: "#6F675B",
-    surface: "#FFFFFF",
-    glow: "rgba(185, 151, 91, 0.20)",
-    glowSoft: "rgba(185, 151, 91, 0.075)"
+    glowSoft: "rgba(240, 184, 78, 0.046)",
+    success: "#63E6A2",
+    danger: "#FF6B6B",
+    line: "rgba(255, 242, 184, 0.14)",
+    overlay: "rgba(255, 255, 255, 0.055)"
   },
   nature: {
     id: "nature",
@@ -96,7 +71,11 @@ const themes: Record<OnboardingUniverse, AscensionTheme> = {
     textMuted: "#A7BBAE",
     surface: "#061009",
     glow: "rgba(99, 230, 162, 0.16)",
-    glowSoft: "rgba(99, 230, 162, 0.052)"
+    glowSoft: "rgba(99, 230, 162, 0.052)",
+    success: "#6EE7B7",
+    danger: "#FF7B8B",
+    line: "rgba(203, 255, 217, 0.14)",
+    overlay: "rgba(203, 255, 217, 0.055)"
   },
   ocean: {
     id: "ocean",
@@ -113,24 +92,53 @@ const themes: Record<OnboardingUniverse, AscensionTheme> = {
     textMuted: "#A7B7C8",
     surface: "#02070D",
     glow: "rgba(110, 168, 255, 0.16)",
-    glowSoft: "rgba(110, 168, 255, 0.052)"
+    glowSoft: "rgba(110, 168, 255, 0.052)",
+    success: "#6EE7B7",
+    danger: "#FF7B8B",
+    line: "rgba(214, 235, 255, 0.14)",
+    overlay: "rgba(214, 235, 255, 0.052)"
+  },
+  blossom: {
+    id: "blossom",
+    name: "Blossom",
+    isLight: false,
+    backgroundGradient: ["#140F22", "#171127", "#1E1630", "#171127", "#0B0813"],
+    surfaceGradient: ["#2A1E3E", "#1E1630"],
+    cardGradient: ["rgba(42, 30, 62, 0.88)", "rgba(30, 22, 48, 0.96)", "rgba(20, 15, 34, 0.99)"],
+    buttonGradient: ["#FFF0FB", "#FFB7E8", "#F58CCF", "#A94C8C"],
+    accent: "#F58CCF",
+    accentSoft: "#FFB7E8",
+    accentBorder: "rgba(245, 140, 207, 0.34)",
+    text: "#FFFFFF",
+    textMuted: "#D9CBE8",
+    surface: "#1E1630",
+    glow: "rgba(245, 140, 207, 0.18)",
+    glowSoft: "rgba(245, 140, 207, 0.060)",
+    success: "#6EE7B7",
+    danger: "#FF7B8B",
+    line: "rgba(255, 183, 232, 0.16)",
+    overlay: "rgba(255, 183, 232, 0.060)"
   },
   cosmos: {
     id: "cosmos",
     name: "Cosmos",
     isLight: false,
-    backgroundGradient: ["#05020B", "#10091F", "#1A1238", "#090E27", "#02040A"],
-    surfaceGradient: ["#1D1234", "#050711"],
-    cardGradient: ["rgba(54, 34, 82, 0.76)", "rgba(13, 12, 31, 0.94)", "rgba(4, 5, 14, 0.99)"],
-    buttonGradient: ["#FFF4FF", "#DDA8FF", "#8C5CFF", "#3E1F8A"],
-    accent: "#B47CFF",
-    accentSoft: "#F0D7FF",
-    accentBorder: "rgba(180, 124, 255, 0.34)",
-    text: "#FCF7FF",
-    textMuted: "#BFB3D7",
-    surface: "#060711",
-    glow: "rgba(180, 124, 255, 0.17)",
-    glowSoft: "rgba(180, 124, 255, 0.056)"
+    backgroundGradient: ["#02030A", "#070A18", "#111432", "#170D2A", "#02030A"],
+    surfaceGradient: ["#171535", "#050713"],
+    cardGradient: ["rgba(36, 32, 76, 0.72)", "rgba(13, 15, 39, 0.92)", "rgba(3, 5, 16, 0.98)"],
+    buttonGradient: ["#FFFFFF", "#E6DCFF", "#A78BFA", "#4C1D95"],
+    accent: "#8B5CF6",
+    accentSoft: "#E9D5FF",
+    accentBorder: "rgba(196, 181, 253, 0.34)",
+    text: "#FCFAFF",
+    textMuted: "#C7C0E8",
+    surface: "#050713",
+    glow: "rgba(139, 92, 246, 0.22)",
+    glowSoft: "rgba(139, 92, 246, 0.072)",
+    success: "#6EE7B7",
+    danger: "#FF7B8B",
+    line: "rgba(233, 213, 255, 0.16)",
+    overlay: "rgba(233, 213, 255, 0.062)"
   }
 };
 
@@ -144,18 +152,20 @@ export function AscensionThemeProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     loadOnboardingPreferences().then((preferences) => {
-      if (preferences.universe) {
-        setUniverseState(preferences.universe);
+      const nextUniverse = normalizeOnboardingUniverse(preferences.universe) ?? "carbon";
+      if (nextUniverse) {
+        setUniverseState(nextUniverse);
       }
     });
   }, []);
 
   const value = useMemo<AscensionThemeContextValue>(
     () => ({
-      theme: themes[universe],
+      theme: themes[universe] ?? themes.blossom,
       async setUniverse(nextUniverse) {
-        setUniverseState(nextUniverse);
-        await saveOnboardingPreferences({ universe: nextUniverse });
+        const normalizedUniverse = normalizeOnboardingUniverse(nextUniverse) ?? "blossom";
+        setUniverseState(normalizedUniverse);
+        await saveOnboardingPreferences({ universe: normalizedUniverse });
       }
     }),
     [universe]
@@ -172,6 +182,6 @@ export function useAscensionTheme() {
   return useContext(AscensionThemeContext);
 }
 
-export function getAscensionTheme(universe: OnboardingUniverse) {
-  return themes[universe];
+export function getAscensionTheme(universe: OnboardingUniverse | string | null | undefined) {
+  return themes[normalizeOnboardingUniverse(universe) ?? "carbon"] ?? themes.blossom;
 }
