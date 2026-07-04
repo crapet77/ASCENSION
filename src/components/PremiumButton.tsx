@@ -31,7 +31,7 @@ export function PremiumButton({ label, icon, onPress, style, disabled = false }:
       <LinearGradient
         colors={theme.buttonGradient}
         locations={[0, 0.30, 0.68, 1]}
-        style={styles.inner}
+        style={[styles.inner, { borderColor: theme.isLight ? "rgba(255, 255, 255, 0.62)" : theme.accentBorder }]}
       >
         <View style={styles.lightLine} />
         <View style={styles.metalReflection} />
@@ -44,11 +44,11 @@ export function PremiumButton({ label, icon, onPress, style, disabled = false }:
 
 const styles = StyleSheet.create({
   pressable: {
-    minHeight: 36,
+    minHeight: 40,
     borderRadius: 16,
     shadowColor: "#F1C66F",
-    shadowOpacity: 0.20,
-    shadowRadius: 20,
+    shadowOpacity: 0.18,
+    shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
     elevation: 4
   },
@@ -60,11 +60,10 @@ const styles = StyleSheet.create({
     opacity: 0.55
   },
   inner: {
-    minHeight: 36,
+    minHeight: 40,
     borderRadius: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.38)",
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
@@ -93,8 +92,8 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 11,
     fontFamily: typography.fontFamily,
-    fontWeight: "600",
-    letterSpacing: 0.85,
+    fontWeight: "700",
+    letterSpacing: 0.9,
     textTransform: "uppercase"
   }
 });

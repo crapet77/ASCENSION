@@ -12,6 +12,49 @@ import {
 
 export const ACADEMY_ENGINE_STORAGE_KEY = "@ascension/engine/academy/v1";
 
+const ACADEMY_LESSON_CARD_DESCRIPTIONS: Record<string, string> = {
+  "level-1-foundations:La discipline : le premier investissement": "Tout commence par tes habitudes. Un euro peut changer ton regard. La base se construit ici.",
+  "level-1-foundations:Les intérêts composés": "Le temps travaille en silence. Les petits montants prennent de l'élan. Patience devient puissance.",
+  "level-1-foundations:Le budget : donne une mission à chaque euro": "Ton argent mérite une direction. Chaque euro reçoit un rôle. Le contrôle devient plus simple.",
+  "level-1-foundations:L'épargne de sécurité : ton premier bouclier financier": "Les imprévus arrivent sans prévenir. Une réserve calme la pression. La sérénité commence ici.",
+  "level-1-foundations:Les mauvaises dettes : l'argent qui travaille contre toi": "Une mensualité paraît légère. Plusieurs finissent par peser. Tes choix futurs se protègent.",
+  "level-1-foundations:Les bonnes habitudes financières": "Les grands résultats naissent doucement. Une routine change tout. La régularité devient ton avantage.",
+  "level-1-foundations:Les erreurs des débutants": "Se tromper n'est pas échouer. Répéter coûte plus cher. Chaque erreur peut devenir utile.",
+  "level-1-foundations:Le pouvoir du temps": "Le temps ne revient jamais. Commencer tôt crée l'écart. Chaque jour compte vraiment.",
+  "level-1-foundations:Inflation": "Les prix montent doucement. L'argent immobile perd du terrain. Protéger ton pouvoir devient essentiel.",
+  "level-1-foundations:Construire ton avenir financier": "Les fondations sont posées. Les décisions prennent forme. Ton parcours peut commencer.",
+  "level-2-investment:Pourquoi épargner ?": "L'épargne crée de l'avance. Une marge change tout. La liberté commence discrètement.",
+  "level-2-investment:Les intérêts composés": "Le temps multiplie les efforts. Les intérêts nourrissent les intérêts. La patience accélère ensuite.",
+  "level-2-investment:Les différents placements": "Chaque placement a son rôle. Certains protègent, d'autres développent. Choisir devient plus clair.",
+  "level-2-investment:L'inflation": "Ton argent doit rester vivant. Les prix avancent chaque année. Comprendre protège tes efforts.",
+  "level-2-investment:Les ETF": "Investir peut rester simple. Un panier remplace mille choix. La méthode compte davantage.",
+  "level-2-investment:Le risque": "Le risque ne disparaît pas. Il se prépare calmement. Ta méthode protège ton cap.",
+  "level-2-investment:Diversifier": "Ne dépends pas d'une idée. Répartir calme les secousses. Un portefeuille respire mieux.",
+  "level-2-investment:Commencer avec 50 €": "Un petit départ suffit. L'habitude vaut plus que l'orgueil. Le mouvement crée l'élan.",
+  "level-2-investment:Le pouvoir du temps": "Attendre coûte souvent cher. Commencer tôt change l'équation. Le temps devient allié.",
+  "level-2-investment:Ton premier plan d'investissement": "Une règle vaut mieux qu'une envie. Le plan calme l'émotion. La suite devient lisible.",
+  "level-3-real-estate:Pourquoi l'immobilier attire autant ?": "La pierre rassure vite. Les chiffres révèlent la vérité. Regarder lentement protège mieux.",
+  "level-3-real-estate:Acheter sa résidence principale ou investir ?": "Habiter et investir diffèrent. Le confort a son prix. L'intention guide le choix.",
+  "level-3-real-estate:Comprendre un crédit immobilier": "Un crédit semble simple. La durée change tout. Le coût réel mérite attention.",
+  "level-3-real-estate:Rendement brut, net et cash-flow": "Un pourcentage peut séduire. Les charges racontent la suite. Le mois réel tranche.",
+  "level-3-real-estate:Les charges à ne jamais oublier": "Le loyer se voit vite. Les dépenses avancent discrètement. La marge peut disparaître.",
+  "level-3-real-estate:Les travaux : opportunité ou piège ?": "Les travaux créent du potentiel. Ils peuvent aussi déborder. Prévoir évite la surprise.",
+  "level-3-real-estate:Louer vide, meublé ou saisonnier ?": "Chaque format change l'équilibre. Le revenu ne suffit pas. La gestion compte aussi.",
+  "level-3-real-estate:Les erreurs du premier investissement": "L'envie pousse à signer. La méthode demande du recul. Une erreur peut coûter longtemps.",
+  "level-3-real-estate:Immobilier et fiscalité : les bases": "La fiscalité change le résultat. Le brut ne suffit jamais. Comprendre évite les illusions.",
+  "level-3-real-estate:Construire son premier plan immobilier": "Un achat doit servir un plan. Les chiffres fixent le cadre. La décision devient plus calme.",
+  "level-4-stock-market:C'est quoi la bourse ?": "La bourse impressionne souvent. Derrière, des entreprises vivent. Comprendre apaise le bruit.",
+  "level-4-stock-market:Actions, ETF et obligations": "Chaque actif joue différemment. Le mélange construit l'équilibre. Choisir demande du sens.",
+  "level-4-stock-market:Le PEA, le CTO et l'assurance-vie": "L'enveloppe change les règles. Le support ne suffit pas. Le cadre compte aussi.",
+  "level-4-stock-market:Les ETF : investir simplement": "La simplicité peut être puissante. Un indice porte la méthode. Comprendre reste indispensable.",
+  "level-4-stock-market:Les dividendes": "Un versement attire l'œil. La solidité compte davantage. Le revenu doit rester compris.",
+  "level-4-stock-market:Le DCA : investir régulièrement": "Le timing parfait épuise. La régularité simplifie l'action. La méthode avance chaque mois.",
+  "level-4-stock-market:Le risque en bourse": "Les baisses font partie du jeu. L'horizon aide à tenir. La préparation évite la panique.",
+  "level-4-stock-market:La diversification": "Une seule idée fragilise. Plusieurs moteurs équilibrent mieux. Prévoir l'imprévu devient possible.",
+  "level-4-stock-market:Les erreurs des débutants en bourse": "La foule attire vite. L'excitation brouille les choix. La méthode remet du calme.",
+  "level-4-stock-market:Construire son premier portefeuille": "Un portefeuille doit rester lisible. Chaque ligne mérite sa raison. Simple peut être solide."
+};
+
 const localAcademyLevels: AcademyLevel[] = [
   createLevel({
     id: "level-1-foundations",
@@ -647,34 +690,444 @@ const localAcademyLevels: AcademyLevel[] = [
     ]
   }),
   createLevel({
-    id: "level-3-risk",
+    id: "level-3-real-estate",
     order: 3,
-    title: "Niveau 3 : Gestion du risque",
+    title: "Niveau 3 : Immobilier",
     category: "risk",
-    description: "Apprendre à protéger son capital et sa psychologie.",
+    description: "Comprendre les bases de l'investissement immobilier.",
     status: "locked",
     unlocks: [],
     chapters: [
-      createChapter("psychology", "Psychologie", "Identifier les émotions qui poussent aux mauvaises décisions."),
-      createChapter("capital-management", "Gestion du capital", "Décider à l'avance combien risquer et pourquoi."),
-      createChapter("mistakes", "Erreurs à éviter", "Reconnaître les pièges classiques : précipitation, surconfiance, revanche."),
-      createChapter("discipline", "Discipline", "Répéter une bonne méthode même quand le résultat immédiat déçoit."),
-      createChapter("goals", "Objectifs", "Transformer une ambition vague en trajectoire mesurable.")
+      createChapter(
+        "real-estate-basics",
+        "Chapitre 1 : Bases de l'immobilier",
+        "Comprendre l'achat, le crédit, le rendement et les pièges classiques.",
+        [
+          createLessonSeed(
+            "Pourquoi l'immobilier attire autant ?",
+            "8 min",
+            "Maximilien visite un studio près d'une gare.\n\nLa pièce est propre.\n\nL'agent parle déjà d'autres acheteurs.\n\nTout donne envie d'aller vite.\n\nPourtant, un bien qui rassure peut changer dès que les chiffres apparaissent.",
+            "La pierre rassure. Les chiffres protègent.",
+            createQuizQuestions([
+              {
+                question: "Pourquoi Maximilien doit-il ralentir ?",
+                options: ["Parce qu'une impression rassurante ne suffit pas", "Parce qu'un studio est toujours mauvais", "Parce qu'il faut éviter tous les achats"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle donnée rend l'analyse plus solide ?",
+                options: ["La couleur du parquet", "Le coût complet du projet", "Le nombre de photos"],
+                correctOptionIndex: 1
+              },
+              {
+                question: "Quelle erreur doit-il éviter ?",
+                options: ["Comparer avant de décider", "Relire l'annonce", "Croire l'urgence sans vérifier"],
+                correctOptionIndex: 2
+              },
+              {
+                question: "Que montre le rendement brut ?",
+                options: ["Un premier rapport entre revenu et coût", "Une garantie de bénéfice", "Le montant exact du crédit"],
+                correctOptionIndex: 0
+              },
+              {
+                question: "Quelle phrase résume la méthode ?",
+                options: ["Acheter vite protège l'opportunité", "Le charme suffit", "Ralentir avant de s'attacher"],
+                correctOptionIndex: 2
+              }
+            ]),
+            {
+              sections: [
+                "Un bien immobilier paraît concret : une adresse, une porte, des clés.\n\nCette sensation donne confiance.\n\nMais posséder un logement ne suffit pas.\n\nUn investissement doit aussi être financé, entretenu et loué correctement.",
+                "L'erreur fréquente consiste à croire l'annonce trop vite.\n\nUn bien demandé n'est pas forcément rentable.\n\nLa pression aide surtout le vendeur.\n\nL'acheteur, lui, doit vérifier avant de s'attacher.",
+                "Trouve une annonce proche de chez toi.\n\nRemplis les mêmes lignes que l'exemple, sans ajouter d'avis personnel.\n\nRegarde seulement si le projet tient debout."
+              ],
+              example: "🏢 Prix :\n126 000 €\n\n📑 Frais de notaire :\n9 500 €\n\n🛠 Travaux :\n3 800 €\n\n🏠 Loyer réaliste :\n640 € / mois\n\n💰 Coût total :\n139 300 €\n\n📊 Rendement brut :\n5,5 %",
+              takeaway: "La pierre rassure.\n\nLes chiffres protègent.\n\nCelui qui ralentit achète déjà mieux."
+            }
+          ),
+          createTopicLesson({
+            title: "Acheter sa résidence principale ou investir ?",
+            duration: "8 min",
+            intro: "Acheter un logement peut répondre à deux envies très différentes.\n\nHabiter mieux.\n\nOu faire travailler son argent.\n\nLes deux projets peuvent être intelligents, mais ils ne se jugent pas avec la même grille.",
+            story: "Maëlya cherche une résidence principale. Elle travaille tôt le matin et veut réduire ses trajets. Elle visite un appartement calme, proche de son travail, avec une cuisine ouverte et une petite terrasse.\n\nPour elle, le vrai bénéfice serait de gagner quarante minutes par jour et de se sentir chez elle.\n\nMartin, de son côté, étudie une colocation dans une ville étudiante. Le salon n'est pas très séduisant, mais l'emplacement est proche d'un campus, les chambres sont bien séparées et la demande locative semble forte.\n\nMaëlya pense qualité de vie.\n\nMartin pense usage locatif.\n\nIls parlent tous les deux d'immobilier, mais ils ne cherchent pas la même victoire.",
+            explanation: "La résidence principale est d'abord un choix de vie. Elle peut apporter de la stabilité, du confort et une protection contre certains changements de loyer.\n\nUn investissement locatif est différent. Il doit être observé comme un petit système économique : argent qui entre, argent qui sort, temps de gestion, risques et fiscalité.\n\nLe danger apparaît quand on mélange les deux approches. Un logement parfait pour toi peut être moyen pour un locataire. À l'inverse, un bien très efficace en location peut ne pas te donner envie d'y vivre.",
+            example: "Exemple pédagogique : Maëlya achète sa résidence principale avec une mensualité de 950 €.\n\nSon ancien loyer était de 850 €.\n\nElle paie donc 100 € de plus par mois, mais gagne du confort, de la stabilité et réduit ses trajets.\n\nMartin étudie une colocation à 180 000 € qui peut louer trois chambres à 380 €.\n\nLoyer total : 1 140 € par mois.\n\nPour Martin, la question n'est pas « est-ce que j'aimerais y vivre ? » mais « est-ce que les loyers couvrent le crédit, les charges, l'entretien et les risques ? »",
+            mistake: "Première erreur : croire que payer un crédit est toujours mieux que payer un loyer. Si le projet est trop lourd, il peut réduire ta liberté.\n\nDeuxième erreur : acheter sa résidence principale comme si elle devait forcément être rentable.\n\nTroisième erreur : choisir un investissement locatif parce qu'il correspond à tes goûts, alors que le futur locataire n'aura peut-être pas les mêmes besoins.\n\nQuatrième erreur : oublier les frais de changement. Acheter puis revendre rapidement peut coûter cher.",
+            mission: "Prends une feuille et trace deux colonnes.\n\nColonne 1 : « logement pour vivre ».\n\nColonne 2 : « logement pour louer ».\n\nÉcris cinq critères dans chaque colonne. Tu verras que certains critères se ressemblent, mais que les priorités changent.",
+            challenge: "Imagine un appartement très rentable sur le papier, mais situé dans une ville où tu ne voudrais jamais habiter.\n\nEst-ce forcément un mauvais investissement ?\n\nLa réponse dépend d'une chose : qui va l'utiliser, toi ou un locataire.",
+            takeaway: "Habiter et investir sont deux objectifs différents.\n\nLe confort se mesure autrement que la rentabilité.\n\nUn bon choix commence par une intention claire.",
+            quiz: [
+              ["Quelle est la priorité d'une résidence principale ?", ["Un lieu de vie adapté", "Un locataire immédiat", "Un rendement garanti"], 0],
+              ["Pourquoi Martin regarde-t-il la colocation différemment ?", ["Il veut y vivre", "Il analyse la demande et les loyers", "Il cherche seulement une terrasse"], 1],
+              ["Quel danger existe quand on mélange les deux approches ?", ["Le prix disparaît", "Le crédit devient gratuit", "On juge un investissement avec ses goûts personnels"], 2],
+              ["Pourquoi revendre rapidement peut coûter cher ?", ["À cause des frais liés à l'achat et à la revente", "Parce que le logement devient invisible", "Parce que les loyers sont interdits"], 0],
+              ["Quelle question doit venir en premier ?", ["Quelle peinture choisir ?", "Quel est l'objectif du bien ?", "Combien de meubles acheter ?"], 1]
+            ]
+          }),
+          createTopicLesson({
+            title: "Comprendre un crédit immobilier",
+            duration: "9 min",
+            intro: "Le crédit est l'un des grands leviers de l'immobilier.\n\nIl permet d'acheter aujourd'hui un bien que l'on remboursera demain.\n\nUtilisé avec méthode, il accélère un projet.\n\nMal compris, il enferme pendant des années.",
+            story: "Maximilien prépare son premier achat avec sa banque. Il pense surtout à une chose : obtenir une mensualité qui « passe ».\n\nLe conseiller lui propose deux scénarios. Sur 20 ans, la mensualité est plus élevée. Sur 25 ans, elle devient plus confortable.\n\nMaximilien préfère d'abord la deuxième option.\n\nPuis Emma lui demande de regarder la dernière ligne du tableau : le coût total du crédit.\n\nIl découvre que la mensualité plus douce peut coûter plusieurs milliers d'euros de plus sur la durée.\n\nCe n'est pas une mauvaise solution pour autant. Mais ce n'est plus une décision à prendre seulement avec le montant mensuel.",
+            explanation: "Un crédit immobilier se lit avec plusieurs informations : le capital emprunté, le taux d'intérêt, la durée, l'assurance, les frais éventuels et le coût total.\n\nLa mensualité indique l'effort chaque mois. Le coût total indique le prix réel du financement.\n\nUn crédit plus long peut aider à respirer, surtout au début. Mais il augmente souvent la somme payée en intérêts. La bonne question n'est donc pas seulement « puis-je payer ? » mais aussi « qu'est-ce que cette durée me coûte et me permet ? »",
+            example: "Exemple pédagogique : Maximilien emprunte 160 000 €.\n\nScénario A : mensualité d'environ 910 € sur 20 ans. Total remboursé approximatif : 218 400 €.\n\nScénario B : mensualité d'environ 790 € sur 25 ans. Total remboursé approximatif : 237 000 €.\n\nDifférence mensuelle : 120 € de moins avec le scénario B.\n\nDifférence totale : environ 18 600 € de plus sur la durée.\n\nLe scénario B peut rester utile si la trésorerie est fragile, mais il doit être choisi consciemment.",
+            mistake: "Première erreur : ne regarder que la mensualité.\n\nDeuxième erreur : oublier l'assurance emprunteur, qui peut peser chaque mois.\n\nTroisième erreur : emprunter au maximum de ce que la banque accepte sans garder de marge pour vivre.\n\nQuatrième erreur : croire qu'un accord bancaire signifie automatiquement que le projet est sain.",
+            mission: "Utilise un simulateur de crédit et compare trois durées pour le même montant emprunté : 15 ans, 20 ans et 25 ans.\n\nNote à chaque fois la mensualité, puis le total remboursé.\n\nTu dois voir le compromis entre confort mensuel et coût global.",
+            challenge: "Si une durée plus longue te fait économiser 120 € par mois mais coûte 18 600 € de plus au total, dans quel cas cela peut-il quand même se défendre ?\n\nRéfléchis en termes de sécurité, de marge mensuelle et de stabilité.",
+            takeaway: "La mensualité montre l'effort.\n\nLe coût total révèle le prix du temps.\n\nUn bon crédit se choisit avec une marge de sécurité.",
+            quiz: [
+              ["Que montre principalement la mensualité ?", ["L'effort à payer chaque mois", "La valeur exacte du bien", "Le montant du loyer futur"], 0],
+              ["Que découvre Maximilien en comparant deux durées ?", ["La durée ne change rien", "Une mensualité plus basse peut coûter plus cher au total", "L'assurance disparaît"], 1],
+              ["Quel élément est souvent oublié dans un crédit ?", ["L'adresse du bien", "La couleur du dossier", "L'assurance emprunteur"], 2],
+              ["Pourquoi ne pas emprunter au maximum possible ?", ["Pour garder une marge de sécurité", "Pour payer plus cher volontairement", "Pour éviter toute analyse"], 0],
+              ["Quelle phrase est la plus juste ?", ["Un accord bancaire suffit", "Un crédit doit être compris avant d'être signé", "Le coût total ne compte jamais"], 1]
+            ]
+          }),
+          createTopicLesson({
+            title: "Rendement brut, net et cash-flow",
+            duration: "9 min",
+            intro: "Un rendement élevé peut donner l'impression qu'un bien est excellent.\n\nMais un seul pourcentage ne raconte jamais toute l'histoire.\n\nPour comprendre un projet, il faut descendre du chiffre séduisant vers l'argent réellement disponible.",
+            story: "Martin étudie un petit immeuble de rapport composé de trois appartements. Sur l'annonce, le vendeur met en avant « plus de 8 % de rendement ».\n\nLe chiffre impressionne Martin. Trois loyers, un seul immeuble, une rentabilité qui semble supérieure à la moyenne.\n\nMaëlya lui propose de refaire le calcul ensemble. Elle sépare les loyers, les charges, la taxe foncière, l'assurance, l'entretien et la mensualité du crédit.\n\nLe projet reste intéressant, mais il n'a plus la même apparence.\n\nLe rendement brut avait ouvert la porte. Le cash-flow décide s'il peut respirer chaque mois.",
+            explanation: "Le rendement brut est le calcul le plus rapide : loyers annuels divisés par le coût d'achat.\n\nLe rendement net ajoute une dose de réalisme en retirant des frais comme la taxe foncière, les charges non récupérables, l'assurance ou l'entretien.\n\nLe cash-flow observe le mois concret : une fois les loyers encaissés et toutes les dépenses payées, reste-t-il de l'argent, faut-il en ajouter, ou le projet est-il équilibré ?\n\nCes trois lectures ne s'opposent pas. Elles se complètent.",
+            example: "Exemple pédagogique : un immeuble coûte 210 000 € frais inclus.\n\nIl produit trois loyers de 520 € par mois, soit 1 560 € mensuels.\n\nLoyer annuel : 1 560 € x 12 = 18 720 €.\n\nRendement brut : 18 720 € / 210 000 € = 8,91 %.\n\nCharges annuelles estimées : taxe foncière 1 800 €, assurance 360 €, entretien prévisionnel 1 200 €, charges non récupérables 840 €.\n\nFrais annuels : 4 200 €.\n\nRevenu net avant crédit : 18 720 € - 4 200 € = 14 520 €.\n\nSi le crédit coûte 1 320 € par mois, soit 15 840 € par an, le cash-flow annuel devient 14 520 € - 15 840 € = -1 320 €, donc environ -110 € par mois.",
+            mistake: "Première erreur : annoncer le rendement brut comme si c'était le résultat final.\n\nDeuxième erreur : oublier qu'un bien peut être rentable sur un an parfait et plus fragile avec un logement vide.\n\nTroisième erreur : confondre cash-flow négatif et mauvais projet. Parfois un effort mensuel peut être accepté, mais il doit être volontaire.\n\nQuatrième erreur : comparer deux biens sans utiliser la même méthode de calcul.",
+            mission: "Choisis un bien à louer et calcule trois lignes : rendement brut, charges annuelles estimées, cash-flow après crédit.\n\nMême avec des chiffres approximatifs, l'exercice t'apprend à poser les bonnes questions.",
+            challenge: "Un projet affiche 9 % brut mais demande 110 € d'effort chaque mois après crédit.\n\nEst-il mauvais automatiquement ?\n\nRéponds en pensant à l'objectif, à la sécurité et au potentiel du bien.",
+            takeaway: "Le brut sert à repérer.\n\nLe net sert à filtrer.\n\nLe cash-flow sert à décider avec lucidité.",
+            quiz: [
+              ["Comment calcule-t-on le rendement brut ?", ["Loyers annuels divisés par coût d'achat", "Mensualité divisée par surface", "Taxe foncière divisée par loyer"], 0],
+              ["Que fait Maëlya dans l'histoire ?", ["Elle ignore les frais", "Elle refait le calcul avec les dépenses", "Elle choisit selon la façade"], 1],
+              ["Que montre le cash-flow ?", ["La note énergétique seulement", "La valeur sentimentale du bien", "L'argent restant ou manquant chaque mois"], 2],
+              ["Un cash-flow négatif signifie toujours :", ["Un projet à analyser consciemment", "Un projet impossible", "Un rendement brut nul"], 0],
+              ["Quelle méthode est la plus solide ?", ["Comparer seulement les annonces", "Utiliser la même méthode de calcul pour chaque bien", "Garder uniquement le chiffre vendeur"], 1]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les charges à ne jamais oublier",
+            duration: "8 min",
+            intro: "Un loyer est facile à voir.\n\nLes charges, elles, avancent souvent plus discrètement.\n\nPourtant, ce sont elles qui transforment parfois un projet confortable en effort imprévu.",
+            story: "Emma analyse une maison à rénover légèrement pour la louer à une famille. Le loyer estimé est de 980 € et la mensualité du crédit serait proche de 760 €.\n\nAu premier regard, il semble rester 220 €.\n\nPuis Martin lui propose de construire une année complète comme si elle possédait déjà la maison.\n\nIls ajoutent la taxe foncière, l'assurance propriétaire non occupant, l'entretien du jardin, une provision pour chaudière, quelques semaines de vacance possible et les petites réparations que personne ne prévoit au départ.\n\nLe projet n'est pas détruit. Il devient simplement plus réel.\n\nEmma réalise qu'un bien immobilier ne demande pas seulement d'être acheté. Il demande d'être entretenu.",
+            explanation: "Les charges sont toutes les dépenses qui accompagnent le bien pendant sa détention.\n\nCertaines sont prévisibles : taxe foncière, assurance, copropriété, frais de gestion, comptabilité éventuelle.\n\nD'autres sont irrégulières : réparation, remplacement d'un équipement, vacance locative, remise en état entre deux locataires.\n\nUne bonne analyse ne prétend pas connaître l'avenir. Elle réserve une place aux dépenses probables.",
+            example: "Exemple pédagogique : loyer mensuel estimé : 980 €.\n\nMensualité du crédit : 760 €.\n\nÉcart apparent : +220 € par mois.\n\nCharges à mensualiser : taxe foncière 1 080 € par an = 90 € par mois ; assurance 240 € par an = 20 € par mois ; entretien prévisionnel 600 € par an = 50 € par mois ; vacance locative estimée 490 € par an = environ 41 € par mois.\n\nTotal charges mensualisées : 201 €.\n\nMarge réelle estimée : 220 € - 201 € = 19 € par mois avant fiscalité.",
+            mistake: "Première erreur : calculer seulement l'écart entre loyer et mensualité.\n\nDeuxième erreur : oublier les dépenses annuelles parce qu'elles n'arrivent pas tous les mois.\n\nTroisième erreur : ne rien prévoir pour l'entretien, alors qu'un logement s'use naturellement.\n\nQuatrième erreur : considérer la vacance locative comme impossible.\n\nCinquième erreur : ne pas relire les documents de copropriété quand il y en a.",
+            mission: "Crée ta checklist de charges immobilières.\n\nElle doit contenir au moins huit lignes : taxe foncière, assurance, copropriété, entretien, travaux, vacance, gestion, fiscalité à vérifier.\n\nGarde cette liste pour les prochaines leçons.",
+            challenge: "Un bien semble dégager +220 € par mois avant charges, puis seulement +19 € après charges mensualisées.\n\nQuelle information ce changement t'apporte-t-il sur la solidité du projet ?",
+            takeaway: "Une charge annuelle doit devenir un chiffre mensuel.\n\nUn logement s'use même quand tout va bien.\n\nLa marge réelle se calcule après les dépenses oubliées.",
+            quiz: [
+              ["Pourquoi mensualiser la taxe foncière ?", ["Pour l'intégrer au calcul réel", "Pour la supprimer", "Pour augmenter le loyer automatiquement"], 0],
+              ["Dans l'histoire, que comprend Emma ?", ["Une maison ne s'entretient jamais", "Un bien doit être entretenu après l'achat", "La mensualité suffit à tout calculer"], 1],
+              ["Quelle dépense irrégulière doit être prévue ?", ["La vacance locative", "Un rendement garanti", "Une plus-value obligatoire"], 0],
+              ["Que montre l'exemple chiffré ?", ["Les charges peuvent réduire fortement la marge", "Les charges n'ont aucun effet", "Le loyer disparaît"], 0],
+              ["Quelle checklist est la plus utile ?", ["Loyer et mensualité seulement", "Taxe, assurance, entretien, vacance, gestion et fiscalité à vérifier", "Couleur des murs et exposition"], 1]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les travaux : opportunité ou piège ?",
+            duration: "8 min",
+            intro: "Les travaux peuvent créer de la valeur.\n\nIls peuvent aussi coûter plus cher, durer plus longtemps et fatiguer plus que prévu.\n\nIl faut donc les analyser avec prudence.",
+            story: "Maëlya voit un appartement à rénover et imagine une belle plus-value.\n\nMartin demande des devis, ajoute une marge de sécurité et vérifie le temps sans locataire.\n\nL'opportunité devient un calcul, pas un rêve.",
+            explanation: "Les travaux sont intéressants s'ils améliorent vraiment le bien, le loyer ou la valeur.\n\nMais ils doivent être chiffrés avant l'achat.",
+            example: "Exemple pédagogique : 15 000 € de travaux peuvent devenir 18 000 € si un imprévu apparaît.\n\nPrévoir une marge protège le projet.",
+            mistake: "Sous-estimer le coût, la durée et l'énergie nécessaires.",
+            mission: "Regarde une annonce avec travaux et note trois questions à poser avant de visiter.",
+            challenge: "Des travaux non chiffrés sont-ils une opportunité ou un risque ?\n\nD'abord un risque.",
+            takeaway: "Les travaux peuvent enrichir un projet seulement s'ils sont maîtrisés.",
+            quiz: [
+              ["Les travaux peuvent être :", ["Une opportunité ou un piège", "Toujours gratuits", "Toujours inutiles"], 0],
+              ["Que fait Martin avant de décider ?", ["Il demande des devis", "Il signe immédiatement", "Il ignore la durée"], 0],
+              ["Pourquoi prévoir une marge ?", ["Pour absorber les imprévus", "Pour décorer davantage", "Pour éviter tout calcul"], 0],
+              ["Quelle erreur est fréquente ?", ["Chiffrer les travaux", "Sous-estimer coût et durée", "Vérifier les artisans"], 1],
+              ["Quelle phrase est juste ?", ["Des travaux maîtrisés peuvent créer de la valeur", "Les travaux garantissent un gain", "Aucun devis n'est utile"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Louer vide, meublé ou saisonnier ?",
+            duration: "9 min",
+            intro: "Tous les types de location ne se ressemblent pas.\n\nLouer vide, meublé ou en saisonnier peut changer le loyer, les règles, le temps de gestion et le risque.",
+            story: "Maximilien veut le loyer le plus élevé possible.\n\nEmma lui demande combien de temps il veut gérer, quelles règles s'appliquent et quel type de locataire recherche le secteur.\n\nLe meilleur choix dépend du contexte.",
+            explanation: "La location vide peut être plus simple et stable.\n\nLa location meublée peut demander plus d'équipement.\n\nLa location saisonnière peut être plus active et plus réglementée.",
+            example: "Exemple pédagogique : un studio en ville étudiante peut mieux fonctionner en meublé qu'une grande maison familiale.",
+            mistake: "Choisir le mode de location seulement parce que le loyer affiché semble plus haut.",
+            mission: "Choisis une ville et demande-toi : qui loue ici ? Étudiants, familles, touristes, salariés ?",
+            challenge: "Le loyer le plus élevé est-il toujours le meilleur choix ?\n\nNon, il faut regarder gestion, règles et risque.",
+            takeaway: "Le bon mode de location dépend du bien, du secteur et du temps que tu peux gérer.",
+            quiz: [
+              ["Quels modes de location existent ?", ["Vide, meublé, saisonnier", "Uniquement vide", "Uniquement achat-revente"], 0],
+              ["Pourquoi le contexte compte ?", ["Parce que la demande change selon le secteur", "Parce que les règles disparaissent", "Parce que le prix suffit"], 0],
+              ["Quelle location peut demander plus de gestion ?", ["Saisonnière", "Aucune", "Toutes sans différence"], 0],
+              ["Quelle erreur éviter ?", ["Étudier la demande", "Choisir seulement le loyer le plus haut", "Comparer les règles"], 1],
+              ["Quelle phrase résume la leçon ?", ["Le mode de location se choisit avec méthode", "Le meublé gagne toujours", "La location vide est toujours mauvaise"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les erreurs du premier investissement",
+            duration: "8 min",
+            intro: "Le premier investissement immobilier est souvent le plus émotionnel.\n\nOn veut bien faire, mais on peut aller trop vite.\n\nConnaître les erreurs classiques permet de les éviter.",
+            story: "Martin visite un bien et se projette immédiatement.\n\nMaëlya garde une grille simple : prix, loyer, charges, travaux, demande, crédit et marge de sécurité.\n\nElle ne cherche pas le bien parfait.\n\nElle cherche un projet compréhensible.",
+            explanation: "Les erreurs viennent souvent de l'émotion, d'un calcul incomplet ou d'une confiance excessive.",
+            example: "Exemple pédagogique : acheter sans vérifier la demande locative peut créer plusieurs mois sans locataire.",
+            mistake: "Confondre coup de cœur et investissement.",
+            mission: "Crée une checklist de sept points à vérifier avant tout achat immobilier.",
+            challenge: "Un coup de cœur peut-il remplacer une analyse ?\n\nNon.",
+            takeaway: "Le premier investissement doit être simple, lisible et calculé.",
+            quiz: [
+              ["Pourquoi le premier investissement est risqué ?", ["Il peut être très émotionnel", "Il est toujours gratuit", "Il ne demande aucune analyse"], 0],
+              ["Que vérifie Maëlya ?", ["Prix, loyer, charges, travaux et demande", "Seulement la cuisine", "Uniquement le coup de cœur"], 0],
+              ["Quelle erreur faut-il éviter ?", ["Faire une checklist", "Confondre coup de cœur et investissement", "Vérifier la demande"], 1],
+              ["Que peut provoquer une demande locative faible ?", ["Des mois sans locataire", "Un loyer garanti", "Une taxe supprimée"], 0],
+              ["Quelle phrase résume la leçon ?", ["Simple, lisible, calculé", "Rapide, impulsif, flou", "Secret, urgent, garanti"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Immobilier et fiscalité : les bases",
+            duration: "9 min",
+            intro: "La fiscalité fait partie du résultat immobilier.\n\nElle peut changer ce qu'il reste réellement après les loyers, les charges et les impôts.\n\nIl faut l'intégrer dès le départ.",
+            story: "Emma calcule son projet avant impôts.\n\nMaximilien ajoute une ligne fiscalité et comprend que le résultat réel peut être différent.\n\nIl ne cherche pas à optimiser tout de suite.\n\nIl veut d'abord éviter les surprises.",
+            explanation: "Selon le type de location, le régime fiscal et la situation personnelle, le résultat peut changer.\n\nCeci est un exemple pédagogique, pas un conseil fiscal personnalisé.",
+            example: "Exemple pédagogique : 500 € de loyer mensuel ne deviennent pas automatiquement 500 € disponibles.\n\nIl faut tenir compte des charges et de la fiscalité.",
+            mistake: "Calculer la rentabilité sans aucune ligne pour les impôts.",
+            mission: "Ajoute une ligne « fiscalité à vérifier » dans toute analyse immobilière.",
+            challenge: "Un projet rentable avant impôts peut-il devenir moins intéressant après fiscalité ?\n\nOui.",
+            takeaway: "La fiscalité ne doit pas faire peur.\n\nElle doit être prévue.",
+            quiz: [
+              ["Pourquoi intégrer la fiscalité ?", ["Elle influence le résultat réel", "Elle garantit un gain", "Elle remplace les charges"], 0],
+              ["Ce contenu est :", ["Un exemple pédagogique", "Un conseil fiscal personnalisé", "Une promesse de résultat"], 0],
+              ["Quelle erreur est fréquente ?", ["Prévoir une ligne fiscalité", "Calculer sans tenir compte des impôts", "Demander conseil si nécessaire"], 1],
+              ["500 € de loyer signifie-t-il 500 € disponibles ?", ["Pas forcément", "Oui toujours", "Oui sans charges"], 0],
+              ["Quelle phrase résume la leçon ?", ["La fiscalité doit être prévue", "La fiscalité n'existe pas", "Les impôts garantissent le cash-flow"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Construire son premier plan immobilier",
+            duration: "10 min",
+            intro: "Un premier plan immobilier doit rester simple.\n\nIl ne sert pas à acheter immédiatement.\n\nIl sert à savoir quoi chercher, pourquoi et avec quelles limites.",
+            story: "Maëlya veut investir mais se sent perdue.\n\nMartin écrit un plan : ville ciblée, budget maximum, type de bien, loyer attendu, charges à vérifier, travaux acceptables et marge de sécurité.\n\nIl transforme une envie en méthode.",
+            explanation: "Un plan immobilier définit le cadre avant les visites.\n\nIl évite de décider sous pression ou sous émotion.",
+            example: "Exemple pédagogique : budget maximum 130 000 €, studio ou T2, demande locative étudiante, travaux légers seulement, cash-flow au moins équilibré.",
+            mistake: "Visiter sans critères et adapter les calculs pour justifier un coup de cœur.",
+            mission: "Écris ton premier cadre immobilier : ville, budget, type de bien, risque accepté et objectif.",
+            challenge: "Pourquoi fixer des critères avant les visites ?\n\nPour éviter les décisions impulsives.",
+            takeaway: "Tu comprends maintenant les bases de l'immobilier.",
+            quiz: [
+              ["À quoi sert un plan immobilier ?", ["À décider sous émotion", "À fixer un cadre avant les visites", "À garantir un gain"], 1],
+              ["Que peut contenir le plan ?", ["Ville, budget, type de bien et objectif", "Seulement une photo", "Une promesse de richesse"], 0],
+              ["Quelle erreur éviter ?", ["Avoir des critères", "Adapter les calculs pour un coup de cœur", "Prévoir une marge"], 1],
+              ["Pourquoi fixer une limite de budget ?", ["Pour protéger le projet", "Pour acheter plus cher", "Pour ignorer le crédit"], 0],
+              ["Que sais-tu à la fin du Niveau 3 ?", ["Les bases de l'immobilier", "Comment garantir tous les loyers", "Comment supprimer les impôts"], 0]
+            ],
+            successMessage: "Tu comprends maintenant les bases de l'immobilier."
+          })
+        ]
+      )
     ]
   }),
   createLevel({
-    id: "level-4-opportunities",
+    id: "level-4-stock-market",
     order: 4,
-    title: "Niveau 4 : Opportunités",
+    title: "Niveau 4 : Bourse",
     category: "opportunities",
-    description: "Lire les opportunités sans oublier le risque.",
+    description: "Comprendre les bases de la bourse et investir avec méthode.",
     status: "locked",
     unlocks: ["sport", "markets", "ai"],
     chapters: [
-      createChapter("financial-markets", "Marchés financiers", "Comprendre qu'un signal n'est jamais une certitude."),
-      createChapter("crypto", "Crypto", "Approcher les actifs numériques avec prudence et méthode."),
-      createChapter("commodities", "Matières premières", "Lire l'or, l'énergie ou les matières premières comme des marchés cycliques."),
-      createChapter("responsible-sports", "Paris sportifs responsables", "Analyser un pari comme une décision de risque, pas comme une promesse de gain.")
+      createChapter(
+        "stock-market-basics",
+        "Chapitre 1 : Bases de la bourse",
+        "Comprendre actions, ETF, risque, diversification et portefeuille simple.",
+        [
+          createTopicLesson({
+            title: "C'est quoi la bourse ?",
+            duration: "8 min",
+            intro: "La bourse est un lieu où l'on peut acheter et vendre des parts d'entreprises ou d'autres produits financiers.\n\nElle peut sembler impressionnante.\n\nMais à la base, elle sert à relier des entreprises qui cherchent de l'argent et des investisseurs qui acceptent un risque.",
+            story: "Emma pense que la bourse est réservée aux experts.\n\nMaximilien lui explique qu'acheter une action, c'est devenir propriétaire d'une petite partie d'une entreprise.\n\nCe n'est pas un jeu.\n\nC'est une décision de long terme à comprendre.",
+            explanation: "La bourse monte et baisse parce que les investisseurs changent d'avis sur la valeur future des entreprises.",
+            example: "Exemple pédagogique : si une entreprise grandit pendant plusieurs années, son action peut prendre de la valeur.\n\nMais si ses résultats déçoivent, elle peut aussi baisser.",
+            mistake: "Confondre investir en bourse avec parier sur une hausse rapide.",
+            mission: "Choisis une entreprise connue et demande-toi : comment gagne-t-elle de l'argent ?",
+            challenge: "Acheter une action, est-ce acheter un ticket magique ?\n\nNon, c'est acheter une petite part d'entreprise.",
+            takeaway: "La bourse devient moins impressionnante quand tu comprends ce que tu achètes.",
+            quiz: [
+              ["Acheter une action signifie :", ["Acheter une petite part d'entreprise", "Acheter une garantie de gain", "Acheter une dette personnelle"], 0],
+              ["Pourquoi les prix bougent-ils ?", ["Parce que les avis sur l'avenir changent", "Parce que tout est garanti", "Parce que les prix sont fixes"], 0],
+              ["Quelle erreur éviter ?", ["Comprendre l'entreprise", "Parier sur une hausse rapide", "Investir avec méthode"], 1],
+              ["La bourse sert notamment à :", ["Relier entreprises et investisseurs", "Supprimer le risque", "Garantir un revenu"], 0],
+              ["Quelle phrase résume la leçon ?", ["Comprendre ce qu'on achète", "Acheter sans réfléchir", "Chercher le coup rapide"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Actions, ETF et obligations",
+            duration: "8 min",
+            intro: "La bourse ne contient pas seulement des actions.\n\nOn peut aussi trouver des ETF et des obligations.\n\nChaque produit a un rôle différent.",
+            story: "Martin veut acheter une seule action connue.\n\nMaëlya compare trois options : une action, un ETF diversifié et une obligation.\n\nElle comprend que le choix dépend de l'objectif et du risque accepté.",
+            explanation: "Une action est une part d'entreprise.\n\nUn ETF est souvent un panier de plusieurs actifs.\n\nUne obligation ressemble davantage à une dette émise par une entreprise ou un État.",
+            example: "Exemple pédagogique : acheter une action unique concentre le risque.\n\nAcheter un ETF Monde peut répartir l'investissement sur de nombreuses entreprises.",
+            mistake: "Penser que tous les produits boursiers fonctionnent pareil.",
+            mission: "Écris une phrase simple pour définir action, ETF et obligation.",
+            challenge: "Quel produit répartit souvent le risque plus facilement : une seule action ou un ETF large ?\n\nUn ETF large.",
+            takeaway: "Avant d'investir, il faut savoir quel outil tu utilises.",
+            quiz: [
+              ["Une action est :", ["Une part d'entreprise", "Un livret bancaire", "Une garantie publique"], 0],
+              ["Un ETF est souvent :", ["Un panier d'actifs", "Une seule facture", "Un pari sportif"], 0],
+              ["Une obligation ressemble plutôt à :", ["Une dette émise par une entreprise ou un État", "Une action de croissance", "Une crypto"], 0],
+              ["Quelle erreur éviter ?", ["Définir les produits", "Penser que tout fonctionne pareil", "Comparer les risques"], 1],
+              ["Quel outil diversifie souvent plus facilement ?", ["Une seule action", "Un ETF large", "Une intuition"], 1]
+            ]
+          }),
+          createTopicLesson({
+            title: "Le PEA, le CTO et l'assurance-vie",
+            duration: "9 min",
+            intro: "Avant d'acheter un investissement, il faut souvent choisir une enveloppe.\n\nPEA, CTO et assurance-vie sont des cadres différents.\n\nIls n'ont pas les mêmes règles.",
+            story: "Maximilien veut investir dans un ETF.\n\nEmma lui demande où il va le loger : PEA, CTO ou assurance-vie.\n\nIl découvre que l'enveloppe compte autant que le produit.",
+            explanation: "Le PEA est souvent utilisé pour les actions et ETF éligibles.\n\nLe CTO est plus large mais avec une fiscalité différente.\n\nL'assurance-vie peut servir à plusieurs objectifs patrimoniaux.",
+            example: "Exemple pédagogique : le même ETF peut ne pas être disponible dans toutes les enveloppes.",
+            mistake: "Ouvrir une enveloppe sans comprendre ses règles de base.",
+            mission: "Note les trois mots : PEA, CTO, assurance-vie. Ajoute pour chacun : à vérifier avant d'ouvrir.",
+            challenge: "L'enveloppe peut-elle influencer ton investissement ?\n\nOui.",
+            takeaway: "Le support compte, mais l'enveloppe aussi.",
+            quiz: [
+              ["PEA, CTO et assurance-vie sont :", ["Des enveloppes d'investissement", "Des entreprises", "Des garanties de rendement"], 0],
+              ["Pourquoi l'enveloppe compte ?", ["Elle a ses règles et sa fiscalité", "Elle supprime tout risque", "Elle garantit les dividendes"], 0],
+              ["Le CTO est souvent :", ["Plus large en choix", "Réservé aux logements", "Toujours sans fiscalité"], 0],
+              ["Quelle erreur éviter ?", ["Lire les règles", "Ouvrir sans comprendre", "Comparer les enveloppes"], 1],
+              ["Quelle phrase résume la leçon ?", ["Le produit et l'enveloppe comptent", "L'enveloppe ne sert à rien", "Tout est identique"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les ETF : investir simplement",
+            duration: "8 min",
+            intro: "Les ETF sont souvent utilisés pour investir simplement.\n\nIls permettent d'acheter un panier d'actifs sans choisir chaque entreprise une par une.",
+            story: "Maëlya ne veut pas passer ses soirées à analyser toutes les actions.\n\nMartin lui montre qu'un ETF large peut suivre un indice composé de nombreuses entreprises.\n\nElle comprend que simplicité peut aussi vouloir dire méthode.",
+            explanation: "Un ETF suit généralement un indice.\n\nIl peut être utile pour investir régulièrement avec diversification.",
+            example: "Exemple pédagogique : un ETF Monde peut donner une exposition à des entreprises de plusieurs pays et secteurs.",
+            mistake: "Croire qu'un ETF est automatiquement parfait ou sans risque.",
+            mission: "Cherche ce que veut dire indice boursier et écris une définition simple.",
+            challenge: "Un ETF permet-il d'éviter toute baisse ?\n\nNon.",
+            takeaway: "Un ETF peut simplifier l'investissement, mais il doit rester compris.",
+            quiz: [
+              ["Un ETF permet souvent :", ["D'acheter un panier d'actifs", "D'éviter tout risque", "De garantir un rendement"], 0],
+              ["Un ETF suit généralement :", ["Un indice", "Une facture", "Un salaire"], 0],
+              ["Pourquoi l'ETF peut être simple ?", ["Il évite de choisir chaque entreprise une par une", "Il supprime les frais", "Il prédit le marché"], 0],
+              ["Quelle erreur éviter ?", ["Comprendre l'indice", "Croire qu'un ETF est sans risque", "Investir régulièrement"], 1],
+              ["Quelle phrase est juste ?", ["Simple ne veut pas dire magique", "ETF veut dire gain garanti", "Un ETF ne peut jamais baisser"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les dividendes",
+            duration: "8 min",
+            intro: "Un dividende est une partie des bénéfices qu'une entreprise peut verser à ses actionnaires.\n\nC'est une notion importante, mais elle ne doit pas être idéalisée.",
+            story: "Emma veut acheter uniquement des actions à dividendes.\n\nMaximilien lui rappelle qu'un dividende élevé peut parfois cacher une entreprise fragile.\n\nIl regarde la qualité globale, pas seulement le versement.",
+            explanation: "Le dividende peut créer un revenu, mais il n'est jamais garanti.\n\nUne entreprise peut le réduire ou l'arrêter.",
+            example: "Exemple pédagogique : une action à 100 € verse 4 € de dividende annuel.\n\nCela représente 4 % avant fiscalité et variation du prix de l'action.",
+            mistake: "Choisir une action uniquement parce que son dividende semble élevé.",
+            mission: "Regarde une entreprise connue et cherche si elle verse un dividende. Note que ce n'est pas une promesse.",
+            challenge: "Un dividende élevé est-il toujours bon signe ?\n\nNon.",
+            takeaway: "Le dividende peut être intéressant, mais la solidité de l'entreprise reste essentielle.",
+            quiz: [
+              ["Un dividende est :", ["Une partie des bénéfices versée parfois aux actionnaires", "Un salaire garanti", "Une taxe"], 0],
+              ["Le dividende est-il garanti ?", ["Non", "Oui toujours", "Oui si l'action baisse"], 0],
+              ["Que peut faire une entreprise ?", ["Réduire ou arrêter son dividende", "Le rendre obligatoire pour toujours", "Supprimer le risque"], 0],
+              ["Quelle erreur éviter ?", ["Étudier l'entreprise", "Choisir seulement le dividende élevé", "Regarder la fiscalité"], 1],
+              ["Quelle phrase résume la leçon ?", ["La qualité compte plus que le seul dividende", "Le dividende suffit à tout", "Un dividende élevé garantit un bon achat"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Le DCA : investir régulièrement",
+            duration: "8 min",
+            intro: "Le DCA consiste à investir régulièrement la même somme, par exemple chaque mois.\n\nL'objectif est de réduire la pression du timing parfait.",
+            story: "Martin attend toujours le meilleur moment pour investir.\n\nMaëlya investit 50 € chaque mois selon son plan.\n\nElle ne sait pas prédire le marché, mais elle construit une discipline.",
+            explanation: "Le DCA n'empêche pas les baisses.\n\nIl aide surtout à investir sans dépendre d'une seule date d'achat.",
+            example: "Exemple pédagogique : investir 100 € tous les mois pendant un an crée 12 points d'entrée différents.",
+            mistake: "Croire que le DCA garantit un gain.",
+            mission: "Choisis une somme théorique mensuelle et écris une règle simple : même jour, même montant.",
+            challenge: "Pourquoi le DCA peut aider un débutant ?\n\nParce qu'il rend l'action régulière.",
+            takeaway: "Le DCA transforme l'investissement en habitude.",
+            quiz: [
+              ["Le DCA consiste à :", ["Investir régulièrement", "Tout investir au hasard", "Attendre le point parfait"], 0],
+              ["Quel avantage principal ?", ["Réduire la pression du timing", "Garantir un gain", "Supprimer les baisses"], 0],
+              ["12 mois d'investissement créent :", ["12 points d'entrée", "Une seule décision", "Aucun suivi"], 0],
+              ["Quelle erreur éviter ?", ["Avoir une règle", "Croire que le DCA garantit un gain", "Investir régulièrement"], 1],
+              ["Quelle phrase résume la leçon ?", ["Le DCA construit une habitude", "Le DCA prédit le marché", "Le DCA interdit les pertes"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Le risque en bourse",
+            duration: "9 min",
+            intro: "La bourse peut baisser.\n\nParfois fortement.\n\nComprendre ce risque évite de paniquer au mauvais moment.",
+            story: "Maximilien voit son portefeuille baisser de 12 % et veut tout vendre.\n\nEmma relit son plan : horizon long terme, argent non nécessaire rapidement, diversification.\n\nLa baisse reste désagréable, mais elle ne détruit pas automatiquement le plan.",
+            explanation: "Le risque boursier vient des variations de prix, des entreprises, de l'économie et des émotions des investisseurs.",
+            example: "Exemple pédagogique : un portefeuille peut perdre 20 % une année et remonter ensuite.\n\nRien n'est garanti, mais l'horizon compte beaucoup.",
+            mistake: "Investir de l'argent nécessaire à court terme.",
+            mission: "Écris ton horizon : quand pourrais-tu avoir besoin de cet argent ?",
+            challenge: "Si tu as besoin de ton argent dans trois mois, dois-tu l'exposer fortement à la bourse ?\n\nNon.",
+            takeaway: "Le risque ne disparaît pas.\n\nIl se prépare.",
+            quiz: [
+              ["La bourse peut :", ["Monter et baisser", "Monter seulement", "Garantir le capital"], 0],
+              ["Que vérifie Emma ?", ["Son plan et son horizon", "La panique des autres", "Une rumeur"], 0],
+              ["Quel argent faut-il éviter d'exposer fortement ?", ["L'argent nécessaire à court terme", "L'argent long terme", "Une somme prévue dans un plan"], 0],
+              ["Quelle erreur éviter ?", ["Préparer le risque", "Investir l'argent utile dans trois mois", "Diversifier"], 1],
+              ["Quelle phrase résume la leçon ?", ["Le risque se prépare", "Le risque n'existe pas", "La baisse est impossible"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "La diversification",
+            duration: "8 min",
+            intro: "Diversifier signifie répartir son argent.\n\nL'idée est simple : ne pas dépendre d'une seule entreprise, d'un seul pays ou d'un seul secteur.",
+            story: "Maëlya aime une entreprise et veut tout investir dessus.\n\nMartin lui montre qu'une mauvaise nouvelle sur cette seule entreprise pourrait peser sur tout son portefeuille.\n\nIl préfère répartir.",
+            explanation: "La diversification ne garantit pas de gagner.\n\nElle évite surtout qu'une seule erreur décide de tout.",
+            example: "Exemple pédagogique : un ETF mondial peut répartir l'argent sur plusieurs pays et secteurs au lieu d'une seule action.",
+            mistake: "Croire que connaître une marque suffit pour tout miser dessus.",
+            mission: "Regarde ton portefeuille théorique : dépend-il d'une seule idée ?",
+            challenge: "Qu'est-ce qui est plus fragile : une seule action ou un panier diversifié ?\n\nUne seule action.",
+            takeaway: "Diversifier, c'est reconnaître qu'on ne peut pas tout prévoir.",
+            quiz: [
+              ["Diversifier veut dire :", ["Répartir son argent", "Tout mettre sur une action", "Ne jamais investir"], 0],
+              ["Pourquoi diversifier ?", ["Pour dépendre moins d'une seule idée", "Pour garantir un gain", "Pour éviter de réfléchir"], 0],
+              ["Un ETF mondial peut aider à :", ["Répartir sur plusieurs zones", "Supprimer tout risque", "Garantir un dividende"], 0],
+              ["Quelle erreur éviter ?", ["Répartir", "Tout miser sur une marque connue", "Comprendre son portefeuille"], 1],
+              ["Quelle phrase résume la leçon ?", ["On ne peut pas tout prévoir", "Une seule action suffit toujours", "La diversification est inutile"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Les erreurs des débutants en bourse",
+            duration: "8 min",
+            intro: "Les débutants font souvent les mêmes erreurs.\n\nCe n'est pas grave de débuter.\n\nCe qui coûte cher, c'est de refuser d'apprendre.",
+            story: "Emma achète parce qu'un actif monte vite.\n\nMaximilien attend de comprendre ce qu'il achète, combien il risque et pourquoi cela entre dans son plan.\n\nLa différence n'est pas l'intelligence.\n\nC'est la méthode.",
+            explanation: "Les erreurs classiques sont : suivre la foule, investir sans comprendre, paniquer à la baisse et changer de stratégie trop souvent.",
+            example: "Exemple pédagogique : acheter après une hausse de 80 % sans comprendre peut exposer à une forte correction.",
+            mistake: "Confondre popularité et qualité d'investissement.",
+            mission: "Avant tout achat, écris trois raisons rationnelles et un risque principal.",
+            challenge: "Une action très populaire est-elle automatiquement un bon achat ?\n\nNon.",
+            takeaway: "En bourse, la méthode protège mieux que l'excitation.",
+            quiz: [
+              ["Quelle erreur est fréquente ?", ["Suivre la foule sans comprendre", "Lire son plan", "Diversifier"], 0],
+              ["Que fait Maximilien ?", ["Il comprend avant d'acheter", "Il copie la tendance", "Il ignore le risque"], 0],
+              ["Popularité signifie-t-elle qualité ?", ["Non", "Oui toujours", "Oui si tout le monde en parle"], 0],
+              ["Quelle mission protège ?", ["Écrire raisons et risque", "Acheter vite", "Ignorer les baisses"], 0],
+              ["Quelle phrase résume la leçon ?", ["La méthode protège mieux que l'excitation", "La foule a toujours raison", "La hausse passée garantit la suite"], 0]
+            ]
+          }),
+          createTopicLesson({
+            title: "Construire son premier portefeuille",
+            duration: "10 min",
+            intro: "Un premier portefeuille doit être simple.\n\nIl doit correspondre à ton objectif, ton horizon et ta capacité à accepter les baisses.",
+            story: "Martin veut acheter dix actifs différents dès le premier jour.\n\nMaëlya préfère un plan clair : réserve de sécurité, montant mensuel, ETF principal, horizon long terme et suivi mensuel.\n\nElle construit une base, pas une usine à gaz.",
+            explanation: "Un portefeuille simple peut commencer avec peu de lignes.\n\nL'important est de savoir pourquoi chaque élément existe.",
+            example: "Exemple pédagogique : 80 % ETF Monde, 20 % épargne disponible pour un profil débutant prudent peut être un cadre d'étude, pas un conseil personnalisé.",
+            mistake: "Construire un portefeuille trop compliqué avant de maîtriser les bases.",
+            mission: "Dessine un portefeuille théorique en trois lignes : réserve, investissement principal, règle de suivi.",
+            challenge: "Un portefeuille simple et compris vaut-il mieux qu'un portefeuille compliqué et flou ?\n\nOui.",
+            takeaway: "Tu sais maintenant construire les bases d'un portefeuille simple.",
+            quiz: [
+              ["Un premier portefeuille doit être :", ["Simple et compris", "Très compliqué", "Basé sur des rumeurs"], 0],
+              ["Que doit-il respecter ?", ["Objectif, horizon et tolérance au risque", "Uniquement la mode", "La peur du jour"], 0],
+              ["L'exemple donné est :", ["Un exemple pédagogique", "Un conseil personnalisé", "Une garantie"], 0],
+              ["Quelle erreur éviter ?", ["Faire simple", "Compliquer avant de comprendre", "Suivre une règle"], 1],
+              ["Que sais-tu à la fin du Niveau 4 ?", ["Construire les bases d'un portefeuille simple", "Garantir la performance", "Supprimer tous les risques"], 0]
+            ],
+            successMessage: "Tu sais maintenant construire les bases d'un portefeuille simple."
+          })
+        ]
+      )
     ]
   })
 ];
@@ -787,13 +1240,47 @@ function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
     return profile;
   }
 
-  const levels = profile.levels.map((level, levelIndex) => {
+  const levels = localAcademyProfile.levels.map((_, levelIndex) => {
+    const level = profile.levels[levelIndex] ?? localAcademyProfile.levels[levelIndex]!;
+
     if (levelIndex === 1 && secondLevelSeed) {
       return {
         ...secondLevelSeed,
         status: level.status,
         certification: level.certification,
         chapters: secondLevelSeed.chapters.map((chapter, chapterIndex) => {
+          const storedChapter = level.chapters[chapterIndex];
+
+          return {
+            ...chapter,
+            status: storedChapter?.status ?? chapter.status,
+            completedAt: storedChapter?.completedAt,
+            lessons: chapter.lessons?.map((lesson, lessonIndex) => {
+              const storedLesson = storedChapter?.lessons?.[lessonIndex];
+              return {
+                ...lesson,
+                status: storedLesson?.status ?? lesson.status,
+                completedAt: storedLesson?.completedAt
+              };
+            })
+          };
+        })
+      };
+    }
+
+    if (levelIndex >= 2 && localAcademyProfile.levels[levelIndex]) {
+      const levelSeed = localAcademyProfile.levels[levelIndex];
+
+      return {
+        ...levelSeed,
+        status: level.status,
+        certification: {
+          ...levelSeed.certification,
+          status: level.certification?.status ?? levelSeed.certification.status,
+          score: level.certification?.score,
+          certifiedAt: level.certification?.certifiedAt
+        },
+        chapters: levelSeed.chapters.map((chapter, chapterIndex) => {
           const storedChapter = level.chapters[chapterIndex];
 
           return {
@@ -842,7 +1329,9 @@ function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
     };
   });
 
-  const modules = profile.modules.map((module, moduleIndex) => {
+  const modules = localAcademyProfile.modules.map((_, moduleIndex) => {
+    const module = profile.modules[moduleIndex] ?? localAcademyProfile.modules[moduleIndex]!;
+
     if (moduleIndex === 1 && localAcademyProfile.modules[1]) {
       return {
         ...localAcademyProfile.modules[1],
@@ -857,6 +1346,29 @@ function syncPremiumAcademyLessons(profile: AcademyProfile): AcademyProfile {
         }),
         quiz: {
           ...localAcademyProfile.modules[1].quiz,
+          status: module.quiz.status,
+          score: module.quiz.score,
+          completedAt: module.quiz.completedAt
+        }
+      };
+    }
+
+    if (moduleIndex >= 2 && localAcademyProfile.modules[moduleIndex]) {
+      const moduleSeed = localAcademyProfile.modules[moduleIndex];
+
+      return {
+        ...moduleSeed,
+        status: module.status,
+        lessons: moduleSeed.lessons.map((lesson, lessonIndex) => {
+          const storedLesson = module.lessons[lessonIndex];
+          return {
+            ...lesson,
+            status: storedLesson?.status ?? lesson.status,
+            completedAt: storedLesson?.completedAt
+          };
+        }),
+        quiz: {
+          ...moduleSeed.quiz,
           status: module.quiz.status,
           score: module.quiz.score,
           completedAt: module.quiz.completedAt
@@ -987,7 +1499,7 @@ function createModulesFromLevels(levels: AcademyLevel[]): AcademyModule[] {
             ...lesson,
             id: lesson.id,
             title: lesson.title,
-            description: lesson.summary ?? lesson.description,
+            description: getAcademyLessonCardDescription(level.id, lesson.title, lesson.summary ?? lesson.description),
             xpReward: lesson.xpReward,
             status: level.status === "certified"
               ? "completed" as const
@@ -1037,6 +1549,10 @@ function createModulesFromLevels(levels: AcademyLevel[]): AcademyModule[] {
       unlocks: level.unlocks
     };
   });
+}
+
+function getAcademyLessonCardDescription(levelId: string, title: string, fallback: string): string {
+  return ACADEMY_LESSON_CARD_DESCRIPTIONS[`${levelId}:${title}`] ?? fallback;
 }
 
 function createLessonSeed(
@@ -1105,6 +1621,54 @@ function createInvestmentLesson(params: {
         params.mistake,
         params.mission,
         params.challenge,
+        params.takeaway
+      ],
+      example: params.example,
+      takeaway: params.takeaway
+    }
+  );
+
+  return {
+    ...lesson,
+    successMessage: params.successMessage ?? lesson.successMessage
+  };
+}
+
+function createTopicLesson(params: {
+  title: string;
+  duration: string;
+  intro: string;
+  story: string;
+  explanation: string;
+  example: string;
+  mistake: string;
+  mission: string;
+  challenge: string;
+  takeaway: string;
+  quiz: Array<[string, string[], number]>;
+  successMessage?: string;
+}) {
+  const lesson = createLessonSeed(
+    params.title,
+    params.duration,
+    params.intro,
+    params.takeaway,
+    createQuizQuestions(
+      params.quiz.map(([question, options, correctOptionIndex]) => ({
+        question,
+        options,
+        correctOptionIndex
+      }))
+    ),
+    {
+      intro: params.intro,
+      sections: [
+        params.story,
+        params.explanation,
+        params.example,
+        `Erreur fréquente : ${params.mistake}`,
+        `Mission Ascension : ${params.mission}`,
+        `Défi : ${params.challenge}`,
         params.takeaway
       ],
       example: params.example,

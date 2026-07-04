@@ -27,6 +27,7 @@ import {
   pronosticStatusLabel
 } from "@/features/tickets/pronosticStatus";
 import { canPlayTicket, ignoreTicket, markTicketAsPlayed, settleTicket } from "@/features/tickets/actions";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
 import { updateResults } from "@/features/tickets/resultsSync";
 import { loadTickets, saveTickets } from "@/features/tickets/storage";
 import { loadTomorrowPredictions, saveTomorrowPredictions } from "@/features/tickets/tomorrowStorage";
@@ -157,6 +158,7 @@ function buildManualTicketId(form: ManualPronosticForm) {
 
 export default function TicketScreen() {
   const router = useRouter();
+  const { theme } = useAscensionTheme();
   const [tickets, setTickets] = useState<AscensionTicket[]>([]);
   const [bankroll, setBankroll] = useState<BankrollState | null>(null);
   const [capitalInput, setCapitalInput] = useState("");
@@ -445,59 +447,59 @@ export default function TicketScreen() {
         style={styles.card}
       >
         <View style={styles.cardTop}>
-          <View style={styles.sportPill}>
-            <Ionicons name="flash" size={13} color={colors.gold} />
-            <Text style={styles.sportText}>{ticket.selection.sport}</Text>
+          <View style={[styles.sportPill, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="flash" size={13} color={theme.accentSoft} />
+            <Text style={[styles.sportText, { color: theme.accentSoft }]}>{ticket.selection.sport}</Text>
           </View>
-          <Text style={styles.time}>{ticket.selection.kickoffTime}</Text>
+          <Text style={[styles.time, { color: theme.textMuted }]}>{ticket.selection.kickoffTime}</Text>
         </View>
 
         <View style={styles.statusRow}>
           <Text style={[styles.statusText, { color: statusTone }]}>{getTicketStatusLabel(ticket)}</Text>
           {ticket.selection.scoreFinal || ticket.selection.officialScore ? (
-            <Text style={styles.officialScore}>
+            <Text style={[styles.officialScore, { color: theme.success }]}>
               Score final : {ticket.selection.scoreFinal ?? ticket.selection.officialScore}
             </Text>
           ) : null}
         </View>
 
-        <Text style={styles.match}>{ticket.selection.match}</Text>
-        <Text style={styles.competition}>{ticket.selection.competition}</Text>
+        <Text style={[styles.match, { color: theme.text }]}>{ticket.selection.match}</Text>
+        <Text style={[styles.competition, { color: theme.textMuted }]}>{ticket.selection.competition}</Text>
 
-        <View style={styles.marketBox}>
+        <View style={[styles.marketBox, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
           <View>
-            <Text style={styles.metaLabel}>Marché conseillé</Text>
-            <Text style={styles.market}>{ticket.selection.recommendedMarket ?? ticket.selection.market}</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Marché conseillé</Text>
+            <Text style={[styles.market, { color: theme.text }]}>{ticket.selection.recommendedMarket ?? ticket.selection.market}</Text>
           </View>
           <View style={styles.scoreBox}>
-            <Text style={styles.metaLabel}>Score</Text>
-            <Text style={styles.score}>{ticket.selection.ascensionScore}</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Score</Text>
+            <Text style={[styles.score, { color: theme.accentSoft }]}>{ticket.selection.ascensionScore}</Text>
           </View>
         </View>
 
-        <Text style={styles.pick}>{ticket.selection.pick}</Text>
-        <Text style={styles.explanation}>
+        <Text style={[styles.pick, { color: theme.accentSoft }]}>{ticket.selection.pick}</Text>
+        <Text style={[styles.explanation, { color: theme.textMuted }]}>
           Cote estimée : {ticket.selection.estimatedOdds?.toFixed(2) ?? "À jouer"}
         </Text>
         {ticket.selection.comment ? (
-          <Text style={styles.explanation}>Commentaire : {ticket.selection.comment}</Text>
+          <Text style={[styles.explanation, { color: theme.textMuted }]}>Commentaire : {ticket.selection.comment}</Text>
         ) : null}
         {isPendingMode ? (
           <>
             <View style={styles.historyNumbers}>
-              <Text style={styles.historyNumber}>Cote réelle {safeInputValue(ticket.input.realOdds) || "-"}</Text>
-              <Text style={styles.historyNumber}>Mise {formatCurrency(Number(safeInputValue(ticket.input.stake).replace(",", ".")) || 0)}</Text>
-              <Text style={[styles.historyNumber, { color: colors.gold }]}>En attente</Text>
+              <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Cote réelle {safeInputValue(ticket.input.realOdds) || "-"}</Text>
+              <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Mise {formatCurrency(Number(safeInputValue(ticket.input.stake).replace(",", ".")) || 0)}</Text>
+              <Text style={[styles.historyNumber, { color: theme.accentSoft }]}>En attente</Text>
             </View>
             <View style={styles.resultGrid}>
               {manualResultOptions.map((option) => (
                 <Pressable
                   key={option.status}
                   onPress={() => completeTicket(ticket, option.status)}
-                  style={styles.resultButton}
+                  style={[styles.resultButton, { borderColor: theme.line, backgroundColor: theme.overlay }]}
                 >
                   <View style={[styles.resultDot, { backgroundColor: option.color }]} />
-                  <Text style={styles.resultText}>{option.label}</Text>
+                  <Text style={[styles.resultText, { color: theme.textMuted }]}>{option.label}</Text>
                 </Pressable>
               ))}
             </View>
@@ -515,9 +517,9 @@ export default function TicketScreen() {
                   }))
                 }
                 placeholder="Cote réelle"
-                placeholderTextColor="#7D7D7D"
+                placeholderTextColor={theme.textMuted}
                 keyboardType="decimal-pad"
-                style={styles.input}
+                style={[styles.input, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]}
               />
               <TextInput
                 value={safeInputValue(ticket.input.stake)}
@@ -528,9 +530,9 @@ export default function TicketScreen() {
                   }))
                 }
                 placeholder="Mise"
-                placeholderTextColor="#7D7D7D"
+                placeholderTextColor={theme.textMuted}
                 keyboardType="decimal-pad"
-                style={styles.input}
+                style={[styles.input, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]}
               />
             </View>
 
@@ -550,9 +552,12 @@ export default function TicketScreen() {
                   <Pressable
                     key={option.value}
                     onPress={() => skipTicket(ticket)}
-                    style={[styles.segment, active && styles.segmentMutedActive]}
+                    style={[
+                      styles.segment,
+                      { borderColor: active ? theme.accentBorder : theme.line, backgroundColor: active ? theme.glowSoft : theme.overlay }
+                    ]}
                   >
-                    <Text style={[styles.segmentText, active && styles.segmentMutedTextActive]}>
+                    <Text style={[styles.segmentText, { color: active ? theme.accentSoft : theme.textMuted }]}>
                       {option.label}
                     </Text>
                   </Pressable>
@@ -572,33 +577,33 @@ export default function TicketScreen() {
         style={styles.card}
       >
         <View style={styles.cardTop}>
-          <View style={styles.sportPill}>
-            <Ionicons name="eye-outline" size={13} color={colors.gold} />
-            <Text style={styles.sportText}>{prediction.sport}</Text>
+          <View style={[styles.sportPill, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="eye-outline" size={13} color={theme.accentSoft} />
+            <Text style={[styles.sportText, { color: theme.accentSoft }]}>{prediction.sport}</Text>
           </View>
-          <Text style={styles.time}>{prediction.kickoffTime}</Text>
+          <Text style={[styles.time, { color: theme.textMuted }]}>{prediction.kickoffTime}</Text>
         </View>
         <View style={styles.statusRow}>
-          <Text style={[styles.statusText, { color: colors.gold }]}>
+          <Text style={[styles.statusText, { color: theme.accentSoft }]}>
             {prediction.status === "forecast" ? "Prévision" : prediction.status === "confirm_tomorrow" ? "À jouer demain" : "Rejeté"}
           </Text>
         </View>
-        <Text style={styles.match}>{prediction.match}</Text>
-        <Text style={styles.competition}>{prediction.competition}</Text>
-        <View style={styles.marketBox}>
+        <Text style={[styles.match, { color: theme.text }]}>{prediction.match}</Text>
+        <Text style={[styles.competition, { color: theme.textMuted }]}>{prediction.competition}</Text>
+        <View style={[styles.marketBox, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
           <View>
-            <Text style={styles.metaLabel}>Marché envisagé</Text>
-            <Text style={styles.market}>{prediction.plannedMarket}</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Marché envisagé</Text>
+            <Text style={[styles.market, { color: theme.text }]}>{prediction.plannedMarket}</Text>
           </View>
           <View style={styles.scoreBox}>
-            <Text style={styles.metaLabel}>Score</Text>
-            <Text style={styles.score}>{prediction.ascensionScore}</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Score</Text>
+            <Text style={[styles.score, { color: theme.accentSoft }]}>{prediction.ascensionScore}</Text>
           </View>
         </View>
-        <Text style={styles.explanation}>
+        <Text style={[styles.explanation, { color: theme.textMuted }]}>
           Cote estimée : {prediction.estimatedOdds?.toFixed(2) ?? "À jouer"} · Confiance : {prediction.provisionalConfidence}
         </Text>
-        <Text style={styles.explanation}>
+        <Text style={[styles.explanation, { color: theme.textMuted }]}>
           Points à vérifier : {prediction.checkpoints.join(" · ")}
         </Text>
       </GlassCard>
@@ -609,18 +614,18 @@ export default function TicketScreen() {
     <AppScreen>
       <Modal visible={isLoaded && bankroll?.initialCapital === null} transparent animationType="fade">
         <View style={styles.modalBackdrop}>
-          <LinearGradient colors={["#111111", "#050505"]} style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Quel capital veux-tu consacrer aux paris ?</Text>
-            <Text style={styles.modalText}>
+          <LinearGradient colors={theme.surfaceGradient} style={[styles.modalCard, { borderColor: theme.accentBorder }]}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Quel capital veux-tu consacrer aux paris ?</Text>
+            <Text style={[styles.modalText, { color: theme.textMuted }]}>
               Ce montant devient ta bankroll de départ pour le test réel.
             </Text>
             <TextInput
               value={capitalInput}
               onChangeText={setCapitalInput}
               placeholder="Ex : 500"
-              placeholderTextColor="#7D7D7D"
+              placeholderTextColor={theme.textMuted}
               keyboardType="decimal-pad"
-              style={styles.modalInput}
+              style={[styles.modalInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]}
             />
             <PremiumButton label="Valider ma bankroll" icon="checkmark-circle" onPress={confirmInitialBankroll} />
           </LinearGradient>
@@ -628,58 +633,58 @@ export default function TicketScreen() {
       </Modal>
       <Modal visible={isImportModalVisible} transparent animationType="fade">
         <View style={styles.modalBackdrop}>
-          <LinearGradient colors={["#111111", "#050505"]} style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Importer sélections ChatGPT</Text>
-            <Text style={styles.modalText}>
+          <LinearGradient colors={theme.surfaceGradient} style={[styles.modalCard, { borderColor: theme.accentBorder }]}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Importer sélections ChatGPT</Text>
+            <Text style={[styles.modalText, { color: theme.textMuted }]}>
               Colle ici le JSON fourni par ChatGPT. Ascension répartira automatiquement les sélections.
             </Text>
             <TextInput
               value={importJsonInput}
               onChangeText={setImportJsonInput}
               placeholder='[{"date":"2026-06-29","sport":"Football",...}]'
-              placeholderTextColor="#7D7D7D"
+              placeholderTextColor={theme.textMuted}
               multiline
               textAlignVertical="top"
-              style={[styles.modalInput, styles.importInput]}
+              style={[styles.modalInput, styles.importInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]}
             />
             <PremiumButton label="Importer" icon="download-outline" onPress={importChatGPTJson} />
-            <Pressable onPress={() => setIsImportModalVisible(false)} style={styles.segment}>
-              <Text style={styles.segmentText}>Annuler</Text>
+            <Pressable onPress={() => setIsImportModalVisible(false)} style={[styles.segment, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+              <Text style={[styles.segmentText, { color: theme.textMuted }]}>Annuler</Text>
             </Pressable>
           </LinearGradient>
         </View>
       </Modal>
       <Modal visible={isManualModalVisible} transparent animationType="fade">
         <View style={styles.modalBackdrop}>
-          <LinearGradient colors={["#111111", "#050505"]} style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Ajouter un pronostic Ascension</Text>
-            <Text style={styles.modalText}>
+          <LinearGradient colors={theme.surfaceGradient} style={[styles.modalCard, { borderColor: theme.accentBorder }]}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Ajouter un pronostic Ascension</Text>
+            <Text style={[styles.modalText, { color: theme.textMuted }]}>
               Si tu renseignes une cote réelle et une mise, le ticket sera ajouté aux paris en cours et synchronisé avec la bankroll.
             </Text>
             <View style={styles.formGrid}>
-              <TextInput value={manualForm.date} onChangeText={(value) => updateManualForm("date", value)} placeholder="Date YYYY-MM-DD" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.sport} onChangeText={(value) => updateManualForm("sport", value)} placeholder="Sport" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.competition} onChangeText={(value) => updateManualForm("competition", value)} placeholder="Compétition" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.match} onChangeText={(value) => updateManualForm("match", value)} placeholder="Match" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.market} onChangeText={(value) => updateManualForm("market", value)} placeholder="Marché" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.pick} onChangeText={(value) => updateManualForm("pick", value)} placeholder="Pronostic" placeholderTextColor="#7D7D7D" style={styles.formInput} />
-              <TextInput value={manualForm.realOdds} onChangeText={(value) => updateManualForm("realOdds", value)} placeholder="Cote réelle" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
-              <TextInput value={manualForm.stake} onChangeText={(value) => updateManualForm("stake", value)} placeholder="Mise" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
-              <TextInput value={manualForm.ascensionScore} onChangeText={(value) => updateManualForm("ascensionScore", value)} placeholder="Score Ascension /100" placeholderTextColor="#7D7D7D" keyboardType="decimal-pad" style={styles.formInput} />
-              <TextInput value={manualForm.confidenceLevel} onChangeText={(value) => updateManualForm("confidenceLevel", value)} placeholder="Niveau de confiance" placeholderTextColor="#7D7D7D" style={styles.formInput} />
+              <TextInput value={manualForm.date} onChangeText={(value) => updateManualForm("date", value)} placeholder="Date YYYY-MM-DD" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.sport} onChangeText={(value) => updateManualForm("sport", value)} placeholder="Sport" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.competition} onChangeText={(value) => updateManualForm("competition", value)} placeholder="Compétition" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.match} onChangeText={(value) => updateManualForm("match", value)} placeholder="Match" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.market} onChangeText={(value) => updateManualForm("market", value)} placeholder="Marché" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.pick} onChangeText={(value) => updateManualForm("pick", value)} placeholder="Pronostic" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.realOdds} onChangeText={(value) => updateManualForm("realOdds", value)} placeholder="Cote réelle" placeholderTextColor={theme.textMuted} keyboardType="decimal-pad" style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.stake} onChangeText={(value) => updateManualForm("stake", value)} placeholder="Mise" placeholderTextColor={theme.textMuted} keyboardType="decimal-pad" style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.ascensionScore} onChangeText={(value) => updateManualForm("ascensionScore", value)} placeholder="Score Ascension /100" placeholderTextColor={theme.textMuted} keyboardType="decimal-pad" style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
+              <TextInput value={manualForm.confidenceLevel} onChangeText={(value) => updateManualForm("confidenceLevel", value)} placeholder="Niveau de confiance" placeholderTextColor={theme.textMuted} style={[styles.formInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]} />
             </View>
             <TextInput
               value={manualForm.comment}
               onChangeText={(value) => updateManualForm("comment", value)}
               placeholder="Commentaire libre"
-              placeholderTextColor="#7D7D7D"
+              placeholderTextColor={theme.textMuted}
               multiline
               textAlignVertical="top"
-              style={[styles.modalInput, styles.commentInput]}
+              style={[styles.modalInput, styles.commentInput, { borderColor: theme.line, backgroundColor: theme.overlay, color: theme.text }]}
             />
             <PremiumButton label="Enregistrer" icon="checkmark-circle" onPress={saveManualPronostic} />
-            <Pressable onPress={() => setIsManualModalVisible(false)} style={styles.segment}>
-              <Text style={styles.segmentText}>Annuler</Text>
+            <Pressable onPress={() => setIsManualModalVisible(false)} style={[styles.segment, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+              <Text style={[styles.segmentText, { color: theme.textMuted }]}>Annuler</Text>
             </Pressable>
           </LinearGradient>
         </View>
@@ -687,41 +692,41 @@ export default function TicketScreen() {
 
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Pronostics</Text>
-          <Text style={styles.subtitle}>Sélection officielle et suivi des tickets.</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Pronostics</Text>
+          <Text style={[styles.subtitle, { color: theme.textMuted }]}>Sélection officielle et suivi des tickets.</Text>
         </View>
         <View style={styles.headerActions}>
-          <Pressable onPress={() => setIsManualModalVisible(true)} style={styles.importButton}>
-            <Ionicons name="add-circle-outline" size={15} color={colors.gold} />
-            <Text style={styles.importButtonText}>Ajouter</Text>
+          <Pressable onPress={() => setIsManualModalVisible(true)} style={[styles.importButton, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="add-circle-outline" size={15} color={theme.accentSoft} />
+            <Text style={[styles.importButtonText, { color: theme.accentSoft }]}>Ajouter</Text>
           </Pressable>
-          <Pressable onPress={() => setIsImportModalVisible(true)} style={styles.importButton}>
-            <Ionicons name="download-outline" size={15} color={colors.gold} />
-            <Text style={styles.importButtonText}>Importer</Text>
+          <Pressable onPress={() => setIsImportModalVisible(true)} style={[styles.importButton, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name="download-outline" size={15} color={theme.accentSoft} />
+            <Text style={[styles.importButtonText, { color: theme.accentSoft }]}>Importer</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.section}>
         <View style={styles.historyHeader}>
-          <Text style={styles.historyTitle}>Sélection officielle du jour</Text>
-          <Text style={styles.historyMeta}>{hasSportPremiumAccess ? `${officialDailySelection.length} sélection` : "Premium"}</Text>
+          <Text style={[styles.historyTitle, { color: theme.accentSoft }]}>Sélection officielle du jour</Text>
+          <Text style={[styles.historyMeta, { color: theme.textMuted }]}>{hasSportPremiumAccess ? `${officialDailySelection.length} sélection` : "Premium"}</Text>
         </View>
         <View style={styles.list}>
           {!hasSportPremiumAccess ? (
             <GlassCard style={styles.lockedPanel}>
-              <Ionicons name="lock-closed-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Opportunités du jour réservées</Text>
-              <Text style={styles.emptyText}>
+              <Ionicons name="lock-closed-outline" size={28} color={theme.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: theme.text }]}>Opportunités du jour réservées</Text>
+              <Text style={[styles.emptyText, { color: theme.textMuted }]}>
                 En Mode Découverte, tu peux consulter l'historique et la méthode. Les pronostics du jour nécessitent les conditions applicables et un abonnement actif.
               </Text>
               <PremiumButton label="Ouvrir Academy" icon="school-outline" onPress={() => router.push(academyRoute)} />
             </GlassCard>
           ) : officialDailySelection.length === 0 ? (
             <GlassCard style={styles.emptyCard}>
-              <Ionicons name="shield-checkmark-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Aucune sélection officielle.</Text>
-              <Text style={styles.emptyText}>
+              <Ionicons name="shield-checkmark-outline" size={28} color={theme.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: theme.text }]}>Aucune sélection officielle.</Text>
+              <Text style={[styles.emptyText, { color: theme.textMuted }]}>
                 La sélection Ascension du jour apparaîtra ici.
               </Text>
             </GlassCard>
@@ -733,15 +738,15 @@ export default function TicketScreen() {
       {hasSportPremiumAccess ? (
         <View style={styles.section}>
         <View style={styles.historyHeader}>
-          <Text style={styles.historyTitle}>Paris en cours</Text>
-          <Text style={styles.historyMeta}>{pendingTickets.length} en attente</Text>
+          <Text style={[styles.historyTitle, { color: theme.accentSoft }]}>Paris en cours</Text>
+          <Text style={[styles.historyMeta, { color: theme.textMuted }]}>{pendingTickets.length} en attente</Text>
         </View>
         <View style={styles.list}>
           {pendingTickets.length === 0 ? (
             <GlassCard style={styles.emptyCard}>
-              <Ionicons name="time-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Aucun ticket en attente.</Text>
-              <Text style={styles.emptyText}>
+              <Ionicons name="time-outline" size={28} color={theme.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: theme.text }]}>Aucun ticket en attente.</Text>
+              <Text style={[styles.emptyText, { color: theme.textMuted }]}>
                 Un ticket passe ici après avoir choisi Joué, avec une cote réelle et une mise.
               </Text>
             </GlassCard>
@@ -753,8 +758,8 @@ export default function TicketScreen() {
 
       <View style={styles.section}>
         <View style={styles.historyHeader}>
-          <Text style={styles.historyTitle}>Historique Ascension</Text>
-          <Text style={styles.historyMeta}>
+          <Text style={[styles.historyTitle, { color: theme.accentSoft }]}>Historique Ascension</Text>
+          <Text style={[styles.historyMeta, { color: theme.textMuted }]}>
             {stats.wonCount} gagnés · {stats.lostCount} perdus
           </Text>
         </View>
@@ -770,20 +775,20 @@ export default function TicketScreen() {
             return (
               <GlassCard key={bet.id} style={styles.historyCard}>
                 <View style={styles.historyTop}>
-                  <Text style={styles.historyDate}>{new Date(bet.placedAt).toLocaleDateString("fr-FR")}</Text>
+                  <Text style={[styles.historyDate, { color: theme.textMuted }]}>{new Date(bet.placedAt).toLocaleDateString("fr-FR")}</Text>
                   <Text style={[styles.historyStatus, { color: tone }]}>{resultLabel[bet.result]}</Text>
                 </View>
-                <Text style={styles.historyEvent}>{bet.event}</Text>
+                <Text style={[styles.historyEvent, { color: theme.text }]}>{bet.event}</Text>
                 {finalResult ? (
-                  <Text style={styles.historyNumber}>Résultat : {finalResult}</Text>
+                  <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Résultat : {finalResult}</Text>
                 ) : null}
                 {sourceTicket?.selection.comment ? (
-                  <Text style={styles.historyNumber}>Commentaire : {sourceTicket.selection.comment}</Text>
+                  <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Commentaire : {sourceTicket.selection.comment}</Text>
                 ) : null}
                 <View style={styles.historyNumbers}>
-                  <Text style={styles.historyNumber}>Cote {bet.odds.toFixed(2)}</Text>
-                  <Text style={styles.historyNumber}>Mise {formatCurrency(bet.stake)}</Text>
-                  <Text style={styles.historyNumber}>Gain brut {formatCurrency(grossReturn)}</Text>
+                  <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Cote {bet.odds.toFixed(2)}</Text>
+                  <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Mise {formatCurrency(bet.stake)}</Text>
+                  <Text style={[styles.historyNumber, { color: theme.textMuted }]}>Gain brut {formatCurrency(grossReturn)}</Text>
                   <Text style={[styles.historyNumber, { color: tone }]}>Net {formatCurrency(netProfit)}</Text>
                 </View>
               </GlassCard>
@@ -814,11 +819,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: typography.fontFamily,
     fontWeight: "500",
-    letterSpacing: 0.4
+    letterSpacing: typography.titleTracking,
+    lineHeight: 32
   },
   subtitle: {
     color: "#C8C8C8",
     fontSize: 13,
+    fontFamily: typography.fontFamily,
+    lineHeight: 19,
     fontWeight: "400"
   },
   badge: {
@@ -851,6 +859,7 @@ const styles = StyleSheet.create({
   importButtonText: {
     color: colors.gold,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   syncText: {
@@ -895,6 +904,7 @@ const styles = StyleSheet.create({
   historyMeta: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   historyCard: {
@@ -910,15 +920,18 @@ const styles = StyleSheet.create({
   historyDate: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   historyStatus: {
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   historyEvent: {
     color: colors.white,
     fontSize: 15,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   historyNumbers: {
@@ -929,6 +942,7 @@ const styles = StyleSheet.create({
   historyNumber: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   statLabel: {
@@ -955,12 +969,14 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.white,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700",
     textAlign: "center"
   },
   emptyText: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 18,
     textAlign: "center"
   },
@@ -990,6 +1006,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   sportPill: {
@@ -1006,21 +1023,25 @@ const styles = StyleSheet.create({
   sportText: {
     color: colors.gold,
     fontSize: 11,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   time: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   match: {
     color: colors.white,
     fontSize: 18,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   competition: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "400"
   },
   marketBox: {
@@ -1036,12 +1057,14 @@ const styles = StyleSheet.create({
   metaLabel: {
     color: "#8A8A8A",
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     fontWeight: "500",
     textTransform: "uppercase"
   },
   market: {
     color: colors.white,
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   scoreBox: {
@@ -1050,28 +1073,32 @@ const styles = StyleSheet.create({
   score: {
     color: colors.gold,
     fontSize: 24,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   pick: {
     color: colors.gold,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   officialScore: {
     color: colors.success,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   explanation: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 18,
     fontWeight: "400"
   },
   analysisBox: {
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    borderRadius: radii.sm,
+    borderRadius: radii.md,
     padding: spacing.sm,
     gap: 5,
     backgroundColor: "#050505"
@@ -1085,7 +1112,7 @@ const styles = StyleSheet.create({
     minHeight: 38,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    borderRadius: radii.sm,
+    borderRadius: radii.md,
     paddingHorizontal: spacing.sm,
     alignItems: "center",
     flexDirection: "row",
@@ -1105,7 +1132,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.sm,
+    borderRadius: radii.md,
     backgroundColor: "#050505",
     color: colors.white,
     paddingHorizontal: spacing.sm,
@@ -1140,6 +1167,7 @@ const styles = StyleSheet.create({
   segmentText: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   segmentMutedTextActive: {
@@ -1155,7 +1183,7 @@ const styles = StyleSheet.create({
     minHeight: 34,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.10)",
-    borderRadius: radii.sm,
+    borderRadius: radii.md,
     paddingHorizontal: spacing.sm,
     alignItems: "center",
     flexDirection: "row",
@@ -1170,6 +1198,7 @@ const styles = StyleSheet.create({
   resultText: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   modalBackdrop: {
@@ -1191,11 +1220,13 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: colors.white,
     fontSize: 21,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   modalText: {
     color: "#C8C8C8",
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     lineHeight: 20
   },
   modalInput: {
@@ -1205,6 +1236,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     backgroundColor: "#050505",
     color: colors.white,
+    fontFamily: typography.fontFamily,
     paddingHorizontal: spacing.md,
     fontSize: 16,
     fontWeight: "600"
@@ -1230,6 +1262,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     backgroundColor: "#050505",
     color: colors.white,
+    fontFamily: typography.fontFamily,
     paddingHorizontal: spacing.sm,
     fontSize: 13,
     fontWeight: "600"

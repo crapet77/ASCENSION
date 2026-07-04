@@ -1,22 +1,22 @@
 export const marketRoadmap = [
   {
-    title: "Stocks",
-    description: "A dedicated equity module will be added next to expand the market intelligence experience."
+    title: "Actions",
+    description: "Un module actions dédié viendra enrichir l'expérience d'intelligence marché."
   },
   {
     title: "ETFs",
-    description: "Sector and thematic ETFs will be surfaced with the same clean dashboard patterns."
+    description: "Les ETF sectoriels et thématiques seront présentés avec le même tableau de bord clair."
   },
   {
-    title: "News",
-    description: "Catalysts and headlines will be stitched into the market timeline for richer context."
+    title: "Actualités",
+    description: "Les catalyseurs et titres importants seront intégrés à la chronologie du marché."
   },
   {
-    title: "Watchlist",
-    description: "A personal watchlist will help users track their favorites and alerts."
+    title: "Liste de suivi",
+    description: "Une liste personnelle aidera l'utilisateur à suivre ses favoris et ses alertes."
   },
   {
-    title: "Alerts",
-    description: "Threshold notifications will complete the monitoring loop for active traders."
+    title: "Alertes",
+    description: "Les notifications par seuil compléteront la surveillance des utilisateurs actifs."
   }
 ];

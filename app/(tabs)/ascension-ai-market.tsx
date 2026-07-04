@@ -9,11 +9,10 @@ import {
   View
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { AppScreen } from "@/components/AppScreen";
-import { GlassCard } from "@/components/GlassCard";
-import { colors, radii, spacing } from "@/constants/theme";
+import { GlassCard, useGlassCardPalette } from "@/components/GlassCard";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import {
   CoinMarketAsset,
   MarketSortKey,
@@ -21,18 +20,18 @@ import {
   formatCompact,
   formatCurrency,
   formatPercent,
-  futureModules,
-  marketRoadmap
+  futureModules
 } from "@/features/aiMarket";
 
 const sortOptions: Array<{ key: MarketSortKey; label: string }> = [
-  { key: "marketCap", label: "Market Cap" },
-  { key: "price", label: "Price" },
-  { key: "change24h", label: "24h change" },
-  { key: "aiScore", label: "AI Score" }
+  { key: "marketCap", label: "Capitalisation" },
+  { key: "price", label: "Prix" },
+  { key: "change24h", label: "Variation 24 h" },
+  { key: "volume", label: "Volume" }
 ];
 
 export default function AscensionAIMarketScreen() {
+  const palette = useGlassCardPalette();
   const [assets, setAssets] = useState<CoinMarketAsset[]>([]);
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<MarketSortKey>("marketCap");
@@ -53,7 +52,7 @@ export default function AscensionAIMarketScreen() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Unable to load market data.");
+          setError(err instanceof Error ? err.message : "Impossible de charger les données de marché.");
         }
       } finally {
         if (!cancelled) {
@@ -86,8 +85,8 @@ export default function AscensionAIMarketScreen() {
           return right.currentPrice - left.currentPrice;
         case "change24h":
           return right.priceChange24h - left.priceChange24h;
-        case "aiScore":
-          return right.aiScore - left.aiScore;
+        case "volume":
+          return right.totalVolume - left.totalVolume;
         case "marketCap":
         default:
           return right.marketCap - left.marketCap;
@@ -99,40 +98,40 @@ export default function AscensionAIMarketScreen() {
     <AppScreen>
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>Ascension AI Market</Text>
-          <Text style={styles.subtitle}>Top 500 crypto with live prices, transparent metrics, and a temporary AI score.</Text>
+          <Text style={[styles.title, { color: palette.title }]}>Ascension IA Marché</Text>
+          <Text style={[styles.subtitle, { color: palette.secondary }]}>Les 500 principales cryptos avec prix en direct, volume, capitalisation et variation 24 h.</Text>
         </View>
-        <View style={styles.badge}>
-          <Ionicons name="sparkles-outline" size={14} color={colors.gold} />
-          <Text style={styles.badgeText}>AI-ready</Text>
+        <View style={[styles.badge, { backgroundColor: palette.overlay, borderColor: palette.border }]}>
+          <Ionicons name="pulse-outline" size={14} color={palette.accentSoft} />
+          <Text style={[styles.badgeText, { color: palette.accentSoft }]}>Données réelles</Text>
         </View>
       </View>
 
       <GlassCard style={styles.heroCard} contentStyle={styles.heroContent}>
         <View style={styles.heroTopRow}>
           <View>
-            <Text style={styles.heroLabel}>Market pulse</Text>
-            <Text style={styles.heroTitle}>Realtime crypto intelligence</Text>
+          <Text style={[styles.heroLabel, { color: palette.accentSoft }]}>Pouls du marché</Text>
+            <Text style={[styles.heroTitle, { color: palette.title }]}>Données crypto en temps réel</Text>
           </View>
-          <View style={styles.heroMetricPill}>
-            <Text style={styles.heroMetricValue}>{assets.length}</Text>
-            <Text style={styles.heroMetricLabel}>assets</Text>
+          <View style={[styles.heroMetricPill, { backgroundColor: palette.overlay, borderColor: palette.border }]}>
+            <Text style={[styles.heroMetricValue, { color: palette.title }]}>{assets.length}</Text>
+            <Text style={[styles.heroMetricLabel, { color: palette.secondary }]}>actifs</Text>
           </View>
         </View>
-        <Text style={styles.heroText}>
-          Search, sort, and inspect the largest cryptocurrencies with a transparent scoring model that relies only on volume, liquidity, capitalization, and momentum.
+        <Text style={[styles.heroText, { color: palette.secondary }]}>
+          Recherche, trie et consulte les plus grandes cryptomonnaies avec les données réelles de CoinGecko. Aucun score local n'est présenté comme un signal d'investissement.
         </Text>
       </GlassCard>
 
       <View style={styles.controlsRow}>
-        <View style={styles.searchBox}>
-          <Ionicons name="search-outline" size={16} color={colors.textMuted} />
+        <View style={[styles.searchBox, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
+          <Ionicons name="search-outline" size={16} color={palette.secondary} />
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Search by name or symbol"
-            placeholderTextColor={colors.textMuted}
-            style={styles.searchInput}
+            placeholder="Rechercher par nom ou symbole"
+            placeholderTextColor={palette.secondary}
+            style={[styles.searchInput, { color: palette.title }]}
           />
         </View>
       </View>
@@ -144,9 +143,13 @@ export default function AscensionAIMarketScreen() {
             <Pressable
               key={option.key}
               onPress={() => setSortKey(option.key)}
-              style={[styles.sortChip, active && styles.sortChipActive]}
+              style={[
+                styles.sortChip,
+                { backgroundColor: palette.overlay, borderColor: palette.line },
+                active && { backgroundColor: palette.glowSoft, borderColor: palette.border }
+              ]}
             >
-              <Text style={[styles.sortChipText, active && styles.sortChipTextActive]}>{option.label}</Text>
+              <Text style={[styles.sortChipText, { color: active ? palette.accentSoft : palette.secondary }]}>{option.label}</Text>
             </Pressable>
           );
         })}
@@ -154,21 +157,21 @@ export default function AscensionAIMarketScreen() {
 
       {loading ? (
         <GlassCard style={styles.stateCard}>
-          <ActivityIndicator color={colors.gold} />
-          <Text style={styles.stateTitle}>Loading crypto market data</Text>
-          <Text style={styles.stateText}>Fetching the latest CoinGecko snapshot.</Text>
+          <ActivityIndicator color={palette.accentSoft} />
+          <Text style={[styles.stateTitle, { color: palette.title }]}>Chargement des données crypto</Text>
+          <Text style={[styles.stateText, { color: palette.secondary }]}>Récupération du dernier aperçu CoinGecko.</Text>
         </GlassCard>
       ) : error ? (
         <GlassCard style={styles.stateCard}>
-          <Ionicons name="warning-outline" size={24} color={colors.gold} />
-          <Text style={styles.stateTitle}>Market data unavailable</Text>
-          <Text style={styles.stateText}>{error}</Text>
+          <Ionicons name="warning-outline" size={24} color={palette.accentSoft} />
+          <Text style={[styles.stateTitle, { color: palette.title }]}>Données de marché indisponibles</Text>
+          <Text style={[styles.stateText, { color: palette.secondary }]}>{error}</Text>
         </GlassCard>
       ) : filteredAssets.length === 0 ? (
         <GlassCard style={styles.stateCard}>
-          <Ionicons name="options-outline" size={24} color={colors.gold} />
-          <Text style={styles.stateTitle}>No assets match your search</Text>
-          <Text style={styles.stateText}>Try a different name or symbol to explore the market list.</Text>
+          <Ionicons name="options-outline" size={24} color={palette.accentSoft} />
+          <Text style={[styles.stateTitle, { color: palette.title }]}>Aucun actif ne correspond à ta recherche</Text>
+          <Text style={[styles.stateText, { color: palette.secondary }]}>Essaie un autre nom ou symbole pour explorer la liste.</Text>
         </GlassCard>
       ) : (
         <View style={styles.list}> 
@@ -178,20 +181,20 @@ export default function AscensionAIMarketScreen() {
                 <View style={styles.assetIdentity}>
                   <Image source={{ uri: asset.image }} style={styles.assetLogo} />
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.assetName}>{asset.name}</Text>
-                    <Text style={styles.assetSymbol}>{asset.symbol.toUpperCase()}</Text>
+                    <Text style={[styles.assetName, { color: palette.title }]}>{asset.name}</Text>
+                    <Text style={[styles.assetSymbol, { color: palette.secondary }]}>{asset.symbol.toUpperCase()}</Text>
                   </View>
                 </View>
-                <View style={styles.aiBadge}>
-                  <Text style={styles.aiBadgeLabel}>AI Score</Text>
-                  <Text style={styles.aiBadgeValue}>{asset.aiScore}</Text>
+                <View style={[styles.aiBadge, { backgroundColor: palette.glowSoft, borderColor: palette.border }]}>
+                  <Text style={[styles.aiBadgeLabel, { color: palette.accentSoft }]}>Rang</Text>
+                  <Text style={[styles.aiBadgeValue, { color: palette.title }]}>{asset.marketCapRank || "-"}</Text>
                 </View>
               </View>
 
               <View style={styles.metaGrid}>
-                <MetricBox label="Price" value={formatCurrency(asset.currentPrice)} />
+                <MetricBox label="Prix" value={formatCurrency(asset.currentPrice)} />
                 <MetricBox label="24h" value={formatPercent(asset.priceChange24h)} accent={asset.priceChange24h >= 0} />
-                <MetricBox label="MCap" value={formatCompact(asset.marketCap)} />
+                <MetricBox label="Capitalisation" value={formatCompact(asset.marketCap)} />
                 <MetricBox label="Volume" value={formatCompact(asset.totalVolume)} />
               </View>
             </GlassCard>
@@ -200,14 +203,14 @@ export default function AscensionAIMarketScreen() {
       )}
 
       <GlassCard style={styles.roadmapCard}>
-        <Text style={styles.roadmapTitle}>Future Ascension modules</Text>
+        <Text style={[styles.roadmapTitle, { color: palette.title }]}>Futurs modules Ascension</Text>
         <View style={styles.roadmapList}>
           {futureModules.map((module) => (
             <View key={module.key} style={styles.roadmapItem}>
-              <Ionicons name="construct-outline" size={16} color={colors.gold} />
+              <Ionicons name="construct-outline" size={16} color={palette.accentSoft} />
               <View style={{ flex: 1 }}>
-                <Text style={styles.roadmapItemTitle}>{module.title}</Text>
-                <Text style={styles.roadmapItemText}>{module.description}</Text>
+                <Text style={[styles.roadmapItemTitle, { color: palette.title }]}>{module.title}</Text>
+                <Text style={[styles.roadmapItemText, { color: palette.secondary }]}>{module.description}</Text>
               </View>
             </View>
           ))}
@@ -218,10 +221,12 @@ export default function AscensionAIMarketScreen() {
 }
 
 function MetricBox({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  const palette = useGlassCardPalette();
+
   return (
-    <View style={styles.metricBox}>
-      <Text style={styles.metricLabel}>{label}</Text>
-      <Text style={[styles.metricValue, accent !== undefined ? (accent ? styles.metricPositive : styles.metricNegative) : null]}>{value}</Text>
+    <View style={[styles.metricBox, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
+      <Text style={[styles.metricLabel, { color: palette.secondary }]}>{label}</Text>
+      <Text style={[styles.metricValue, { color: accent === undefined ? palette.title : accent ? palette.success : palette.danger }]}>{value}</Text>
     </View>
   );
 }
@@ -236,11 +241,15 @@ const styles = StyleSheet.create({
   title: {
     color: colors.white,
     fontSize: 24,
-    fontWeight: "700"
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    letterSpacing: typography.titleTracking,
+    lineHeight: 31
   },
   subtitle: {
     color: colors.textMuted,
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     marginTop: 4,
     lineHeight: 18
   },
@@ -258,6 +267,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: colors.gold,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   heroCard: {
@@ -275,6 +285,7 @@ const styles = StyleSheet.create({
   heroLabel: {
     color: colors.gold,
     fontSize: 11,
+    fontFamily: typography.fontFamily,
     fontWeight: "700",
     letterSpacing: 0.8,
     textTransform: "uppercase"
@@ -282,6 +293,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: colors.white,
     fontSize: 18,
+    fontFamily: typography.fontFamily,
     fontWeight: "700",
     marginTop: 2
   },
@@ -297,16 +309,19 @@ const styles = StyleSheet.create({
   heroMetricValue: {
     color: colors.white,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   heroMetricLabel: {
     color: colors.textMuted,
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     textTransform: "uppercase"
   },
   heroText: {
     color: colors.textMuted,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 18
   },
   controlsRow: {
@@ -326,7 +341,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     color: colors.white,
-    fontSize: 14
+    fontSize: 14,
+    fontFamily: typography.fontFamily
   },
   sortRow: {
     flexDirection: "row",
@@ -348,6 +364,7 @@ const styles = StyleSheet.create({
   sortChipText: {
     fontSize: 12,
     color: colors.textMuted,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   sortChipTextActive: {
@@ -362,11 +379,13 @@ const styles = StyleSheet.create({
   stateTitle: {
     color: colors.white,
     fontSize: 15,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   stateText: {
     color: colors.textMuted,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     textAlign: "center",
     lineHeight: 18
   },
@@ -393,16 +412,18 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(255,255,255,0.08)"
+    backgroundColor: colors.surfaceElevated
   },
   assetName: {
     color: colors.white,
     fontSize: 15,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   assetSymbol: {
     color: colors.textMuted,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     marginTop: 2,
     textTransform: "uppercase"
   },
@@ -418,11 +439,13 @@ const styles = StyleSheet.create({
   aiBadgeLabel: {
     color: colors.gold,
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     textTransform: "uppercase"
   },
   aiBadgeValue: {
     color: colors.white,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   metaGrid: {
@@ -442,11 +465,13 @@ const styles = StyleSheet.create({
   metricLabel: {
     color: colors.textMuted,
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     textTransform: "uppercase"
   },
   metricValue: {
     color: colors.white,
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "700",
     marginTop: 4
   },
@@ -464,6 +489,7 @@ const styles = StyleSheet.create({
   roadmapTitle: {
     color: colors.white,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   roadmapList: {
@@ -478,11 +504,13 @@ const styles = StyleSheet.create({
   roadmapItemTitle: {
     color: colors.white,
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   roadmapItemText: {
     color: colors.textMuted,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     marginTop: 2,
     lineHeight: 18
   }

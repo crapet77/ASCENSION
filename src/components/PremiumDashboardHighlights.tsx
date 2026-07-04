@@ -64,23 +64,23 @@ export function PremiumDashboardHighlights({
   return (
     <View style={styles.stack}>
       <GlassCard style={styles.welcomeCard}>
-        <View pointerEvents="none" style={[styles.floatGlow, { backgroundColor: theme.glow }]} />
+        <View pointerEvents="none" style={[styles.floatGlow, { backgroundColor: theme.glowSoft, shadowColor: theme.accentSoft }]} />
         <View style={styles.welcomeHeader}>
           <View style={styles.welcomeCopy}>
             <DailyWelcome title={greeting} subtitle={dashboardDate} />
-            <Text style={styles.quote}>“{quote}”</Text>
+            <Text style={[styles.quote, { color: theme.textMuted }]}>“{quote}”</Text>
           </View>
           {onOpenProfile ? (
-            <Pressable style={styles.sparkleBadge} onPress={onOpenProfile}>
+            <Pressable style={[styles.sparkleBadge, { backgroundColor: theme.overlay, borderColor: theme.line }]} onPress={onOpenProfile}>
               <Ionicons name="notifications-outline" size={16} color={theme.accentSoft} />
             </Pressable>
           ) : (
-            <Animated.View style={[styles.sparkleBadge, sparkleStyle]}>
+            <Animated.View style={[styles.sparkleBadge, { backgroundColor: theme.overlay, borderColor: theme.line }, sparkleStyle]}>
               <Ionicons name="sparkles-outline" size={18} color={theme.accentSoft} />
             </Animated.View>
           )}
         </View>
-        <View style={styles.motivationWrap}>
+        <View style={[styles.motivationWrap, { borderTopColor: theme.line }]}>
           <Text style={[styles.motivationLabel, { color: theme.accentSoft }]}>Pensée du jour</Text>
           <Text style={[styles.motivationText, { color: theme.text }]}>{dailyMotivation}</Text>
         </View>
@@ -89,29 +89,29 @@ export function PremiumDashboardHighlights({
       <GlassCard style={styles.disciplineCard}>
         <View style={styles.cardHeader}>
           <View>
-            <Text style={styles.cardKicker}>Discipline</Text>
-            <Text style={styles.cardTitle}>Série actuelle</Text>
+            <Text style={[styles.cardKicker, { color: theme.accentSoft }]}>Discipline</Text>
+            <Text style={[styles.cardTitle, { color: theme.text }]}>Série actuelle</Text>
           </View>
-          <View style={styles.streakBadge}>
-            <Text style={styles.streakValue}>{disciplineProfile.currentStreak}</Text>
-            <Text style={styles.streakLabel}>jours</Text>
+          <View style={[styles.streakBadge, { backgroundColor: theme.overlay, borderColor: theme.line }]}>
+            <Text style={[styles.streakValue, { color: theme.accentSoft }]}>{disciplineProfile.currentStreak}</Text>
+            <Text style={[styles.streakLabel, { color: theme.textMuted }]}>jours</Text>
           </View>
         </View>
 
         <View style={styles.disciplineMetaRow}>
           <View>
-            <Text style={styles.metaLabel}>Niveau</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Niveau</Text>
             <Text style={[styles.metaValue, { color: theme.text }]}>{xpProfile.level}</Text>
           </View>
           <View>
-            <Text style={styles.metaLabel}>Progression</Text>
+            <Text style={[styles.metaLabel, { color: theme.textMuted }]}>Progression</Text>
             <Text style={[styles.metaValue, { color: theme.text }]}>{disciplineProfile.score}%</Text>
           </View>
         </View>
 
-        <View style={styles.progressTrack}>
+        <View style={[styles.progressTrack, { backgroundColor: theme.overlay, borderColor: theme.line }]}>
           <LinearGradient
-            colors={[colors.gold, colors.goldSoft, theme.accent]}
+            colors={[theme.accent, theme.accentSoft, theme.accent]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${Math.min(100, disciplineProfile.score)}%` }]}
@@ -123,10 +123,10 @@ export function PremiumDashboardHighlights({
 
       <GlassCard style={styles.missionCard}>
         <View style={styles.inlineHeader}>
-          <View style={styles.inlineIcon}>
+          <View style={[styles.inlineIcon, { backgroundColor: theme.glowSoft, borderColor: theme.line }]}>
             <Ionicons name="flag-outline" size={16} color={theme.accentSoft} />
           </View>
-          <Text style={styles.cardKicker}>Mission du jour</Text>
+          <Text style={[styles.cardKicker, { color: theme.accentSoft }]}>Mission du jour</Text>
         </View>
         <Text style={[styles.missionText, { color: theme.text }]}>{missionLabel}</Text>
         <View style={styles.statusRow}>
@@ -137,19 +137,19 @@ export function PremiumDashboardHighlights({
 
       <GlassCard style={styles.goalCard}>
         <View style={styles.inlineHeader}>
-          <View style={styles.inlineIcon}>
+          <View style={[styles.inlineIcon, { backgroundColor: theme.glowSoft, borderColor: theme.line }]}>
             <Ionicons name="wallet-outline" size={16} color={theme.accentSoft} />
           </View>
-          <Text style={styles.cardKicker}>Objectif financier</Text>
+          <Text style={[styles.cardKicker, { color: theme.accentSoft }]}>Objectif financier</Text>
         </View>
         <Text style={[styles.goalText, { color: theme.text }]}>{goalLabel}</Text>
         <View style={styles.goalLine}>
           <Text style={[styles.goalValue, { color: theme.text }]}>{goalValue}</Text>
           <Text style={[styles.goalPercent, { color: theme.accentSoft }]}>{Math.round(goalPercent)}%</Text>
         </View>
-        <View style={styles.progressTrack}>
+        <View style={[styles.progressTrack, { backgroundColor: theme.overlay, borderColor: theme.line }]}>
           <LinearGradient
-            colors={[colors.gold, colors.goldSoft, theme.accent]}
+            colors={[theme.accent, theme.accentSoft, theme.accent]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={[styles.progressFill, { width: `${Math.max(4, Math.min(100, goalPercent))}%` }]}
@@ -159,7 +159,7 @@ export function PremiumDashboardHighlights({
 
       <GlassCard style={styles.aiCard}>
         <View style={styles.inlineHeader}>
-          <View style={styles.inlineIcon}>
+          <View style={[styles.inlineIcon, { backgroundColor: theme.glowSoft, borderColor: theme.line }]}>
             <Ionicons name="hardware-chip-outline" size={16} color={theme.accentSoft} />
           </View>
           <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>CONSEIL IA ASCENSION</Text>
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255, 255, 255, 0.08)"
@@ -271,6 +272,7 @@ const styles = StyleSheet.create({
     minWidth: 70,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
     paddingVertical: 8,
     paddingHorizontal: 10,
     borderRadius: 14,
@@ -307,6 +309,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 8,
     borderRadius: 999,
+    borderWidth: 1,
     backgroundColor: "rgba(255,255,255,0.10)",
     overflow: "hidden"
   },
@@ -327,6 +330,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.08)"

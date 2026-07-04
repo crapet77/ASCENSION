@@ -1,4 +1,5 @@
 import {
+  autoValidateFinishedAcademy,
   completeAcademyMission,
   completeAcademyLesson,
   getAcademyProgressPercent,
@@ -23,7 +24,12 @@ import {
 
 export const AcademyEngine = {
   async getState(): Promise<AcademyEngineState> {
-    const profile = await fetchAcademyProfile();
+    const storedProfile = await fetchAcademyProfile();
+    const profile = autoValidateFinishedAcademy(storedProfile);
+
+    if (profile !== storedProfile) {
+      await persistAcademyProfile(profile);
+    }
 
     return {
       profile,

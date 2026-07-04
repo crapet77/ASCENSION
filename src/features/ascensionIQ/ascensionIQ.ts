@@ -3,6 +3,8 @@ import { ObjectiveEngineState } from "@/engine/objectives";
 import { getBankrollStats } from "@/features/bankroll/math";
 import { BankrollState } from "@/features/bankroll/types";
 import { DisciplineProfile } from "@/features/discipline/disciplineProfile";
+import { calculateFinancialProfileMetrics } from "@/features/financialProfile/calculations";
+import { FinancialProfile } from "@/features/financialProfile/types";
 import { AscensionTicket } from "@/features/tickets/types";
 import { XpProfile } from "@/features/xp/xpSystem";
 
@@ -47,6 +49,7 @@ export type AscensionIQInput = {
   tickets: AscensionTicket[];
   objectiveState: ObjectiveEngineState | null;
   disciplineProfile: DisciplineProfile | null;
+  financialProfile?: FinancialProfile | null;
 };
 
 const skillLabels: Record<AscensionIQSkillId, string> = {
@@ -83,17 +86,18 @@ export function calculateAscensionIQ(input: AscensionIQInput): AscensionIQProfil
   const settledTickets = playedTickets.filter((ticket) => ticket.selection.status === "won" || ticket.selection.status === "lost");
   const wonTickets = settledTickets.filter((ticket) => ticket.selection.status === "won");
   const achievedObjectives = input.objectiveState?.achievedObjectives.length ?? 0;
+  const financialMetrics = input.financialProfile ? calculateFinancialProfileMetrics(input.financialProfile) : null;
   const academyProgress = input.academyState?.progressPercent ?? 0;
   const xpProgress = Math.min(100, ((input.xpProfile?.xp ?? input.academyState?.profile.xp ?? 0) / 1500) * 100);
   const winRate = settledTickets.length > 0 ? (wonTickets.length / settledTickets.length) * 100 : bankrollStats?.winRate ?? 0;
 
   const rawScores: Record<AscensionIQSkillId, number> = {
-    budget: scoreFromLessons(lessonTitles, ["budget", "mission à chaque euro", "dépense"], 18) + achievedObjectives * 8,
-    savings: scoreFromLessons(lessonTitles, ["épargne", "bouclier", "sécurité"], 20),
-    investment: scoreFromLessons(lessonTitles, ["invest", "intérêts composés", "etf", "diversifier", "risque", "temps"], 12) + academyProgress * 0.20,
-    markets: scoreFromLessons(lessonTitles, ["bourse", "marchés", "etf", "action"], 14),
-    crypto: scoreFromLessons(lessonTitles, ["crypto"], 36),
-    realEstate: scoreFromLessons(lessonTitles, ["immobilier", "appartement", "résidence"], 30),
+    budget: scoreFromLessons(lessonTitles, ["budget", "mission à chaque euro", "dépense"], 18) + achievedObjectives * 8 + (financialMetrics?.completedFields ?? 0) * 2,
+    savings: scoreFromLessons(lessonTitles, ["épargne", "bouclier", "sécurité"], 20) + Math.min(financialMetrics?.savingsRate ?? 0, 40),
+    investment: scoreFromLessons(lessonTitles, ["invest", "intérêts composés", "etf", "diversifier", "risque", "temps"], 12) + academyProgress * 0.20 + Math.min((input.financialProfile?.monthlyInvestment ?? 0) / 10, 20),
+    markets: scoreFromLessons(lessonTitles, ["bourse", "marchés", "etf", "action"], 14) + Math.min(((input.financialProfile?.etf ?? 0) + (input.financialProfile?.stocks ?? 0)) / 100, 20),
+    crypto: scoreFromLessons(lessonTitles, ["crypto"], 36) + Math.min((input.financialProfile?.crypto ?? 0) / 100, 18),
+    realEstate: scoreFromLessons(lessonTitles, ["immobilier", "appartement", "résidence"], 30) + Math.min((input.financialProfile?.realEstate ?? 0) / 1000, 20),
     tax: scoreFromLessons(lessonTitles, ["fiscalité", "impôt", "tax"], 36),
     entrepreneurship: scoreFromLessons(lessonTitles, ["entrepreneur", "business", "revenu"], 30),
     discipline: (input.disciplineProfile?.score ?? 0) * 0.72 + (input.disciplineProfile?.currentStreak ?? 0) * 3 + xpProgress * 0.12,

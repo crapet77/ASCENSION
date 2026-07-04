@@ -74,7 +74,9 @@ export default function AcademyLessonDetailScreen() {
   const isTimePowerLesson = lesson?.title === "Le pouvoir du temps";
   const isFinalFoundationsLesson = lesson?.title === "Construire ton avenir financier";
   const isInvestmentLevelLesson = module?.id === "level-2-investment";
-  const isPremiumInteractiveLesson = isInvestmentLevelLesson || isFirstDisciplineLesson || isCompoundInterestLesson || isBudgetMissionLesson || isSafetySavingsLesson || isBadDebtLesson || isGoodHabitsLesson || isBeginnerMistakesLesson || isTimePowerLesson || isFinalFoundationsLesson;
+  const isAdvancedAcademyLesson = module?.id === "level-3-real-estate" || module?.id === "level-4-stock-market";
+  const isRealEstateAttractionLesson = lesson?.title === "Pourquoi l'immobilier attire autant ?";
+  const isPremiumInteractiveLesson = isInvestmentLevelLesson || isAdvancedAcademyLesson || isFirstDisciplineLesson || isCompoundInterestLesson || isBudgetMissionLesson || isSafetySavingsLesson || isBadDebtLesson || isGoodHabitsLesson || isBeginnerMistakesLesson || isTimePowerLesson || isFinalFoundationsLesson;
   const firstQuizQuestions = lesson?.quizQuestions ?? [];
   const firstQuizCurrentQuestion = firstQuizQuestions[firstQuizQuestionIndex] ?? null;
   const firstQuizSelectedOption = firstQuizAnswers[firstQuizQuestionIndex] ?? null;
@@ -312,7 +314,19 @@ export default function AcademyLessonDetailScreen() {
             onSelectQuizAnswer={selectFirstQuizAnswer}
             onAdvanceQuiz={advanceFirstQuiz}
           />
-        ) : isInvestmentLevelLesson ? (
+        ) : isRealEstateAttractionLesson ? (
+          <CompactPremiumLessonLayout
+            lessonMeta={lessonMeta}
+            questions={firstQuizQuestions}
+            questionIndex={firstQuizQuestionIndex}
+            selectedOption={firstQuizSelectedOption}
+            isQuizSubmitted={isFirstQuizSubmitted}
+            isQuizFinished={isFirstQuizFinished}
+            quizScore={firstQuizScore}
+            onSelectQuizAnswer={selectFirstQuizAnswer}
+            onAdvanceQuiz={advanceFirstQuiz}
+          />
+        ) : isInvestmentLevelLesson || isAdvancedAcademyLesson ? (
           <InvestmentLessonLayout
             lessonMeta={lessonMeta}
             questions={firstQuizQuestions}
@@ -2192,6 +2206,79 @@ function InvestmentLessonLayout({
           </Text>
         </View>
       ) : null}
+    </>
+  );
+}
+
+function CompactPremiumLessonLayout({
+  lessonMeta,
+  questions,
+  questionIndex,
+  selectedOption,
+  isQuizSubmitted,
+  isQuizFinished,
+  quizScore,
+  onSelectQuizAnswer,
+  onAdvanceQuiz
+}: {
+  lessonMeta: LessonMeta;
+  questions: NonNullable<AcademyLesson["quizQuestions"]>;
+  questionIndex: number;
+  selectedOption: number | null;
+  isQuizSubmitted: boolean;
+  isQuizFinished: boolean;
+  quizScore: number;
+  onSelectQuizAnswer: (optionIndex: number) => void;
+  onAdvanceQuiz: () => void;
+}) {
+  const [comparison, mistake, mission] = lessonMeta.sections;
+
+  return (
+    <>
+      <View style={styles.lessonHero}>
+        <Text style={styles.lessonHeroIcon}>🎬</Text>
+        <Text style={styles.lessonHeroTitle}>{lessonMeta.title}</Text>
+        <Text style={styles.lessonHeroText}>{lessonMeta.intro}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🧠 Comprendre</Text>
+        <Text style={styles.summary}>{comparison}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>📊 Exemple chiffré</Text>
+        <Text style={styles.summary}>{lessonMeta.example}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>Erreur fréquente</Text>
+        <Text style={styles.summary}>{mistake}</Text>
+      </View>
+
+      <View style={styles.actionBox}>
+        <Text style={styles.sectionTitle}>🎯 Mission Ascension</Text>
+        <Text style={styles.summary}>{mission}</Text>
+      </View>
+
+      <View style={styles.takeawayHero}>
+        <Text style={styles.calloutLabel}>⭐ À retenir</Text>
+        <Text style={styles.takeawayHeroText}>{lessonMeta.takeaway}</Text>
+      </View>
+
+      <View style={styles.premiumPanel}>
+        <Text style={styles.sectionTitle}>🏆 Quiz</Text>
+        <PremiumInlineQuiz
+          questions={questions}
+          questionIndex={questionIndex}
+          selectedOption={selectedOption}
+          isQuizSubmitted={isQuizSubmitted}
+          isQuizFinished={isQuizFinished}
+          quizScore={quizScore}
+          onSelectQuizAnswer={onSelectQuizAnswer}
+          onAdvanceQuiz={onAdvanceQuiz}
+        />
+      </View>
     </>
   );
 }

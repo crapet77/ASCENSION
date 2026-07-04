@@ -4,8 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 
 import { AppScreen } from "@/components/AppScreen";
-import { GlassCard } from "@/components/GlassCard";
-import { PremiumButton } from "@/components/PremiumButton";
+import { GlassCard, useGlassCardPalette } from "@/components/GlassCard";
 import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine, AcademyEngineState, AcademyModule } from "@/engine/academy";
 import { resetAcademyProfile } from "@/engine/academy/storage";
@@ -55,18 +54,6 @@ export default function AcademyScreen() {
     router.push(`/academy/lesson/${lessonId}?moduleId=${moduleId}`);
   }
 
-  async function validateQuiz(module: AcademyModule) {
-    const answers = module.quiz.questions.map((question) => question.correctOptionIndex);
-    const nextState = await AcademyEngine.submitQuiz(module.id, answers);
-    const nextModule = nextState.modules.find((item) => item.id === module.id);
-    setAcademyState(nextState);
-    setAccessState(await UserAccessService.getState(nextState));
-
-    if (nextModule?.status === "completed") {
-      Alert.alert("Module validé", `${module.title} est terminé. Les prochains accès se débloquent progressivement.`);
-    }
-  }
-
   async function completeLevelTest(level: UserLevel) {
     const nextAccessState = await UserAccessService.completeLevelTest(level, academyState ?? undefined);
     setAccessState(nextAccessState);
@@ -79,27 +66,27 @@ export default function AcademyScreen() {
     <AppScreen>
       <View style={styles.header}>
         <View style={styles.headerLine}>
-          <Text style={styles.heading}>Academy</Text>
-          <View style={styles.badge}>
-            <Ionicons name="trophy" size={13} color={colors.gold} />
-            <Text style={styles.badgeText}>FORMATION</Text>
+          <Text style={[styles.heading, { color: theme.text, textShadowColor: theme.glow }]}>Academy</Text>
+          <View style={[styles.badge, { borderColor: theme.accentBorder, backgroundColor: theme.overlay }]}>
+            <Ionicons name="trophy" size={13} color={theme.accentSoft} />
+            <Text style={[styles.badgeText, { color: theme.accentSoft }]}>FORMATION</Text>
           </View>
         </View>
-        <Text style={styles.subtitle}>Les bases d'abord. Les fonctionnalités avancées ensuite.</Text>
-        <Pressable onPress={handleResetAcademy} style={styles.resetButton}>
-          <Text style={styles.resetText}>Réinitialiser Academy</Text>
+        <Text style={[styles.subtitle, { color: theme.textMuted }]}>Les bases d'abord. Les fonctionnalités avancées ensuite.</Text>
+        <Pressable onPress={handleResetAcademy} style={[styles.resetButton, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+          <Text style={[styles.resetText, { color: theme.accentSoft }]}>Réinitialiser Academy</Text>
         </Pressable>
       </View>
 
       <GlassCard style={styles.progressCard}>
         <View style={styles.modeTop}>
-          <View style={styles.modeBadge}>
-            <Ionicons name={accessState?.fullAccess ? "shield-checkmark-outline" : "compass-outline"} size={13} color={colors.gold} />
-            <Text style={styles.modeBadgeText}>{accessState?.fullAccess ? "Mode Fondateur" : "Mode Découverte"}</Text>
+          <View style={[styles.modeBadge, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Ionicons name={accessState?.fullAccess ? "shield-checkmark-outline" : "compass-outline"} size={13} color={theme.accentSoft} />
+            <Text style={[styles.modeBadgeText, { color: theme.accentSoft }]}>{accessState?.fullAccess ? "Mode Fondateur" : "Mode Découverte"}</Text>
           </View>
-          <Text style={styles.modeMeta}>{accessState?.fullAccess ? "Accès complet" : "Sans compte"}</Text>
+          <Text style={[styles.modeMeta, { color: theme.textMuted }]}>{accessState?.fullAccess ? "Accès complet" : "Sans compte"}</Text>
         </View>
-        <Text style={styles.progressHint}>
+        <Text style={[styles.progressHint, { color: theme.textMuted }]}>
           {accessState?.fullAccess
             ? "Tous les modules sont accessibles pour tester Ascension sans restriction."
             : accessState?.discoveryMessage ??
@@ -110,18 +97,18 @@ export default function AcademyScreen() {
       <GlassCard style={styles.progressCard}>
         <View style={styles.progressTop}>
           <View>
-            <Text style={styles.progressTitle}>Parcours essentiel</Text>
-            <Text style={styles.progressText}>{progressPercent}% validé</Text>
+            <Text style={[styles.progressTitle, { color: theme.accentSoft }]}>Parcours essentiel</Text>
+            <Text style={[styles.progressText, { color: theme.accentSoft }]}>{progressPercent}% validé</Text>
           </View>
           <View style={styles.levelBox}>
-            <Text style={styles.levelLabel}>Niveau</Text>
-            <Text style={styles.levelValue}>{academyState?.profile.level ?? "Bronze"}</Text>
+            <Text style={[styles.levelLabel, { color: theme.textMuted }]}>Niveau</Text>
+            <Text style={[styles.levelValue, { color: theme.text }]}>{academyState?.profile.level ?? "Bronze"}</Text>
           </View>
         </View>
-        <View style={styles.track}>
-          <View style={[styles.fill, { width: `${progressPercent}%` }]} />
+        <View style={[styles.track, { backgroundColor: theme.line }]}>
+          <View style={[styles.fill, { width: `${progressPercent}%`, backgroundColor: theme.accent }]} />
         </View>
-        <Text style={styles.progressHint}>
+        <Text style={[styles.progressHint, { color: theme.textMuted }]}>
           XP Academy : {academyState?.profile.xp ?? 0} · Modules validés : {academyState?.completedModules.length ?? 0}
         </Text>
       </GlassCard>
@@ -149,13 +136,19 @@ export default function AcademyScreen() {
           ? Object.entries(accessState.unlockedModules)
               .filter(([feature]) => feature !== "advancedStats" && feature !== "crypto")
               .map(([feature, unlocked]) => (
-              <View key={feature} style={[styles.unlockPill, unlocked && styles.unlockPillActive]}>
+              <View
+                key={feature}
+                style={[
+                  styles.unlockPill,
+                  { borderColor: unlocked ? theme.success : theme.accentBorder, backgroundColor: unlocked ? `${theme.success}14` : theme.glowSoft }
+                ]}
+              >
                 <Ionicons
                   name={unlocked ? "checkmark-circle" : "lock-closed-outline"}
                   size={13}
-                  color={unlocked ? colors.success : colors.gold}
+                  color={unlocked ? theme.success : theme.accentSoft}
                 />
-                <Text style={[styles.unlockText, unlocked && styles.unlockTextActive]}>
+                <Text style={[styles.unlockText, { color: unlocked ? theme.success : theme.accentSoft }]}>
                   {featureLabels[feature as keyof typeof featureLabels]}
                 </Text>
               </View>
@@ -166,13 +159,13 @@ export default function AcademyScreen() {
       <GlassCard style={styles.progressCard}>
         <View style={styles.progressTop}>
           <View>
-            <Text style={styles.progressTitle}>Questionnaire de niveau</Text>
-            <Text style={styles.progressHint}>
+            <Text style={[styles.progressTitle, { color: theme.accentSoft }]}>Questionnaire de niveau</Text>
+            <Text style={[styles.progressHint, { color: theme.textMuted }]}>
               Il ne bloque pas l'entrée dans l'application. Il adapte simplement ton parcours et prépare les modules avancés.
             </Text>
           </View>
-          <View style={styles.statusBadge}>
-            <Text style={styles.statusText}>
+          <View style={[styles.statusBadge, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Text style={[styles.statusText, { color: theme.accentSoft }]}>
               {accessState?.userLevelTest.status === "completed" ? "Validé" : "Optionnel"}
             </Text>
           </View>
@@ -185,9 +178,12 @@ export default function AcademyScreen() {
               <Pressable
                 key={level}
                 onPress={() => completeLevelTest(level)}
-                style={[styles.levelChoice, selected && styles.levelChoiceActive]}
+                style={[
+                  styles.levelChoice,
+                  { borderColor: selected ? theme.accentBorder : theme.line, backgroundColor: selected ? theme.glowSoft : theme.overlay }
+                ]}
               >
-                <Text style={[styles.levelChoiceText, selected && styles.levelChoiceTextActive]}>
+                <Text style={[styles.levelChoiceText, { color: selected ? theme.accentSoft : theme.textMuted }]}>
                   {getLevelTestLabel(level)}
                 </Text>
               </Pressable>
@@ -203,7 +199,6 @@ export default function AcademyScreen() {
             module={module}
             founderAccess={Boolean(accessState?.fullAccess)}
             onOpenLesson={openLesson}
-            onValidateQuiz={validateQuiz}
           />
         ))}
       </View>
@@ -214,30 +209,34 @@ export default function AcademyScreen() {
 function ModuleCard({
   module,
   founderAccess,
-  onOpenLesson,
-  onValidateQuiz
+  onOpenLesson
 }: {
   module: AcademyModule;
   founderAccess: boolean;
   onOpenLesson: (moduleId: string, lessonId: string) => void;
-  onValidateQuiz: (module: AcademyModule) => void;
 }) {
+  const palette = useGlassCardPalette();
   const isLocked = module.status === "locked" && !founderAccess;
   const isCompleted = module.status === "completed";
-  const canValidateQuiz = module.quiz.status === "available" || (founderAccess && module.quiz.status !== "passed");
 
   return (
     <GlassCard style={[styles.moduleCard, isLocked && styles.lockedCard]}>
       <View style={styles.moduleTop}>
-        <View style={styles.moduleIcon}>
-          <Ionicons name={getModuleIcon(module.category)} size={22} color={isLocked ? "#777777" : colors.gold} />
+        <View style={[styles.moduleIcon, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
+          <Ionicons name={getModuleIcon(module.category)} size={22} color={isLocked ? palette.secondary : palette.accentSoft} />
         </View>
         <View style={styles.moduleCopy}>
-          <Text style={styles.moduleTitle}>{module.title}</Text>
-          <Text style={styles.moduleDescription}>{module.description}</Text>
+          <Text style={[styles.moduleTitle, { color: palette.title }]}>{module.title}</Text>
+          <Text style={[styles.moduleDescription, { color: palette.secondary }]}>{module.description}</Text>
         </View>
-        <View style={[styles.statusBadge, isCompleted && styles.statusBadgeDone]}>
-          <Text style={[styles.statusText, isCompleted && styles.statusTextDone]}>
+        <View
+          style={[
+            styles.statusBadge,
+            { backgroundColor: palette.glowSoft, borderColor: palette.border },
+            isCompleted && { backgroundColor: "rgba(110, 231, 183, 0.08)", borderColor: "rgba(110, 231, 183, 0.46)" }
+          ]}
+        >
+          <Text style={[styles.statusText, { color: isCompleted ? palette.success : palette.accentSoft }]}>
             {founderAccess && module.status === "locked" ? "Fondateur" : getModuleStatusLabel(module.status)}
           </Text>
         </View>
@@ -253,15 +252,15 @@ function ModuleCard({
               <Ionicons
                 name={lessonCompleted ? "checkmark-circle" : lessonLocked ? "lock-closed-outline" : "ellipse-outline"}
                 size={17}
-                color={lessonCompleted ? colors.success : lessonLocked ? "#777777" : colors.gold}
+                color={lessonCompleted ? palette.success : lessonLocked ? palette.secondary : palette.accentSoft}
               />
               <View style={styles.lessonCopy}>
-                <Text style={styles.lessonTitle}>{lesson.title}</Text>
-                <Text style={styles.lessonDescription}>{lesson.description}</Text>
+                <Text style={[styles.lessonTitle, { color: palette.title }]}>{lesson.title}</Text>
+                <Text style={[styles.lessonDescription, { color: palette.secondary }]}>{lesson.description}</Text>
               </View>
               {!lessonLocked && !lessonCompleted ? (
-                <View style={styles.smallAction}>
-                  <Text style={styles.smallActionText}>Ouvrir</Text>
+                <View style={[styles.smallAction, { backgroundColor: palette.glowSoft, borderColor: palette.border }]}>
+                  <Text style={[styles.smallActionText, { color: palette.accentSoft }]}>Ouvrir</Text>
                 </View>
               ) : null}
             </Pressable>
@@ -269,22 +268,17 @@ function ModuleCard({
         })}
       </View>
 
-      <View style={styles.quizBox}>
+      <View style={[styles.quizBox, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
         <View>
-          <Text style={styles.quizTitle}>{module.quiz.title}</Text>
-          <Text style={styles.quizMeta}>
+          <Text style={[styles.quizTitle, { color: palette.title }]}>{module.quiz.title}</Text>
+          <Text style={[styles.quizMeta, { color: palette.secondary }]}>
             {module.quiz.status === "passed"
               ? `Validé · ${module.quiz.score ?? 100}%`
-              : canValidateQuiz
-                ? `Quiz disponible · +${module.quiz.xpReward} XP`
-                : founderAccess
+              : founderAccess
                   ? "Accessible en Mode Fondateur"
                   : "Termine les leçons pour ouvrir le quiz"}
           </Text>
         </View>
-        {canValidateQuiz ? (
-          <PremiumButton label="Valider" icon="checkmark-circle" onPress={() => onValidateQuiz(module)} />
-        ) : null}
       </View>
     </GlassCard>
   );

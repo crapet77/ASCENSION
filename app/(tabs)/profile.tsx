@@ -1,18 +1,24 @@
 import { useCallback, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 import { AppScreen } from "@/components/AppScreen";
 import { AscensionLogo } from "@/components/AscensionLogo";
-import { GlassCard } from "@/components/GlassCard";
+import { GlassCard, useGlassCardPalette } from "@/components/GlassCard";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { brand } from "@/constants/brand";
-import { resetAscensionData } from "@/features/appReset/reset";
-import { UserAccessService, UserAccessState } from "@/features/access/userAccess";
+import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine, AcademyEngineState } from "@/engine/academy";
 import { ObjectiveEngine, ObjectiveEngineState } from "@/engine/objectives";
+import { UserAccessService, UserAccessState } from "@/features/access/userAccess";
+import { resetAscensionData } from "@/features/appReset/reset";
+import { calculateAscensionIQ } from "@/features/ascensionIQ/ascensionIQ";
+import { loadBankrollState } from "@/features/bankroll/storage";
+import { BankrollState } from "@/features/bankroll/types";
+import { loadDisciplineProfile, DisciplineProfile } from "@/features/discipline/disciplineProfile";
+import { defaultFinancialProfile, FinancialProfile, loadFinancialProfile } from "@/features/financialProfile";
 import {
   loadOnboardingPreferences,
   OnboardingGoal,
@@ -20,15 +26,10 @@ import {
   OnboardingUniverse,
   saveOnboardingPreferences
 } from "@/features/onboarding/onboardingStorage";
-import { loadDisciplineProfile, DisciplineProfile } from "@/features/discipline/disciplineProfile";
-import { loadXpProfile, XpProfile } from "@/features/xp/xpSystem";
-import { useAscensionTheme } from "@/features/theme/ascensionTheme";
-import { colors, radii, spacing, typography } from "@/constants/theme";
-import { loadBankrollState } from "@/features/bankroll/storage";
-import { BankrollState } from "@/features/bankroll/types";
 import { loadTickets } from "@/features/tickets/storage";
 import { AscensionTicket } from "@/features/tickets/types";
-import { calculateAscensionIQ } from "@/features/ascensionIQ/ascensionIQ";
+import { useAscensionTheme } from "@/features/theme/ascensionTheme";
+import { loadXpProfile, XpProfile } from "@/features/xp/xpSystem";
 
 const universeLabels: Record<OnboardingUniverse, string> = {
   carbon: "Carbone",
@@ -46,6 +47,7 @@ const goalLabels: Record<OnboardingGoal, string> = {
 };
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { theme, setUniverse } = useAscensionTheme();
   const [accessState, setAccessState] = useState<UserAccessState | null>(null);
   const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
@@ -55,6 +57,7 @@ export default function ProfileScreen() {
   const [bankroll, setBankroll] = useState<BankrollState | null>(null);
   const [tickets, setTickets] = useState<AscensionTicket[]>([]);
   const [objectiveState, setObjectiveState] = useState<ObjectiveEngineState | null>(null);
+  const [financialProfile, setFinancialProfile] = useState<FinancialProfile>(defaultFinancialProfile);
 
   useFocusEffect(
     useCallback(() => {
@@ -66,8 +69,19 @@ export default function ProfileScreen() {
         loadDisciplineProfile(),
         loadBankrollState(),
         loadTickets(),
-        ObjectiveEngine.getState()
-      ]).then(([nextAccessState, nextAcademyState, nextPreferences, nextXpProfile, nextDisciplineProfile, nextBankroll, nextTickets, nextObjectiveState]) => {
+        ObjectiveEngine.getState(),
+        loadFinancialProfile()
+      ]).then(([
+        nextAccessState,
+        nextAcademyState,
+        nextPreferences,
+        nextXpProfile,
+        nextDisciplineProfile,
+        nextBankroll,
+        nextTickets,
+        nextObjectiveState,
+        nextFinancialProfile
+      ]) => {
         setAccessState(nextAccessState);
         setAcademyState(nextAcademyState);
         setPreferences(nextPreferences);
@@ -76,22 +90,30 @@ export default function ProfileScreen() {
         setBankroll(nextBankroll);
         setTickets(nextTickets);
         setObjectiveState(nextObjectiveState);
+        setFinancialProfile(nextFinancialProfile);
       });
     }, [])
   );
+
   const ascensionIQ = calculateAscensionIQ({
     academyState,
     xpProfile,
     bankroll,
     tickets,
     objectiveState,
-    disciplineProfile
+    disciplineProfile,
+    financialProfile
   });
+  const xp = xpProfile?.xp ?? academyState?.profile.xp ?? 0;
+  const unlockedBadges = xpProfile?.badges.filter((badge) => badge.unlocked).length ?? ascensionIQ.badges.filter((badge) => badge.unlocked).length;
+  const completedModules = academyState?.completedModules.length ?? 0;
+  const activeObjectives = objectiveState?.activeObjectives.length ?? 0;
+  const playedTickets = tickets.filter((ticket) => ticket.input.playStatus === "played").length;
 
   function handleReset() {
     Alert.alert(
       "Réinitialiser mes données",
-      "Cela remettra à zéro la bankroll, les paris, statistiques, objectifs et historique sauvegardés.",
+      "Cela remettra à zéro les données locales sauvegardées.",
       [
         { text: "Annuler", style: "cancel" },
         {
@@ -99,7 +121,7 @@ export default function ProfileScreen() {
           style: "destructive",
           onPress: async () => {
             await resetAscensionData();
-            Alert.alert("Données réinitialisées", "Au prochain test, Ascension te demandera ton capital de départ.");
+            Alert.alert("Données réinitialisées", "Ascension repartira sur une base locale propre.");
           }
         }
       ]
@@ -140,7 +162,7 @@ export default function ProfileScreen() {
   function chooseMainGoal() {
     Alert.alert(
       "Choisir mon objectif principal",
-      "Ce choix modifie simplement l'ordre des contenus de l'accueil.",
+      "Ce choix personnalise simplement ton parcours.",
       [
         { text: "Comprendre l'argent", onPress: () => updateGoal("learn") },
         { text: "Construire mon patrimoine", onPress: () => updateGoal("wealth") },
@@ -156,7 +178,7 @@ export default function ProfileScreen() {
   }
 
   function showSoon(title: string) {
-    Alert.alert(title, "Cette préférence sera configurable dans une prochaine étape. Pour l'instant, Ascension conserve tes données localement.");
+    Alert.alert(title, "Cette préférence sera configurable dans une prochaine étape.");
   }
 
   return (
@@ -164,174 +186,136 @@ export default function ProfileScreen() {
       <AscensionLogo compact />
       <Header
         eyebrow="Profil"
-        title="Parametres"
-        subtitle="Personnalise ton experience et suis ta progression Ascension."
+        title="Carte Ascension"
+        subtitle="Ton identité, ton niveau et tes accès essentiels."
       />
 
-      <GlassCard style={styles.identity}>
-        <Text style={styles.identityName}>{brand.name}</Text>
-        <Text style={styles.identityMotto}>{brand.motto}</Text>
+      <GlassCard style={styles.identityCard}>
+        <View style={styles.identityTop}>
+          <View style={[styles.avatar, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Text style={[styles.avatarLetter, { color: theme.accentSoft }]}>J</Text>
+          </View>
+          <View style={styles.identityCopy}>
+            <Text style={[styles.identityName, { color: theme.text }]}>Jérôme</Text>
+            <Text style={[styles.identityMeta, { color: theme.textMuted }]}>
+              {accessState?.fullAccess ? "Fondateur Ascension" : "Mode Découverte"}
+            </Text>
+          </View>
+          <View style={[styles.levelPill, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Text style={[styles.levelPillText, { color: theme.accentSoft }]}>{academyState?.profile.level ?? "Bronze"}</Text>
+          </View>
+        </View>
+        <Text style={[styles.motto, { color: theme.accentSoft }]}>{brand.motto}</Text>
       </GlassCard>
 
-      <GlassCard style={styles.iqCard}>
+      <GlassCard style={styles.iqSummaryCard}>
         <View style={styles.iqHeader}>
           <View>
-            <Text style={[styles.iqKicker, { color: theme.accentSoft }]}>ASCENSION IQ</Text>
-            <Text style={styles.iqScore}>{ascensionIQ.score} IQ Finance</Text>
-            <Text style={styles.iqLevel}>{ascensionIQ.level}</Text>
+            <Text style={[styles.kicker, { color: theme.accentSoft }]}>ASCENSION IQ</Text>
+            <Text style={[styles.iqScore, { color: theme.text }]}>{ascensionIQ.score} IQ Finance</Text>
+            <Text style={[styles.iqLevel, { color: theme.textMuted }]}>{ascensionIQ.level}</Text>
           </View>
           <View style={[styles.iqOrb, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
-            <Ionicons name="analytics-outline" size={26} color={theme.accentSoft} />
+            <Ionicons name="analytics-outline" size={24} color={theme.accentSoft} />
           </View>
         </View>
-
-        <View style={styles.iqColumns}>
-          <View style={styles.iqColumn}>
-            <Text style={[styles.iqColumnTitle, { color: theme.accentSoft }]}>FORCES</Text>
-            {ascensionIQ.strengths.map((skill) => (
-              <Text key={skill.id} style={styles.iqListText}>{skill.label}</Text>
-            ))}
-          </View>
-          <View style={styles.iqColumn}>
-            <Text style={[styles.iqColumnTitle, { color: theme.accentSoft }]}>À AMÉLIORER</Text>
-            {ascensionIQ.improvements.map((skill) => (
-              <Text key={skill.id} style={styles.iqListText}>{skill.label}</Text>
-            ))}
-          </View>
+        <View style={styles.summaryGrid}>
+          <SummaryMetric label="XP" value={`${xp}`} />
+          <SummaryMetric label="Badges" value={`${unlockedBadges}`} />
+          <SummaryMetric label="Série" value={`${disciplineProfile?.currentStreak ?? 0} j`} />
         </View>
-
-        <View style={styles.skillRadar}>
-          {ascensionIQ.skills.map((skill) => (
-            <View key={skill.id} style={styles.skillRow}>
-              <View style={styles.skillMeta}>
-                <Text style={styles.skillLabel}>{skill.label}</Text>
-                <Text style={[styles.skillValue, { color: theme.accentSoft }]}>{skill.progress}%</Text>
-              </View>
-              <View style={[styles.skillTrack, { backgroundColor: theme.overlay }]}>
-                <View style={[styles.skillFill, { width: `${skill.progress}%`, backgroundColor: theme.accentSoft }]} />
-              </View>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.badgeGrid}>
-          {ascensionIQ.badges.map((badge) => (
-            <View key={badge.id} style={[styles.iqBadge, { borderColor: badge.unlocked ? theme.accentBorder : theme.line, backgroundColor: badge.unlocked ? theme.glowSoft : theme.overlay }]}>
+        <View style={styles.badgePreview}>
+          {ascensionIQ.badges.slice(0, 3).map((badge) => (
+            <View key={badge.id} style={[styles.badgePill, { borderColor: badge.unlocked ? theme.accentBorder : theme.line, backgroundColor: badge.unlocked ? theme.glowSoft : theme.overlay }]}>
               <Ionicons name={badge.unlocked ? "ribbon-outline" : "lock-closed-outline"} size={13} color={badge.unlocked ? theme.accentSoft : theme.textMuted} />
-              <Text style={[styles.iqBadgeText, { color: badge.unlocked ? theme.text : theme.textMuted }]}>{badge.title}</Text>
+              <Text style={[styles.badgeText, { color: badge.unlocked ? theme.text : theme.textMuted }]}>{badge.title}</Text>
             </View>
           ))}
         </View>
-
-        <Text style={styles.iqCoach}>{ascensionIQ.coachRecommendation}</Text>
       </GlassCard>
 
-      <Section title="👤 Personnalisation">
+      <Section title="Accès rapides">
+        <View style={styles.list}>
+          <ProfileRow icon="wallet-outline" label="Voir mon patrimoine" value="Détail financier" onPress={() => router.push("/wealth" as never)} />
+          <ProfileRow icon="flag-outline" label="Voir mes objectifs" value={`${activeObjectives} en cours`} onPress={() => router.push("/(tabs)/discipline" as never)} />
+          <ProfileRow icon="stats-chart-outline" label="Voir mes statistiques" value={`${playedTickets} pronostics joués`} onPress={() => router.push("/(tabs)/index" as never)} />
+          <ProfileRow icon="settings-outline" label="Paramètres" value="Thème, préférences, compte" onPress={() => showSoon("Paramètres")} />
+        </View>
+      </Section>
+
+      <Section title="Statistiques générales">
+        <GlassCard style={styles.statsCard}>
+          <SummaryMetric label="Modules validés" value={`${completedModules}`} />
+          <SummaryMetric label="Progression Academy" value={`${academyState?.progression.progressPercent ?? 0}%`} />
+          <SummaryMetric label="Univers" value={universeLabels[theme.id]} />
+        </GlassCard>
+      </Section>
+
+      <Section title="Paramètres">
         <View style={styles.list}>
           <ProfileRow icon="color-palette-outline" label="Changer d'univers" value={universeLabels[theme.id]} onPress={chooseUniverse} />
-          <ProfileRow icon="contrast-outline" label="Modifier le thème" value={theme.name} onPress={chooseUniverse} />
-          <ProfileRow icon="language-outline" label="Choisir la langue" value="Français" onPress={() => showSoon("Choisir la langue")} />
-        </View>
-      </Section>
-
-      <Section title="🎯 Mon parcours">
-        <GlassCard style={styles.versionBox}>
-          <Text style={styles.versionTitle}>Objectif principal</Text>
-          <Text style={styles.versionText}>
-            {preferences?.goal ? goalLabels[preferences.goal] : "Comprendre l'argent"}
-          </Text>
-        </GlassCard>
-        <View style={styles.list}>
-          <ProfileRow icon="flag-outline" label="Choisir mon objectif principal" value="Modifier" onPress={chooseMainGoal} />
-          <ProfileRow icon="book-outline" label="Comprendre l'argent" value={preferences?.goal === "learn" ? "Actif" : "Disponible"} onPress={() => updateGoal("learn")} />
-          <ProfileRow icon="wallet-outline" label="Construire mon patrimoine" value={preferences?.goal === "wealth" ? "Actif" : "Disponible"} onPress={() => updateGoal("wealth")} />
-          <ProfileRow icon="trending-up-outline" label="Investir intelligemment" value={preferences?.goal === "invest" ? "Actif" : "Disponible"} onPress={() => updateGoal("invest")} />
-          <ProfileRow icon="sparkles-outline" label="Opportunités Ascension" value={preferences?.goal === "opportunities" ? "Actif" : "Disponible"} onPress={() => updateGoal("opportunities")} />
-        </View>
-      </Section>
-
-      <Section title="🎓 Academy">
-        <View style={styles.list}>
-          <ProfileRow icon="school-outline" label="Niveau actuel" value={academyState?.profile.level ?? "Bronze"} />
-          <ProfileRow icon="checkmark-done-outline" label="Modules validés" value={`${academyState?.completedModules.length ?? 0}`} />
-          <ProfileRow icon="help-circle-outline" label="Quiz réussis" value={`${academyState?.certifiedLevels.length ?? 0}`} />
-          <ProfileRow icon="ribbon-outline" label="Certificats" value={`${academyState?.certifiedLevels.length ?? 0}`} />
-          <ProfileRow icon="analytics-outline" label="Progression" value={`${academyState?.progression.progressPercent ?? 0}%`} />
-        </View>
-      </Section>
-
-      <Section title="⭐ Progression">
-        <View style={styles.list}>
-          <ProfileRow icon="flash-outline" label="XP" value={`${xpProfile?.xp ?? academyState?.profile.xp ?? 0} XP`} />
-          <ProfileRow icon="medal-outline" label="Badges" value={`${xpProfile?.badges.filter((badge) => badge.unlocked).length ?? 0}`} />
-          <ProfileRow icon="flame-outline" label="Série de discipline" value={`${disciplineProfile?.currentStreak ?? 0} jours`} />
-          <ProfileRow icon="time-outline" label="Temps passé dans l'application" value="Local · bientôt" />
-        </View>
-      </Section>
-
-      <Section title="⚙️ Préférences">
-        <View style={styles.list}>
+          <ProfileRow icon="flag-outline" label="Objectif principal" value={preferences?.goal ? goalLabels[preferences.goal] : "Comprendre l'argent"} onPress={chooseMainGoal} />
+          <ProfileRow icon="language-outline" label="Langue" value="Français" onPress={() => showSoon("Langue")} />
           <ProfileRow icon="notifications-outline" label="Notifications" value="À configurer" onPress={() => showSoon("Notifications")} />
-          <ProfileRow icon="football-outline" label="Sports favoris" value="À configurer" onPress={() => showSoon("Sports favoris")} />
-          <ProfileRow icon="bar-chart-outline" label="Marchés favoris" value="À configurer" onPress={() => showSoon("Marchés favoris")} />
-          <ProfileRow icon="alarm-outline" label="Fréquence des alertes" value="À configurer" onPress={() => showSoon("Fréquence des alertes")} />
+          <ProfileRow icon="sparkles-outline" label="Ascension Masterclass" value="Approfondir" onPress={() => router.push("/masterclass" as never)} />
         </View>
       </Section>
 
-      <Section title="☁️ Compte Ascension">
-        <GlassCard style={styles.versionBox}>
-          <Text style={styles.versionTitle}>
+      <Section title="Compte Ascension">
+        <GlassCard style={styles.accountCard}>
+          <Text style={[styles.cardTitle, { color: theme.text }]}>
             {accessState?.accountMode ? "Compte Ascension" : "Sauvegarder ma progression"}
           </Text>
-          <Text style={styles.versionText}>
+          <Text style={[styles.cardText, { color: theme.textMuted }]}>
             {accessState?.accountMode
               ? `Compte local : ${accessState.account?.displayName ?? "Utilisateur Ascension"}`
-              : "Créer gratuitement un compte pour synchroniser tes appareils, XP, badges, historique et objectifs."}
+              : "Crée un compte uniquement lorsque tu veux synchroniser ta progression."}
           </Text>
         </GlassCard>
       </Section>
 
       <Section title="Mode Fondateur">
-        <GlassCard style={styles.versionBox}>
-          <Text style={styles.versionTitle}>
-            {accessState?.fullAccess ? "Accès fondateur activé" : "Accès créateur Ascension"}
-          </Text>
-          <Text style={styles.versionText}>
-            {accessState?.fullAccess
-              ? "Tous les modules sont débloqués localement pour tester Pronostics, Marchés, IA, import JSON, statistiques, reset et outils de simulation."
-              : "Active ce mode uniquement pour tester l'application complète sans abonnement ni verrou Premium."}
-          </Text>
-        </GlassCard>
         <Pressable onPress={handleAdminMode}>
           <GlassCard style={styles.row} contentStyle={styles.rowInner}>
-            <View style={styles.iconBox}>
+            <View style={[styles.iconBox, { backgroundColor: theme.glowSoft, borderColor: theme.accentBorder }]}>
               <Ionicons
                 name={accessState?.adminMode ? "shield-checkmark" : "shield-outline"}
                 size={18}
-                color={accessState?.adminMode ? colors.success : colors.gold}
+                color={accessState?.adminMode ? theme.success : theme.accentSoft}
               />
             </View>
             <View style={styles.rowCopy}>
-              <Text style={styles.rowLabel}>
+              <Text style={[styles.rowLabel, { color: theme.text }]}>
                 {accessState?.fullAccess ? "Désactiver Mode Fondateur" : "Activer Mode Fondateur"}
               </Text>
-              <Text style={styles.rowValue}>
-                {accessState?.fullAccess ? "Actif · Premium et modules avancés débloqués" : "Réservé au fondateur"}
+              <Text style={[styles.rowValue, { color: theme.textMuted }]}>
+                {accessState?.fullAccess ? "Tous les modules sont accessibles" : "Réservé au fondateur"}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+            <Ionicons name="chevron-forward" size={18} color={theme.textMuted} />
           </GlassCard>
         </Pressable>
       </Section>
 
-      <Pressable onPress={handleReset} style={styles.resetButton}>
-        <Ionicons name="refresh" size={18} color={colors.danger} />
+      <Pressable onPress={handleReset} style={[styles.resetButton, { borderColor: `${theme.danger}55`, backgroundColor: `${theme.danger}12` }]}>
+        <Ionicons name="refresh" size={18} color={theme.danger} />
         <View style={styles.resetCopy}>
-          <Text style={styles.resetTitle}>Réinitialiser mes données</Text>
-          <Text style={styles.resetText}>Bankroll, paris, statistiques, objectifs et historique.</Text>
+          <Text style={[styles.resetTitle, { color: theme.danger }]}>Réinitialiser mes données</Text>
+          <Text style={[styles.resetText, { color: theme.textMuted }]}>Remettre les données locales à zéro.</Text>
         </View>
       </Pressable>
     </AppScreen>
+  );
+}
+
+function SummaryMetric({ label, value }: { label: string; value: string }) {
+  const palette = useGlassCardPalette();
+
+  return (
+    <View style={[styles.summaryMetric, { borderColor: palette.line, backgroundColor: palette.overlay }]}>
+      <Text style={[styles.summaryLabel, { color: palette.secondary }]}>{label}</Text>
+      <Text style={[styles.summaryValue, { color: palette.title }]}>{value}</Text>
+    </View>
   );
 }
 
@@ -346,40 +330,84 @@ function ProfileRow({
   value: string;
   onPress?: () => void;
 }) {
+  const palette = useGlassCardPalette();
+
   return (
     <Pressable onPress={onPress} disabled={!onPress}>
       <GlassCard style={styles.row} contentStyle={styles.rowInner}>
-        <View style={styles.iconBox}>
-          <Ionicons name={icon} size={18} color={colors.gold} />
+        <View style={[styles.iconBox, { backgroundColor: palette.glowSoft, borderColor: palette.border }]}>
+          <Ionicons name={icon} size={18} color={palette.accentSoft} />
         </View>
         <View style={styles.rowCopy}>
-          <Text style={styles.rowLabel}>{label}</Text>
-          <Text style={styles.rowValue}>{value}</Text>
+          <Text style={[styles.rowLabel, { color: palette.title }]}>{label}</Text>
+          <Text style={[styles.rowValue, { color: palette.secondary }]}>{value}</Text>
         </View>
-        {onPress ? <Ionicons name="chevron-forward" size={18} color={colors.textMuted} /> : null}
+        {onPress ? <Ionicons name="chevron-forward" size={18} color={palette.secondary} /> : null}
       </GlassCard>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  identity: {
+  identityCard: {
     padding: spacing.lg,
-    gap: spacing.xs
+    gap: spacing.md
   },
-  identityName: {
-    color: colors.white,
+  identityTop: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  avatar: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  avatarLetter: {
     fontSize: 24,
     fontFamily: typography.fontFamily,
-    fontWeight: "500",
+    fontWeight: "700"
+  },
+  identityCopy: {
+    flex: 1,
+    gap: 3
+  },
+  identityName: {
+    fontSize: 24,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
     letterSpacing: 0.35
   },
-  identityMotto: {
-    color: colors.gold,
-    fontSize: 14,
+  identityMeta: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
-  iqCard: {
+  levelPill: {
+    minHeight: 34,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  levelPillText: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: typography.labelTracking,
+    textTransform: "uppercase"
+  },
+  motto: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 19
+  },
+  iqSummaryCard: {
     padding: spacing.lg,
     gap: spacing.md
   },
@@ -389,7 +417,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: spacing.md
   },
-  iqKicker: {
+  kicker: {
     fontSize: 11,
     fontFamily: typography.fontFamily,
     fontWeight: "600",
@@ -397,7 +425,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
   iqScore: {
-    color: colors.white,
     fontSize: 28,
     fontFamily: typography.fontFamily,
     fontWeight: "600",
@@ -405,83 +432,49 @@ const styles = StyleSheet.create({
     lineHeight: 36
   },
   iqLevel: {
-    color: "#C8C8C8",
     fontSize: 13,
     fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   iqOrb: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center"
   },
-  iqColumns: {
+  summaryGrid: {
     flexDirection: "row",
     gap: spacing.sm
   },
-  iqColumn: {
+  summaryMetric: {
     flex: 1,
+    minHeight: 68,
     borderRadius: radii.md,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-    backgroundColor: "rgba(255,255,255,0.035)",
     padding: spacing.sm,
-    gap: 5
+    justifyContent: "center",
+    gap: 4
   },
-  iqColumnTitle: {
+  summaryLabel: {
     fontSize: 10,
     fontFamily: typography.fontFamily,
-    fontWeight: "600",
-    letterSpacing: typography.eyebrowTracking,
+    fontWeight: "500",
+    letterSpacing: 0.7,
     textTransform: "uppercase"
   },
-  iqListText: {
-    color: colors.white,
-    fontSize: 12,
+  summaryValue: {
+    fontSize: 17,
     fontFamily: typography.fontFamily,
-    fontWeight: "500",
-    lineHeight: 17
+    fontWeight: "700"
   },
-  skillRadar: {
-    gap: spacing.sm
-  },
-  skillRow: {
-    gap: 5
-  },
-  skillMeta: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  skillLabel: {
-    color: colors.white,
-    fontSize: 12,
-    fontFamily: typography.fontFamily,
-    fontWeight: "500"
-  },
-  skillValue: {
-    fontSize: 11,
-    fontFamily: typography.fontFamily,
-    fontWeight: "600"
-  },
-  skillTrack: {
-    height: 6,
-    borderRadius: radii.pill,
-    overflow: "hidden"
-  },
-  skillFill: {
-    height: "100%",
-    borderRadius: radii.pill
-  },
-  badgeGrid: {
+  badgePreview: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.xs
   },
-  iqBadge: {
+  badgePill: {
     minHeight: 30,
     borderRadius: radii.pill,
     borderWidth: 1,
@@ -490,17 +483,33 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5
   },
-  iqBadgeText: {
+  badgeText: {
     fontSize: 10,
     fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
-  iqCoach: {
-    color: "#C8C8C8",
-    fontSize: 13,
+  statsCard: {
+    padding: spacing.md,
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  accountCard: {
+    padding: spacing.md,
+    gap: spacing.xs
+  },
+  cardTitle: {
+    color: colors.white,
+    fontSize: 16,
     fontFamily: typography.fontFamily,
     fontWeight: "500",
-    lineHeight: 19
+    letterSpacing: typography.labelTracking
+  },
+  cardText: {
+    color: colors.textMuted,
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "400",
+    lineHeight: 20
   },
   list: {
     gap: spacing.sm
@@ -520,9 +529,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: radii.sm,
-    backgroundColor: "rgba(228, 169, 69, 0.10)",
     borderWidth: 1,
-    borderColor: colors.goldBorder,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -531,39 +538,20 @@ const styles = StyleSheet.create({
     gap: 2
   },
   rowLabel: {
-    color: colors.white,
     fontSize: 15,
     fontFamily: typography.fontFamily,
     fontWeight: "500",
     letterSpacing: 0.2
   },
   rowValue: {
-    color: "#C8C8C8",
     fontSize: 12,
-    fontWeight: "400"
-  },
-  versionBox: {
-    padding: spacing.md,
-    gap: spacing.xs
-  },
-  versionTitle: {
-    color: colors.white,
-    fontSize: 16,
     fontFamily: typography.fontFamily,
-    fontWeight: "500",
-    letterSpacing: typography.labelTracking
-  },
-  versionText: {
-    color: "#C8C8C8",
-    fontSize: 13,
-    lineHeight: 20
+    fontWeight: "400"
   },
   resetButton: {
     minHeight: 72,
     borderWidth: 1,
-    borderColor: "rgba(255, 107, 107, 0.30)",
     borderRadius: radii.md,
-    backgroundColor: "rgba(255, 107, 107, 0.06)",
     padding: spacing.md,
     flexDirection: "row",
     alignItems: "center",
@@ -574,13 +562,13 @@ const styles = StyleSheet.create({
     gap: 3
   },
   resetTitle: {
-    color: colors.danger,
     fontSize: 15,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   resetText: {
-    color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "400"
   }
 });

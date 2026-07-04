@@ -4,6 +4,9 @@ import { BANKROLL_STATE_STORAGE_KEY, BANKROLL_STORAGE_KEY } from "@/features/ban
 import { TICKETS_STORAGE_KEY } from "@/features/tickets/storage";
 import { USER_ACCESS_STORAGE_KEY } from "@/features/access/userAccess";
 import { ONBOARDING_STORAGE_KEY } from "@/features/onboarding/onboardingStorage";
+import { FINANCIAL_PROFILE_STORAGE_KEY } from "@/features/financialProfile/storage";
+import { INVESTMENT_PORTFOLIO_STORAGE_KEY } from "@/features/investmentPortfolio/storage";
+import { WEALTH_STORAGE_KEY } from "@/features/wealth/storage";
 
 const RESET_KEYS = [
   BANKROLL_STORAGE_KEY,
@@ -11,6 +14,9 @@ const RESET_KEYS = [
   TICKETS_STORAGE_KEY,
   USER_ACCESS_STORAGE_KEY,
   ONBOARDING_STORAGE_KEY,
+  FINANCIAL_PROFILE_STORAGE_KEY,
+  INVESTMENT_PORTFOLIO_STORAGE_KEY,
+  WEALTH_STORAGE_KEY,
   "@ascension/betting/v1",
   "@ascension/discipline/v1",
   "@ascension/objectives/v1",

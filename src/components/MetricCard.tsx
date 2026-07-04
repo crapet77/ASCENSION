@@ -17,8 +17,8 @@ export function MetricCard({ label, value, detail, tone = "neutral" }: MetricCar
 
   return (
     <GlassCard style={styles.card} contentStyle={styles.content}>
-      <View style={styles.carbonLineA} />
-      <View style={styles.carbonLineB} />
+      <View style={[styles.carbonLineA, { backgroundColor: theme.overlay }]} />
+      <View style={[styles.carbonLineB, { backgroundColor: theme.glowSoft }]} />
       <View style={[styles.accent, { backgroundColor: accent }]} />
       <Text style={[styles.label, { color: theme.textMuted }]}>{label}</Text>
       <Text style={[styles.value, { color: tone === "success" ? theme.success : tone === "danger" ? theme.danger : theme.text, textShadowColor: theme.glow }]}>{value}</Text>
@@ -30,7 +30,8 @@ export function MetricCard({ label, value, detail, tone = "neutral" }: MetricCar
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minWidth: 156
+    minWidth: 156,
+    borderRadius: radii.lg
   },
   content: {
     padding: 19,
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 12
   },
   detail: {
-    color: "#C8C8C8",
+    color: colors.textMuted,
     fontSize: 11,
     fontFamily: typography.fontFamily,
     fontWeight: "400",

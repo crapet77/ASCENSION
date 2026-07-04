@@ -1,4 +1,4 @@
-export type MarketSortKey = "marketCap" | "price" | "change24h" | "aiScore";
+export type MarketSortKey = "marketCap" | "price" | "change24h" | "volume";
 
 export type FutureModuleKey = "stocks" | "etfs" | "news" | "watchlist" | "alerts";
 
@@ -12,7 +12,6 @@ export type CoinMarketAsset = {
   marketCap: number;
   totalVolume: number;
   marketCapRank: number;
-  aiScore: number;
 };
 
 export type FutureModuleCard = {

@@ -126,7 +126,9 @@ export function completeAcademyLesson(
 ): AcademyProfile {
   let earnedXp = 0;
   const now = new Date().toISOString();
-  const modules = profile.modules.map((module) => {
+  let completedModuleOrder: number | null = null;
+  let completedLevelOrder: number | null = null;
+  const modulesAfterLesson = profile.modules.map((module) => {
     if (module.id !== moduleId || module.status !== "available") {
       return module;
     }
@@ -148,16 +150,28 @@ export function completeAcademyLesson(
       index === nextLockedLessonIndex ? { ...lesson, status: "available" as const } : lesson
     );
     const allLessonsCompleted = unlockedLessons.every((lesson) => lesson.status === "completed");
+    const shouldCompleteModule = allLessonsCompleted && module.quiz.status !== "passed";
+
+    if (shouldCompleteModule) {
+      earnedXp += module.quiz.xpReward;
+      completedModuleOrder = module.order;
+    }
 
     return {
       ...module,
+      status: allLessonsCompleted ? "completed" as const : module.status,
       lessons: unlockedLessons,
-      quiz: allLessonsCompleted && module.quiz.status === "locked"
-        ? { ...module.quiz, status: "available" as const }
+      quiz: allLessonsCompleted
+        ? {
+            ...module.quiz,
+            status: "passed" as const,
+            score: module.quiz.score ?? 100,
+            completedAt: module.quiz.completedAt ?? now
+          }
         : module.quiz
     };
   });
-  const levels = profile.levels.map((level) => {
+  const levelsAfterLesson = profile.levels.map((level) => {
     if (level.id !== moduleId || level.status !== "in_progress") {
       return level;
     }
@@ -213,6 +227,22 @@ export function completeAcademyLesson(
       (chapter) => chapter.status === "validated" || chapter.status === "certified"
     );
 
+    if (allChaptersValidated && level.certification.status !== "certified") {
+      completedLevelOrder = level.order;
+
+      return {
+        ...level,
+        status: "certified" as const,
+        chapters: unlockedChapters.map((chapter) => ({ ...chapter, status: "certified" as const })),
+        certification: {
+          ...level.certification,
+          status: "certified" as const,
+          score: level.certification.score ?? 100,
+          certifiedAt: level.certification.certifiedAt ?? now
+        }
+      };
+    }
+
     return {
       ...level,
       chapters: unlockedChapters,
@@ -222,6 +252,8 @@ export function completeAcademyLesson(
     };
   });
   const xp = profile.xp + earnedXp;
+  const modules = unlockNextAcademyModule(modulesAfterLesson, completedModuleOrder);
+  const levels = unlockNextAcademyLevel(levelsAfterLesson, completedLevelOrder);
 
   return {
     ...profile,
@@ -229,6 +261,92 @@ export function completeAcademyLesson(
     level: getAcademyLevel(xp),
     levels,
     modules,
+    badges: unlockAcademyBadges(profile.badges, levels, now),
+    updatedAt: now
+  };
+}
+
+export function autoValidateFinishedAcademy(profile: AcademyProfile): AcademyProfile {
+  let earnedXp = 0;
+  let changed = false;
+  let completedModuleOrder: number | null = null;
+  let completedLevelOrder: number | null = null;
+  const now = new Date().toISOString();
+
+  const modulesAfterValidation = profile.modules.map((module) => {
+    if (module.status !== "available") {
+      return module;
+    }
+
+    const allLessonsCompleted = module.lessons.length > 0 && module.lessons.every((lesson) => lesson.status === "completed");
+
+    if (!allLessonsCompleted) {
+      return module;
+    }
+
+    changed = true;
+    completedModuleOrder = module.order;
+
+    if (module.quiz.status !== "passed") {
+      earnedXp += module.quiz.xpReward;
+    }
+
+    return {
+      ...module,
+      status: "completed" as const,
+      quiz: {
+        ...module.quiz,
+        status: "passed" as const,
+        score: module.quiz.score ?? 100,
+        completedAt: module.quiz.completedAt ?? now
+      }
+    };
+  });
+
+  const levelsAfterValidation = profile.levels.map((level) => {
+    if (level.status !== "in_progress" || level.certification.status === "certified") {
+      return level;
+    }
+
+    const allChaptersValidated = level.chapters.every(
+      (chapter) => chapter.status === "validated" || chapter.status === "certified"
+    );
+
+    if (!allChaptersValidated) {
+      return level;
+    }
+
+    changed = true;
+    completedLevelOrder = level.order;
+
+    return {
+      ...level,
+      status: "certified" as const,
+      chapters: level.chapters.map((chapter) => ({ ...chapter, status: "certified" as const })),
+      certification: {
+        ...level.certification,
+        status: "certified" as const,
+        score: level.certification.score ?? 100,
+        certifiedAt: level.certification.certifiedAt ?? now
+      }
+    };
+  });
+
+  if (!changed) {
+    return profile;
+  }
+
+  const modules = unlockNextAcademyModule(modulesAfterValidation, completedModuleOrder);
+  const levels = unlockNextAcademyLevel(levelsAfterValidation, completedLevelOrder);
+  const xp = profile.xp + earnedXp;
+
+  return {
+    ...profile,
+    xp,
+    level: getAcademyLevel(xp),
+    levels,
+    modules,
+    badges: unlockAcademyBadges(profile.badges, levels, now),
     updatedAt: now
   };
 }

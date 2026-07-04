@@ -1,11 +1,10 @@
 import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 
 import { AppScreen } from "@/components/AppScreen";
-import { GlassCard } from "@/components/GlassCard";
+import { GlassCard, useGlassCardPalette } from "@/components/GlassCard";
 import { PremiumButton } from "@/components/PremiumButton";
 import { colors, radii, spacing, typography } from "@/constants/theme";
 import { AcademyEngine } from "@/engine/academy";
@@ -44,6 +43,7 @@ const academyRoute = "/(tabs)/academy" as never;
 
 export default function MarketsScreen() {
   const router = useRouter();
+  const palette = useGlassCardPalette();
   const [dailyOpportunity, setDailyOpportunity] = useState<MarketEngineOpportunity | null>(null);
   const [secondaryOpportunities, setSecondaryOpportunities] = useState<MarketEngineOpportunity[]>([]);
   const [marketHistory, setMarketHistory] = useState<MarketEngineOpportunity[]>([]);
@@ -70,40 +70,40 @@ export default function MarketsScreen() {
     <AppScreen>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Radar Marchés</Text>
-          <Text style={styles.subtitle}>Bourse, crypto, matières premières et devises.</Text>
+          <Text style={[styles.title, { color: palette.title }]}>Radar Marchés</Text>
+          <Text style={[styles.subtitle, { color: palette.secondary }]}>Bourse, crypto, matières premières et devises.</Text>
         </View>
-        <View style={styles.badge}>
-          <Ionicons name={hasMarketsPremiumAccess ? "trending-up-outline" : "lock-closed-outline"} size={14} color={colors.gold} />
-          <Text style={styles.badgeText}>{hasMarketsPremiumAccess ? `${totalDisplayed}/3` : "Découverte"}</Text>
+        <View style={[styles.badge, { backgroundColor: palette.overlay, borderColor: palette.border }]}>
+          <Ionicons name={hasMarketsPremiumAccess ? "trending-up-outline" : "lock-closed-outline"} size={14} color={palette.accentSoft} />
+          <Text style={[styles.badgeText, { color: palette.accentSoft }]}>{hasMarketsPremiumAccess ? `${totalDisplayed}/3` : "Découverte"}</Text>
         </View>
       </View>
 
-      <Text style={styles.syncText}>
+      <Text style={[styles.syncText, { color: palette.secondary }]}>
         Source locale · prêt pour IA/API{generatedAt ? ` · ${new Date(generatedAt).toLocaleDateString("fr-FR")}` : ""}
       </Text>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Opportunité du jour</Text>
-          <Text style={styles.sectionMeta}>{hasMarketsPremiumAccess ? (dailyOpportunity ? "1 signal" : "0 signal") : "Premium"}</Text>
+          <Text style={[styles.sectionTitle, { color: palette.accentSoft }]}>Opportunité du jour</Text>
+          <Text style={[styles.sectionMeta, { color: palette.secondary }]}>{hasMarketsPremiumAccess ? (dailyOpportunity ? "1 signal" : "0 signal") : "Premium"}</Text>
         </View>
 
         <View style={styles.list}>
           {!hasMarketsPremiumAccess ? (
             <GlassCard style={styles.lockedPanel}>
-              <Ionicons name="lock-closed-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Signaux du jour réservés</Text>
-              <Text style={styles.emptyText}>
+              <Ionicons name="lock-closed-outline" size={28} color={palette.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: palette.title }]}>Signaux du jour réservés</Text>
+              <Text style={[styles.emptyText, { color: palette.secondary }]}>
                 En Mode Découverte, tu peux consulter la méthode, les statistiques publiques et l'historique. Les opportunités en temps réel nécessitent les conditions applicables et un abonnement actif.
               </Text>
               <PremiumButton label="Ouvrir Academy" icon="school-outline" onPress={() => router.push(academyRoute)} />
             </GlassCard>
           ) : !dailyOpportunity ? (
             <GlassCard style={styles.emptyCard}>
-              <Ionicons name="scan-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Aucune opportunité aujourd'hui.</Text>
-              <Text style={styles.emptyText}>Ascension préfère ne rien afficher plutôt que forcer un signal faible.</Text>
+              <Ionicons name="scan-outline" size={28} color={palette.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: palette.title }]}>Aucune opportunité aujourd'hui.</Text>
+              <Text style={[styles.emptyText, { color: palette.secondary }]}>Ascension préfère ne rien afficher plutôt que forcer un signal faible.</Text>
             </GlassCard>
           ) : null}
 
@@ -114,8 +114,8 @@ export default function MarketsScreen() {
       {hasMarketsPremiumAccess && secondaryOpportunities.length > 0 ? (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Opportunités secondaires</Text>
-            <Text style={styles.sectionMeta}>{secondaryOpportunities.length}/2</Text>
+            <Text style={[styles.sectionTitle, { color: palette.accentSoft }]}>Opportunités secondaires</Text>
+            <Text style={[styles.sectionMeta, { color: palette.secondary }]}>{secondaryOpportunities.length}/2</Text>
           </View>
           <View style={styles.list}>
             {secondaryOpportunities.map((opportunity) => (
@@ -127,8 +127,8 @@ export default function MarketsScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Statistiques publiques</Text>
-          <Text style={styles.sectionMeta}>Méthode Ascension</Text>
+          <Text style={[styles.sectionTitle, { color: palette.accentSoft }]}>Statistiques publiques</Text>
+          <Text style={[styles.sectionMeta, { color: palette.secondary }]}>Méthode Ascension</Text>
         </View>
         <View style={styles.grid}>
           <MarketInfo label="Signaux suivis" value={`${marketStats?.total ?? 0}`} />
@@ -140,15 +140,15 @@ export default function MarketsScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Historique Marchés</Text>
-          <Text style={styles.sectionMeta}>{marketHistory.length} terminé</Text>
+          <Text style={[styles.sectionTitle, { color: palette.accentSoft }]}>Historique Marchés</Text>
+          <Text style={[styles.sectionMeta, { color: palette.secondary }]}>{marketHistory.length} terminé</Text>
         </View>
         <View style={styles.list}>
           {marketHistory.length === 0 ? (
             <GlassCard style={styles.emptyCard}>
-              <Ionicons name="bar-chart-outline" size={28} color={colors.gold} />
-              <Text style={styles.emptyTitle}>Aucun historique marché pour l'instant.</Text>
-              <Text style={styles.emptyText}>Les opportunités terminées apparaîtront ici pour rester consultables en Mode Découverte.</Text>
+              <Ionicons name="bar-chart-outline" size={28} color={palette.accentSoft} />
+              <Text style={[styles.emptyTitle, { color: palette.title }]}>Aucun historique marché pour l'instant.</Text>
+              <Text style={[styles.emptyText, { color: palette.secondary }]}>Les opportunités terminées apparaîtront ici pour rester consultables en Mode Découverte.</Text>
             </GlassCard>
           ) : null}
           {marketHistory.map((opportunity) => (
@@ -161,24 +161,26 @@ export default function MarketsScreen() {
 }
 
 function MarketOpportunityCard({ opportunity, featured = false }: { opportunity: MarketEngineOpportunity; featured?: boolean }) {
+  const palette = useGlassCardPalette();
+
   return (
     <GlassCard style={styles.card}>
       <View style={styles.cardTop}>
-        <View style={styles.assetPill}>
-          <Ionicons name="pulse-outline" size={13} color={colors.gold} />
-          <Text style={styles.assetPillText}>{categoryLabel[opportunity.category]}</Text>
+        <View style={[styles.assetPill, { backgroundColor: palette.glowSoft, borderColor: palette.border }]}>
+          <Ionicons name="pulse-outline" size={13} color={palette.accentSoft} />
+          <Text style={[styles.assetPillText, { color: palette.accentSoft }]}>{categoryLabel[opportunity.category]}</Text>
         </View>
-        <Text style={styles.status}>{statusLabel[opportunity.status]}</Text>
+        <Text style={[styles.status, { color: palette.accentSoft }]}>{statusLabel[opportunity.status]}</Text>
       </View>
 
       <View style={styles.assetRow}>
         <View>
-          <Text style={[styles.asset, featured && styles.assetFeatured]}>{opportunity.asset}</Text>
-          <Text style={styles.direction}>Action : {directionLabel[opportunity.direction]}</Text>
+          <Text style={[styles.asset, { color: palette.title }, featured && styles.assetFeatured]}>{opportunity.asset}</Text>
+          <Text style={[styles.direction, { color: palette.secondary }]}>Action : {directionLabel[opportunity.direction]}</Text>
         </View>
         <View style={styles.scoreBox}>
-          <Text style={styles.scoreLabel}>Score Ascension</Text>
-          <Text style={styles.score}>{opportunity.ascensionScore}<Text style={styles.scoreSuffix}>/100</Text></Text>
+          <Text style={[styles.scoreLabel, { color: palette.secondary }]}>Score Ascension</Text>
+          <Text style={[styles.score, { color: palette.accentSoft }]}>{opportunity.ascensionScore}<Text style={[styles.scoreSuffix, { color: palette.secondary }]}>/100</Text></Text>
         </View>
       </View>
 
@@ -189,10 +191,10 @@ function MarketOpportunityCard({ opportunity, featured = false }: { opportunity:
         <MarketInfo label="Stop conseillé" value={opportunity.stopLoss} />
       </View>
 
-      <View style={styles.analysisBox}>
-        <Text style={styles.confidence}>Confiance : {formatStars(opportunity.confidenceStars)}</Text>
-        <Text style={styles.analysisTitle}>Analyse Ascension</Text>
-        <Text style={styles.analysis}>{opportunity.shortAnalysis}</Text>
+      <View style={[styles.analysisBox, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
+        <Text style={[styles.confidence, { color: palette.accentSoft }]}>Confiance : {formatStars(opportunity.confidenceStars)}</Text>
+        <Text style={[styles.analysisTitle, { color: palette.title }]}>Analyse Ascension</Text>
+        <Text style={[styles.analysis, { color: palette.secondary }]}>{opportunity.shortAnalysis}</Text>
       </View>
     </GlassCard>
   );
@@ -203,10 +205,12 @@ function formatStars(stars: number) {
 }
 
 function MarketInfo({ label, value }: { label: string; value: string }) {
+  const palette = useGlassCardPalette();
+
   return (
-    <View style={styles.infoBox}>
-      <Text style={styles.metaLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value}</Text>
+    <View style={[styles.infoBox, { backgroundColor: palette.overlay, borderColor: palette.line }]}>
+      <Text style={[styles.metaLabel, { color: palette.secondary }]}>{label}</Text>
+      <Text style={[styles.infoValue, { color: palette.title }]}>{value}</Text>
     </View>
   );
 }
@@ -223,11 +227,14 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: typography.fontFamily,
     fontWeight: "500",
-    letterSpacing: 0.4
+    letterSpacing: typography.titleTracking,
+    lineHeight: 32
   },
   subtitle: {
     color: "#C8C8C8",
     fontSize: 13,
+    fontFamily: typography.fontFamily,
+    lineHeight: 19,
     fontWeight: "400"
   },
   badge: {
@@ -244,6 +251,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: colors.gold,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   syncText: {
@@ -288,12 +296,14 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: colors.white,
     fontSize: 16,
+    fontFamily: typography.fontFamily,
     fontWeight: "700",
     textAlign: "center"
   },
   emptyText: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 18,
     textAlign: "center"
   },
@@ -329,11 +339,13 @@ const styles = StyleSheet.create({
   assetPillText: {
     color: colors.gold,
     fontSize: 11,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   status: {
     color: colors.gold,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   assetRow: {
@@ -345,6 +357,7 @@ const styles = StyleSheet.create({
   asset: {
     color: colors.white,
     fontSize: 22,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   assetFeatured: {
@@ -353,6 +366,7 @@ const styles = StyleSheet.create({
   direction: {
     color: "#C8C8C8",
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "500"
   },
   scoreBox: {
@@ -361,17 +375,20 @@ const styles = StyleSheet.create({
   scoreLabel: {
     color: "#8A8A8A",
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     fontWeight: "500",
     textTransform: "uppercase"
   },
   score: {
     color: colors.gold,
     fontSize: 26,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   scoreSuffix: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "600"
   },
   grid: {
@@ -384,44 +401,49 @@ const styles = StyleSheet.create({
     minHeight: 76,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    borderRadius: radii.sm,
-    backgroundColor: "#050505",
+    borderRadius: radii.md,
+    backgroundColor: colors.surface,
     padding: spacing.sm,
     gap: 5
   },
   metaLabel: {
     color: "#8A8A8A",
     fontSize: 10,
+    fontFamily: typography.fontFamily,
     fontWeight: "500",
     textTransform: "uppercase"
   },
   infoValue: {
     color: colors.white,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 17,
     fontWeight: "600"
   },
   analysisBox: {
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
-    borderRadius: radii.sm,
-    backgroundColor: "#050505",
+    borderRadius: radii.md,
+    backgroundColor: colors.surface,
     padding: spacing.sm,
     gap: 5
   },
   confidence: {
     color: colors.gold,
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   analysisTitle: {
     color: colors.white,
     fontSize: 13,
+    fontFamily: typography.fontFamily,
     fontWeight: "700"
   },
   analysis: {
     color: "#C8C8C8",
     fontSize: 12,
+    fontFamily: typography.fontFamily,
     lineHeight: 18,
     fontWeight: "400"
   }

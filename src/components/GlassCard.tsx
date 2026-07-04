@@ -12,9 +12,30 @@ type GlassCardProps = PropsWithChildren<{
   elevated?: boolean;
 }>;
 
+export function useGlassCardPalette() {
+  const { theme } = useAscensionTheme();
+
+  return {
+    accent: theme.accent,
+    accentSoft: theme.accentSoft,
+    border: theme.accentBorder,
+    danger: theme.danger,
+    glow: theme.glow,
+    glowSoft: theme.glowSoft,
+    line: theme.line,
+    overlay: theme.overlay,
+    secondary: theme.textMuted,
+    success: theme.success,
+    surface: theme.surface,
+    title: theme.text
+  };
+}
+
 export function GlassCard({ children, style, contentStyle, elevated = true }: GlassCardProps) {
   const { theme } = useAscensionTheme();
   const isCosmos = theme.id === "cosmos";
+  const shadowOpacity = isCosmos ? (elevated ? 0.30 : 0.12) : elevated ? 0.20 : 0.08;
+  const shadowRadius = isCosmos ? 44 : 34;
   const entrance = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -51,8 +72,8 @@ export function GlassCard({ children, style, contentStyle, elevated = true }: Gl
         {
           borderColor: theme.accentBorder,
           shadowColor: theme.accent,
-          shadowOpacity: isCosmos ? (elevated ? 0.32 : 0.14) : elevated ? 0.22 : 0.09,
-          shadowRadius: isCosmos ? 42 : 32,
+          shadowOpacity,
+          shadowRadius,
           backgroundColor: theme.surface
         },
         style
@@ -85,7 +106,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: radii.lg,
     overflow: "hidden",
-    shadowRadius: 30,
+    shadowRadius: 34,
     shadowOffset: { width: 0, height: 18 },
     elevation: 5
   },

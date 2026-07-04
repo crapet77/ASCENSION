@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,7 +14,6 @@ import Svg, {
 import { AppScreen } from "@/components/AppScreen";
 import { AscensionLogo } from "@/components/AscensionLogo";
 import { GlassCard } from "@/components/GlassCard";
-import { PremiumDashboardHighlights } from "@/components/PremiumDashboardHighlights";
 import { brand } from "@/constants/brand";
 import { colors, radii, spacing, typography } from "@/constants/theme";
 import { dailyObjectives, habits as seedHabits } from "@/data/seed";
@@ -30,9 +29,13 @@ import {
 } from "@/features/discipline/disciplineProfile";
 import { loadHabits } from "@/features/discipline/storage";
 import { useAscensionTheme } from "@/features/theme/ascensionTheme";
-import { generateAscensionIntelligenceCoach } from "@/features/intelligence/coach";
+import { calculateAscensionIQ, AscensionIQProfile } from "@/features/ascensionIQ/ascensionIQ";
+import { generateAscensionIntelligenceV3 } from "@/features/intelligence/ascensionIntelligenceV3";
+import { defaultFinancialProfile, FinancialProfile, loadFinancialProfile } from "@/features/financialProfile";
+import { getPronosticStatus } from "@/features/tickets/pronosticStatus";
 import { loadTickets } from "@/features/tickets/storage";
 import { AscensionTicket } from "@/features/tickets/types";
+import { calculateWealthMetrics, emptyWealthState, loadWealthState, WealthState } from "@/features/wealth";
 import {
   calculateXpProfile,
   defaultXpProfile,
@@ -74,7 +77,7 @@ function getTimeBasedGreeting(date: Date) {
   const hour = date.getHours();
 
   if (hour >= 6 && hour <= 10) {
-    return "Bonjour Jérôme ☀️";
+    return "Bonjour Jérôme 👋";
   }
 
   if (hour >= 11 && hour <= 17) {
@@ -225,6 +228,22 @@ function getBetDate(bet: BankrollBet) {
   return bet.settledAt ?? bet.placedAt;
 }
 
+function formatObjectiveDashboardValue(value: number, category: string) {
+  if (category === "roi_target") {
+    return formatPercent(value);
+  }
+
+  if (category === "analyzed_bets_target") {
+    return `${Math.round(value)} paris`;
+  }
+
+  if (category === "discipline_streak_target") {
+    return `${Math.round(value)} jours`;
+  }
+
+  return formatCurrency(value);
+}
+
 function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: BankrollCurve }) {
   const { theme } = useAscensionTheme();
   const revealStyle = {
@@ -307,6 +326,59 @@ function ProgressLine({ progress, curve }: { progress: Animated.Value; curve: Ba
   );
 }
 
+type DashboardIconName = keyof typeof Ionicons.glyphMap;
+
+function DashboardMiniMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "accent" | "success" | "danger" }) {
+  const { theme } = useAscensionTheme();
+  const valueColor = tone === "accent" ? theme.accentSoft : tone === "success" ? theme.success : tone === "danger" ? theme.danger : theme.text;
+
+  return (
+    <View style={[styles.dashboardMiniMetric, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+      <Text style={[styles.dashboardMiniMetricLabel, { color: theme.textMuted }]}>{label}</Text>
+      <Text style={[styles.dashboardMiniMetricValue, { color: valueColor }]} numberOfLines={1}>{value}</Text>
+    </View>
+  );
+}
+
+function DashboardEssentialCard({
+  icon,
+  title,
+  subtitle,
+  children,
+  onPress
+}: {
+  icon: DashboardIconName;
+  title: string;
+  subtitle: string;
+  children: ReactNode;
+  onPress: () => void;
+}) {
+  const { theme } = useAscensionTheme();
+
+  return (
+    <Pressable onPress={onPress}>
+      <GlassCard style={[styles.dashboardCard, styles.cardDepth, { shadowColor: theme.accent }]}>
+        <View style={styles.dashboardCardHeader}>
+          <View style={styles.headerWithIcon}>
+            <View style={[styles.headerIcon, { backgroundColor: theme.glowSoft, borderColor: theme.accentBorder, shadowColor: theme.accent }]}>
+              <Ionicons name={icon} size={17} color={theme.accentSoft} />
+            </View>
+            <View style={styles.dashboardCardTitleBlock}>
+              <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>{title}</Text>
+              <Text style={[styles.cardMuted, { color: theme.textMuted }]} numberOfLines={1}>{subtitle}</Text>
+            </View>
+          </View>
+          <View style={[styles.dashboardSeeButton, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
+            <Text style={[styles.dashboardSeeText, { color: theme.accentSoft }]}>Voir</Text>
+            <Ionicons name="chevron-forward" size={14} color={theme.accentSoft} />
+          </View>
+        </View>
+        {children}
+      </GlassCard>
+    </Pressable>
+  );
+}
+
 export default function DashboardScreen() {
   const { theme } = useAscensionTheme();
   const entrance = useRef(new Animated.Value(0)).current;
@@ -327,22 +399,51 @@ export default function DashboardScreen() {
   const [academyState, setAcademyState] = useState<AcademyEngineState | null>(null);
   const [objectiveState, setObjectiveState] = useState<ObjectiveEngineState | null>(null);
   const [tickets, setTickets] = useState<AscensionTicket[]>([]);
+  const [financialProfile, setFinancialProfile] = useState<FinancialProfile>(defaultFinancialProfile);
+  const [wealthState, setWealthState] = useState<WealthState>(emptyWealthState);
   const completedObjectives = dailyObjectives.filter((objective) => objective.done).length;
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const dashboardDate = useMemo(
     () => currentDate.toLocaleDateString("fr-FR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" }),
     [currentDate]
   );
+  const dashboardMoment = useMemo(
+    () => `${dashboardDate.charAt(0).toUpperCase()}${dashboardDate.slice(1)} • ${currentDate.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+    [currentDate, dashboardDate]
+  );
   const greetingMessage = useMemo(() => getTimeBasedGreeting(currentDate), [currentDate]);
   const dailyMotivation = useMemo(() => getDailyMotivation(currentDate), [currentDate]);
   const stats = getBankrollStats(bankroll);
   const bankrollCurve = useMemo(() => getBankrollCurve(bankroll), [bankroll]);
-  const opportunityGroups = [
-    { icon: "football-outline", label: "Sport", count: 0, suffix: "opportunité" },
-    { icon: "trending-up-outline", label: "Marchés", count: 0, suffix: "opportunité" },
-    { icon: "home-outline", label: "Patrimoine", count: 0, suffix: "alerte" }
-  ] as const;
-  const totalOpportunities = opportunityGroups.reduce((total, group) => total + group.count, 0);
+  const wealthMetrics = useMemo(() => calculateWealthMetrics(wealthState), [wealthState]);
+  const wealthQuickRows = useMemo(() => {
+    const investmentValue = wealthMetrics.global.allocation
+      .filter((item) => item.category === "market" || item.category === "crypto" || item.category === "commodities" || item.category === "privateEquity")
+      .reduce((total, item) => total + item.value, 0);
+    const realEstateValue = wealthMetrics.global.allocation.find((item) => item.category === "realEstate")?.value ?? 0;
+    const total = Math.max(wealthMetrics.grossWealth, 1);
+
+    return [
+      { label: "Personnel", value: wealthMetrics.personal.grossWealth, percent: (wealthMetrics.personal.grossWealth / total) * 100 },
+      { label: "Entreprise", value: wealthMetrics.business.grossWealth, percent: (wealthMetrics.business.grossWealth / total) * 100 },
+      { label: "Investissements", value: investmentValue, percent: (investmentValue / total) * 100 },
+      { label: "Immobilier", value: realEstateValue, percent: (realEstateValue / total) * 100 }
+    ];
+  }, [wealthMetrics]);
+  const nextAcademyLesson = useMemo(() => {
+    const lessons = academyState?.modules.flatMap((module) => module.lessons) ?? [];
+    return lessons.find((lesson) => lesson.status !== "completed");
+  }, [academyState]);
+  const officialPronostics = useMemo(
+    () => tickets.filter((ticket) => getPronosticStatus(ticket) === "pre_selection"),
+    [tickets]
+  );
+  const pendingPronostics = useMemo(
+    () => tickets.filter((ticket) => getPronosticStatus(ticket) === "pending"),
+    [tickets]
+  );
+  const pronosticPreview = officialPronostics.slice(0, 2);
+  const totalOpportunities = officialPronostics.length;
   const todayQuote = useMemo(() => {
     const quotes = [
       "La discipline transforme les intentions en résultats.",
@@ -351,9 +452,11 @@ export default function DashboardScreen() {
     ];
     return quotes[currentDate.getDate() % quotes.length];
   }, [currentDate]);
-  const missionSummary = completedObjectives >= dailyObjectives.length
-    ? "Aujourd'hui, tu as déjà validé ta mission principale."
-    : "Aujourd'hui, aucune décision impulsive."
+  const missionSummary = dailyObjectives.length === 0
+    ? "Aucune mission réelle définie pour aujourd'hui."
+    : completedObjectives >= dailyObjectives.length
+      ? "Aujourd'hui, tu as déjà validé ta mission principale."
+      : "Aujourd'hui, aucune décision impulsive."
   const aiAdvice = useMemo(() => {
     if (disciplineProfile.score >= 80) {
       return "Ton rythme est solide. Prolonge l'élan avec une seule action premium aujourd'hui.";
@@ -365,28 +468,41 @@ export default function DashboardScreen() {
 
     return "Une journée d'équilibre vaut mieux qu'un coup de chaleur. Reprends le cap avec douceur.";
   }, [disciplineProfile.score, stats.profit]);
-  const intelligenceCoach = useMemo(
+  const ascensionIQ = useMemo<AscensionIQProfile>(
     () =>
-      generateAscensionIntelligenceCoach({
+      calculateAscensionIQ({
         academyState,
         xpProfile,
         bankroll,
         tickets,
         objectiveState,
         disciplineProfile,
+        financialProfile
+      }),
+    [academyState, bankroll, disciplineProfile, financialProfile, objectiveState, tickets, xpProfile]
+  );
+  const intelligenceCoach = useMemo(
+    () =>
+      generateAscensionIntelligenceV3({
+        academyState,
+        ascensionIQ,
+        objectiveState,
+        wealthState,
+        bankroll,
+        tickets,
+        disciplineProfile,
+        xpProfile,
+        financialProfile,
         today: currentDate
       }),
-    [academyState, bankroll, currentDate, disciplineProfile, objectiveState, tickets, xpProfile]
+    [academyState, ascensionIQ, bankroll, currentDate, disciplineProfile, financialProfile, objectiveState, tickets, wealthState, xpProfile]
   );
-  const targetAmount = 5000;
-  const currentAmount = Math.min(stats.currentCapital, targetAmount);
-  const remainingAmount = targetAmount - currentAmount;
-  const goalPercent = targetAmount > 0 ? Math.min(100, (currentAmount / targetAmount) * 100) : 0;
-  const goalEstimate = remainingAmount <= 0
-    ? "Objectif atteint."
-    : stats.profit > 0
-      ? `Estimation : objectif atteint dans environ ${Math.ceil(remainingAmount / stats.profit)} mois.`
-      : "Estimation disponible après bénéfice régulier.";
+  const primaryObjective = objectiveState?.activeObjectives[0] ?? objectiveState?.objectives[0] ?? null;
+  const goalPercent = primaryObjective?.progressPercent ?? 0;
+  const goalLabel = primaryObjective?.title ?? "Ajoute un objectif pour voir ta progression.";
+  const goalValue = primaryObjective
+    ? `${formatObjectiveDashboardValue(primaryObjective.currentValue, primaryObjective.category)} / ${formatObjectiveDashboardValue(primaryObjective.targetValue, primaryObjective.category)}`
+    : "Aucune donnée disponible pour le moment.";
   const financialStats = [
     { label: "Capital", value: formatCurrency(stats.initialCapital), tone: "neutral" },
     { label: "Bankroll", value: formatCurrency(stats.currentCapital), tone: "neutral" },
@@ -403,8 +519,10 @@ export default function DashboardScreen() {
         loadHabits(),
         loadTickets(),
         AcademyEngine.getState(),
-        ObjectiveEngine.getState()
-      ]).then(([loadedBankroll, loadedHabits, loadedTickets, academyState, objectiveState]) => {
+        ObjectiveEngine.getState(),
+        loadFinancialProfile(),
+        loadWealthState()
+      ]).then(([loadedBankroll, loadedHabits, loadedTickets, academyState, objectiveState, loadedFinancialProfile, loadedWealthState]) => {
         const nextDisciplineProfile = calculateDisciplineProfile({
           bankroll: loadedBankroll,
           habits: loadedHabits,
@@ -426,6 +544,8 @@ export default function DashboardScreen() {
         setXpProfile(nextXpProfile);
         setAcademyState(academyState);
         setObjectiveState(objectiveState);
+        setFinancialProfile(loadedFinancialProfile);
+        setWealthState(loadedWealthState);
         saveDisciplineProfile(nextDisciplineProfile);
         saveXpProfile(nextXpProfile);
       });
@@ -603,144 +723,118 @@ export default function DashboardScreen() {
           </Animated.View>
         </View>
 
-        <PremiumDashboardHighlights
-          greeting={greetingMessage}
-          dashboardDate={dashboardDate}
-          dailyMotivation={dailyMotivation}
-          quote={todayQuote}
-          disciplineProfile={disciplineProfile}
-          xpProfile={xpProfile}
-          goalPercent={goalPercent}
-          goalLabel="Atteindre 5 000 €"
-          goalValue={`${formatCurrency(currentAmount)} / ${formatCurrency(targetAmount)}`}
-          missionLabel={missionSummary}
-          missionCompleted={missionCompleted}
-          advice={aiAdvice}
-          onStartDay={() => {
-            setMissionCompleted(true);
-            router.push("/(tabs)/ticket" as never);
-          }}
-          onOpenProfile={() => router.push("/profile")}
-        />
-
-        <Pressable onPress={() => router.push("/(tabs)/ticket" as never)}>
-          <GlassCard style={[styles.opportunityCard, styles.cardDepth]}>
-          <View pointerEvents="none" style={styles.cardInnerHalo} />
-          <View pointerEvents="none" style={styles.cardReflection} />
-          <View pointerEvents="none" style={styles.cardCarbonA} />
-          <View pointerEvents="none" style={styles.cardCarbonB} />
-          <View style={styles.cardHeader}>
-            <View style={styles.headerWithIcon}>
-              <View style={styles.headerIcon}>
-                <Ionicons name="globe-outline" size={17} color={theme.accentSoft} />
-              </View>
-              <View>
-                <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>OPPORTUNITÉS DU JOUR</Text>
-                <Text style={[styles.cardMuted, { color: theme.textMuted }]}>Sport, marchés et patrimoine.</Text>
-              </View>
+        <GlassCard style={[styles.cockpitHeaderCard, styles.cardDepth, { shadowColor: theme.accent }]}>
+          <View style={styles.greetingRow}>
+            <View style={styles.heroCopy}>
+              <Text style={[styles.greeting, { color: theme.text }]}>{greetingMessage}</Text>
+              <Text style={[styles.subtitle, { color: theme.textMuted }]}>{dashboardMoment}</Text>
+              <Text style={[styles.heroMotivationText, { color: theme.accentSoft }]}>{dailyMotivation}</Text>
+            </View>
+            <View style={[styles.bellButton, { borderColor: theme.accentBorder, backgroundColor: theme.overlay }]}>
+              <Ionicons name="notifications-outline" size={18} color={theme.accentSoft} />
             </View>
           </View>
+        </GlassCard>
+
+        <DashboardEssentialCard
+          icon="diamond-outline"
+          title="MON PATRIMOINE"
+          subtitle="Vision globale réelle"
+          onPress={() => router.push("/wealth" as never)}
+        >
+          <View style={styles.dashboardMetricsRow}>
+            <DashboardMiniMetric label="Brut" value={formatCurrency(wealthMetrics.grossWealth)} />
+            <DashboardMiniMetric label="Dettes" value={formatCurrency(wealthMetrics.debt)} tone={wealthMetrics.debt > 0 ? "danger" : "default"} />
+            <DashboardMiniMetric label="Net" value={formatCurrency(wealthMetrics.netWealth)} tone="accent" />
+          </View>
+          <View style={styles.wealthQuickList}>
+            {wealthQuickRows.map((row) => (
+              <View key={row.label} style={styles.wealthQuickRow}>
+                <View style={styles.wealthQuickTop}>
+                  <Text style={[styles.wealthQuickLabel, { color: theme.text }]}>{row.label}</Text>
+                  <Text style={[styles.wealthQuickValue, { color: theme.textMuted }]}>{formatCurrency(row.value)}</Text>
+                </View>
+                <View style={[styles.wealthQuickTrack, { backgroundColor: theme.overlay }]}>
+                  <View style={[styles.wealthQuickFill, { width: `${Math.min(100, row.percent)}%`, backgroundColor: theme.accentSoft }]} />
+                </View>
+              </View>
+            ))}
+          </View>
+        </DashboardEssentialCard>
+
+        <DashboardEssentialCard
+          icon="bar-chart-outline"
+          title="PROGRESSION"
+          subtitle="Bankroll réelle"
+          onPress={() => router.push("/(tabs)/ticket" as never)}
+        >
+          <View style={styles.progressCompactHeader}>
+            <Text style={[styles.progressCompactValue, { color: stats.profit >= 0 ? theme.success : theme.danger }]}>
+              {formatCurrency(stats.profit)}
+            </Text>
+            <Text style={[styles.progressCompactMeta, { color: theme.textMuted }]}>
+              ROI {formatPercent(stats.roi)}
+            </Text>
+          </View>
+          <ProgressLine progress={progressDraw} curve={bankrollCurve} />
+          <View style={styles.dashboardMetricsRow}>
+            <DashboardMiniMetric label="Capital" value={formatCurrency(stats.initialCapital)} />
+            <DashboardMiniMetric label="Bankroll" value={formatCurrency(stats.currentCapital)} tone="accent" />
+            <DashboardMiniMetric label="Réussite" value={formatPercent(stats.winRate)} tone={stats.winRate > 0 ? "success" : "default"} />
+          </View>
+        </DashboardEssentialCard>
+
+        <DashboardEssentialCard
+          icon="trending-up-outline"
+          title="PRONOSTICS DU JOUR"
+          subtitle={`${officialPronostics.length} à valider · ${pendingPronostics.length} en cours`}
+          onPress={() => router.push("/(tabs)/ticket" as never)}
+        >
           {totalOpportunities === 0 ? (
-            <Text style={[styles.opportunityEmpty, { color: theme.textMuted }]}>Aucune opportunité aujourd'hui.</Text>
+            <Text style={[styles.opportunityEmpty, { color: theme.textMuted, borderColor: theme.line, backgroundColor: theme.overlay }]}>Aucun pronostic du jour à valider.</Text>
           ) : (
             <View style={styles.opportunityRows}>
-              {opportunityGroups.map((group) => (
-                <View key={group.label} style={styles.opportunityRow}>
-                  <View style={styles.opportunityIcon}>
-                    <Ionicons name={group.icon} size={16} color={theme.accentSoft} />
+              {pronosticPreview.map((ticket) => (
+                <View key={ticket.selection.id} style={[styles.opportunityRow, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
+                  <View style={[styles.opportunityIcon, { backgroundColor: theme.glowSoft }]}>
+                    <Ionicons name="football-outline" size={16} color={theme.accentSoft} />
                   </View>
-                  <Text style={[styles.opportunityLabel, { color: theme.text }]}>{group.label}</Text>
-                  <Text style={[styles.opportunityValue, { color: theme.accentSoft }]}>
-                    {group.count === 0
-                      ? "Aucune opportunité"
-                      : `${group.count} ${group.suffix}${group.count > 1 ? "s" : ""}`}
-                  </Text>
+                  <View style={styles.pronosticPreviewText}>
+                    <Text style={[styles.opportunityLabel, { color: theme.text }]} numberOfLines={1}>{ticket.selection.match}</Text>
+                    <Text style={[styles.pronosticMarket, { color: theme.textMuted }]} numberOfLines={1}>{ticket.selection.pick || ticket.selection.market}</Text>
+                  </View>
+                  <Text style={[styles.opportunityValue, { color: theme.accentSoft }]}>{ticket.selection.ascensionScore}/100</Text>
                 </View>
               ))}
             </View>
           )}
-          </GlassCard>
-        </Pressable>
+        </DashboardEssentialCard>
 
-        <GlassCard style={[styles.performancePanel, styles.cardDepth]}>
-          <View pointerEvents="none" style={[styles.progressAura, { backgroundColor: theme.glowSoft, shadowColor: theme.accentSoft }]} />
-          <View pointerEvents="none" style={styles.cardReflection} />
-          <View pointerEvents="none" style={styles.cardCarbonA} />
-          <View pointerEvents="none" style={styles.cardCarbonB} />
-          <LinearGradient colors={theme.cardGradient} style={styles.progressCard}>
-            <View style={styles.cardHeader}>
-              <View style={styles.headerWithIcon}>
-                <View style={styles.headerIconSmall}>
-                  <Ionicons name="bar-chart" size={15} color={theme.accentSoft} />
-                </View>
-                <View style={styles.progressTitleBlock}>
-                  <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>PROGRESSION</Text>
-                  <Text style={[styles.progressMuted, { color: theme.textMuted }]}>Ce mois</Text>
-                  <Text style={[styles.progressMicro, { color: theme.textMuted }]}>Évolution réelle locale</Text>
-                </View>
-              </View>
-              <Text style={[styles.positive, { color: stats.roi >= 0 ? theme.success : theme.danger, textShadowColor: stats.roi >= 0 ? `${theme.success}22` : `${theme.danger}22` }]}>{formatPercent(stats.roi)}</Text>
-            </View>
-            <ProgressLine progress={progressDraw} curve={bankrollCurve} />
-          </LinearGradient>
+        <DashboardEssentialCard
+          icon="sparkles-outline"
+          title="COACH ASCENSION"
+          subtitle={intelligenceCoach.contextLabel}
+          onPress={() => router.push("/(tabs)/academy" as never)}
+        >
+          <Text style={[styles.dashboardCoachText, { color: theme.text }]} numberOfLines={3}>{intelligenceCoach.adviceOfTheDay}</Text>
+          <Text style={[styles.dashboardCoachSubtext, { color: theme.textMuted }]} numberOfLines={2}>{intelligenceCoach.nextStep}</Text>
+        </DashboardEssentialCard>
 
-          <View style={[styles.financialGrid, { borderTopColor: theme.line, backgroundColor: theme.surface }]}>
-            {financialStats.map((item) => (
-              <View key={item.label} style={[styles.financialTile, { borderBottomColor: theme.line, borderRightColor: theme.line }]}>
-                <Text style={[styles.statLabel, { color: theme.textMuted }]}>{item.label}</Text>
-                <Text
-                  style={[
-                    styles.statValue,
-                    { color: item.tone === "danger" ? theme.danger : item.tone === "neutral" ? theme.text : theme.success },
-                    item.tone === "neutral" && styles.statValueNeutral
-                  ]}
-                >
-                  {item.value}
-                </Text>
-              </View>
-            ))}
+        <DashboardEssentialCard
+          icon="book-outline"
+          title="CONTINUER ACADEMY"
+          subtitle={nextAcademyLesson?.title ?? "Parcours à jour"}
+          onPress={() => router.push("/(tabs)/academy" as never)}
+        >
+          <View style={styles.dashboardMetricsRow}>
+            <DashboardMiniMetric label="XP" value={`${xpProfile.xp} XP`} tone="accent" />
+            <DashboardMiniMetric label="Niveau" value={xpProfile.level} />
+            <DashboardMiniMetric label="Discipline" value={`${disciplineProfile.currentStreak} j`} tone="success" />
           </View>
-        </GlassCard>
-
-        <GlassCard style={[styles.intelligenceCard, styles.cardDepth]}>
-          <View pointerEvents="none" style={styles.cardInnerHalo} />
-          <View pointerEvents="none" style={styles.cardReflection} />
-          <View pointerEvents="none" style={styles.cardCarbonA} />
-          <View pointerEvents="none" style={styles.cardCarbonB} />
-          <View style={styles.cardHeader}>
-            <Text style={[styles.premiumHomeTitle, { color: theme.accentSoft }]}>ASCENSION INTELLIGENCE</Text>
-          </View>
-          <View style={[styles.coachRecommendation, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
-            <View style={styles.coachRecommendationTop}>
-              <Ionicons name="school-outline" size={16} color={theme.accentSoft} />
-              <Text style={[styles.coachLevel, { color: theme.textMuted }]}>{intelligenceCoach.contextLabel}</Text>
-            </View>
-            <Text style={[styles.coachTitle, { color: theme.text }]}>{intelligenceCoach.recommendation}</Text>
-            <View style={styles.coachGrid}>
-              <View style={styles.coachMiniBlock}>
-                <Text style={[styles.coachMiniLabel, { color: theme.accentSoft }]}>MISSION</Text>
-                <Text style={[styles.coachAction, { color: theme.textMuted }]}>{intelligenceCoach.mission}</Text>
-              </View>
-              <View style={styles.coachMiniBlock}>
-                <Text style={[styles.coachMiniLabel, { color: theme.accentSoft }]}>PROCHAINE ÉTAPE</Text>
-                <Text style={[styles.coachAction, { color: theme.textMuted }]}>{intelligenceCoach.nextStep}</Text>
-              </View>
-            </View>
-            <Text style={[styles.coachEncouragement, { color: theme.text }]}>{intelligenceCoach.encouragement}</Text>
-          </View>
-          <Text style={[styles.intelligenceText, { color: theme.textMuted }]}>Mode local · analyse personnelle :</Text>
-          <View style={styles.intelligenceGrid}>
-            {["Sport", "Marchés", "Patrimoine", "Objectifs"].map((item) => (
-              <View key={item} style={[styles.intelligenceItem, { borderColor: theme.line, backgroundColor: theme.overlay }]}>
-                <Ionicons name="sparkles-outline" size={15} color={theme.accentSoft} />
-                <Text style={[styles.intelligenceItemText, { color: theme.text }]}>{item}</Text>
-              </View>
-            ))}
-          </View>
-          <View style={[styles.intelligenceBadge, { borderColor: theme.accentBorder, backgroundColor: theme.glowSoft }]}>
-            <Text style={[styles.comingSoon, { color: theme.accentSoft }]}>Mode local actif</Text>
-          </View>
-        </GlassCard>
+          <Text style={[styles.dashboardCoachSubtext, { color: theme.textMuted }]}>
+            {nextAcademyLesson ? "Reprends la prochaine leçon quand tu es prêt." : "Continue à consolider tes acquis."}
+          </Text>
+        </DashboardEssentialCard>
 
         <Text style={styles.footerBrand}>{brand.name.toUpperCase()} · {brand.motto.toUpperCase()}</Text>
       </Animated.View>
@@ -798,6 +892,120 @@ const styles = StyleSheet.create({
   logoParticleThree: {
     bottom: 34,
     left: 92
+  },
+  cockpitHeaderCard: {
+    padding: 20,
+    gap: spacing.sm
+  },
+  dashboardCard: {
+    minHeight: 132,
+    padding: 20,
+    gap: spacing.md
+  },
+  dashboardCardHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.md
+  },
+  dashboardCardTitleBlock: {
+    flex: 1,
+    gap: 3
+  },
+  dashboardSeeButton: {
+    minHeight: 32,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 3
+  },
+  dashboardSeeText: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: 0.6,
+    textTransform: "uppercase"
+  },
+  dashboardMetricsRow: {
+    flexDirection: "row",
+    gap: spacing.sm
+  },
+  dashboardMiniMetric: {
+    flex: 1,
+    minHeight: 58,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    padding: spacing.sm,
+    justifyContent: "center",
+    gap: 3
+  },
+  dashboardMiniMetricLabel: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: 0.65,
+    textTransform: "uppercase"
+  },
+  dashboardMiniMetricValue: {
+    fontSize: 14,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: 0.05,
+    lineHeight: 19
+  },
+  goalCompactRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.md
+  },
+  goalCompactValue: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    lineHeight: 20
+  },
+  goalCompactPercent: {
+    fontSize: 22,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: -0.1
+  },
+  dashboardCoachText: {
+    fontSize: 15,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    lineHeight: 22
+  },
+  dashboardCoachSubtext: {
+    fontSize: 13,
+    fontFamily: typography.fontFamily,
+    fontWeight: "400",
+    lineHeight: 19
+  },
+  progressCompactHeader: {
+    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.md
+  },
+  progressCompactValue: {
+    fontSize: 23,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: -0.1,
+    lineHeight: 29
+  },
+  progressCompactMeta: {
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: 0.35,
+    lineHeight: 18,
+    textTransform: "uppercase"
   },
   cardDepth: {
     shadowColor: "#E2B45C",
@@ -1063,6 +1271,86 @@ const styles = StyleSheet.create({
     padding: 22,
     gap: 20
   },
+  wealthCard: {
+    minHeight: 250,
+    padding: 22,
+    gap: 18,
+    overflow: "hidden"
+  },
+  wealthDetailButton: {
+    minHeight: 34,
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4
+  },
+  wealthDetailText: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    textTransform: "uppercase"
+  },
+  wealthMetricsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm
+  },
+  wealthMetricBox: {
+    flexGrow: 1,
+    flexBasis: "47%",
+    minHeight: 66,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    padding: spacing.sm,
+    justifyContent: "center",
+    gap: 4
+  },
+  wealthMetricLabel: {
+    fontSize: 10,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600",
+    letterSpacing: 0.7,
+    textTransform: "uppercase"
+  },
+  wealthMetricValue: {
+    fontSize: 15,
+    fontFamily: typography.fontFamily,
+    fontWeight: "700",
+    lineHeight: 20
+  },
+  wealthQuickList: {
+    gap: spacing.sm
+  },
+  wealthQuickRow: {
+    gap: 5
+  },
+  wealthQuickTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: spacing.sm
+  },
+  wealthQuickLabel: {
+    fontSize: 12,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600"
+  },
+  wealthQuickValue: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "600"
+  },
+  wealthQuickTrack: {
+    height: 6,
+    borderRadius: radii.pill,
+    overflow: "hidden"
+  },
+  wealthQuickFill: {
+    height: "100%",
+    borderRadius: radii.pill
+  },
   headerWithIcon: {
     flex: 1,
     alignItems: "center",
@@ -1120,6 +1408,16 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily,
     fontWeight: "600",
     letterSpacing: typography.labelTracking
+  },
+  pronosticPreviewText: {
+    flex: 1,
+    gap: 2
+  },
+  pronosticMarket: {
+    fontSize: 11,
+    fontFamily: typography.fontFamily,
+    fontWeight: "500",
+    lineHeight: 16
   },
   opportunityValue: {
     color: colors.goldSoft,

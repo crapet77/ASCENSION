@@ -3,6 +3,8 @@ import { ObjectiveEngineState } from "@/engine/objectives";
 import { getBankrollStats } from "@/features/bankroll/math";
 import { BankrollState } from "@/features/bankroll/types";
 import { DisciplineProfile } from "@/features/discipline/disciplineProfile";
+import { calculateFinancialProfileMetrics } from "@/features/financialProfile/calculations";
+import { FinancialProfile } from "@/features/financialProfile/types";
 import { AscensionTicket } from "@/features/tickets/types";
 import { XpProfile } from "@/features/xp/xpSystem";
 
@@ -27,6 +29,7 @@ export type AscensionIntelligenceInput = {
   tickets: AscensionTicket[];
   objectiveState: ObjectiveEngineState | null;
   disciplineProfile: DisciplineProfile;
+  financialProfile?: FinancialProfile | null;
   today?: Date;
 };
 
@@ -130,9 +133,40 @@ export function generateAscensionIntelligenceCoach(input: AscensionIntelligenceI
   const lostTickets = input.tickets.filter((ticket) => ticket.input.playStatus === "played" && ticket.selection.status === "lost");
   const activeObjectives = input.objectiveState?.activeObjectives ?? [];
   const achievedObjectives = input.objectiveState?.achievedObjectives ?? [];
+  const financialMetrics = input.financialProfile ? calculateFinancialProfileMetrics(input.financialProfile) : null;
   const nextLevel = input.xpProfile?.nextLevel;
   const progressToNextLevel = input.xpProfile?.progressToNextLevel ?? 0;
   const winRate = wonTickets.length + lostTickets.length > 0 ? (wonTickets.length / (wonTickets.length + lostTickets.length)) * 100 : bankrollStats.winRate;
+
+  if (completedLessons.length >= 10) {
+    return {
+      recommendation: "Tu maîtrises les bases. Découvre maintenant la Masterclass Bitcoin.",
+      mission: "Ouvre Ascension Masterclass et commence par Bitcoin.",
+      encouragement: "Tu peux maintenant approfondir un sujet sans abandonner ta méthode.",
+      nextStep: "Va dans Profil puis Ascension Masterclass.",
+      contextLabel: "Masterclass recommandée"
+    };
+  }
+
+  if (!financialMetrics || financialMetrics.completedFields === 0) {
+    return {
+      recommendation: "Renseigne ton profil financier pour obtenir des objectifs plus précis.",
+      mission: "Ajoute ton salaire, tes charges et ton épargne disponible.",
+      encouragement: "Ascension devient plus utile quand les chiffres viennent de ta vraie situation.",
+      nextStep: "Va dans Profil puis Mon profil financier.",
+      contextLabel: "Profil financier à compléter"
+    };
+  }
+
+  if (financialMetrics.savingsCapacity > 0 && activeObjectives.length > 0) {
+    return {
+      recommendation: `Ta capacité d'épargne estimée est de ${financialMetrics.savingsCapacity.toFixed(0)} € par mois.`,
+      mission: "Compare cette capacité avec ton objectif principal.",
+      encouragement: financialMetrics.savingsRate >= 20 ? "Ton taux d'épargne donne une bonne base à ton ascension." : "Même un petit taux d'épargne devient puissant avec de la régularité.",
+      nextStep: "Va dans Objectifs pour vérifier ta trajectoire.",
+      contextLabel: `Taux d'épargne ${financialMetrics.savingsRate.toFixed(1)}%`
+    };
+  }
 
   if (input.academyState && input.academyState.progressPercent >= 75) {
     return {

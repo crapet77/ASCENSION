@@ -12,23 +12,8 @@ export async function fetchTopCryptoMarkets(limit = 500): Promise<CoinMarketAsse
   return pages.flat().slice(0, normalizedLimit).map((asset) => normalizeMarketAsset(asset));
 }
 
-export function calculateAiScore(asset: {
-  priceChange24h: number;
-  marketCap: number;
-  totalVolume: number;
-  marketCapRank: number;
-}): number {
-  const changeMomentum = Math.max(-20, Math.min(20, asset.priceChange24h / 2));
-  const marketCapScore = Math.max(0, Math.min(30, asset.marketCap > 0 ? Math.log10(asset.marketCap) / 8 * 30 : 0));
-  const volumeScore = Math.max(0, Math.min(20, asset.totalVolume > 0 && asset.marketCap > 0 ? (asset.totalVolume / asset.marketCap) * 20 : 0));
-  const rankScore = Math.max(0, Math.min(20, 20 - Math.max(0, asset.marketCapRank - 1) * 0.2));
-  const score = Math.round(40 + changeMomentum + marketCapScore + volumeScore + rankScore);
-
-  return Math.max(0, Math.min(100, score));
-}
-
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: value >= 1000 ? 0 : 2
@@ -50,7 +35,7 @@ async function fetchCoinGeckoPage(page: number, perPage: number): Promise<Array<
   });
 
   if (!response.ok) {
-    throw new Error(`CoinGecko request failed with ${response.status}`);
+    throw new Error(`La requête CoinGecko a échoué avec le statut ${response.status}`);
   }
 
   return (await response.json()) as Array<Record<string, unknown>>;
@@ -89,7 +74,7 @@ function buildCoinGeckoHeaders(): Record<string, string> {
 }
 
 export function formatCompact(value: number): string {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("fr-FR", {
     notation: "compact",
     maximumFractionDigits: 1
   }).format(value);
@@ -102,32 +87,32 @@ export function formatPercent(value: number): string {
 export const futureModules: FutureModuleCard[] = [
   {
     key: "stocks",
-    title: "Stocks",
-    description: "Cross-market ideas and equity watchlists.",
+    title: "Actions",
+    description: "Idées multi-marchés et listes de surveillance actions.",
     status: "planned"
   },
   {
     key: "etfs",
     title: "ETFs",
-    description: "Sector and thematic ETF snapshots.",
+    description: "Aperçus des ETF sectoriels et thématiques.",
     status: "planned"
   },
   {
     key: "news",
-    title: "News",
-    description: "Event-driven sentiment and catalyst tracking.",
+    title: "Actualités",
+    description: "Suivi des catalyseurs et du sentiment de marché.",
     status: "planned"
   },
   {
     key: "watchlist",
-    title: "Watchlist",
-    description: "Personal monitoring and favorites.",
+    title: "Liste de suivi",
+    description: "Surveillance personnelle et favoris.",
     status: "planned"
   },
   {
     key: "alerts",
-    title: "Alerts",
-    description: "Threshold-based notifications for your ideas.",
+    title: "Alertes",
+    description: "Notifications par seuil pour tes idées.",
     status: "planned"
   }
 ];
@@ -142,12 +127,6 @@ function normalizeMarketAsset(asset: Record<string, unknown>): CoinMarketAsset {
     priceChange24h: Number(asset.price_change_percentage_24h ?? 0),
     marketCap: Number(asset.market_cap ?? 0),
     totalVolume: Number(asset.total_volume ?? 0),
-    marketCapRank: Number(asset.market_cap_rank ?? 9999),
-    aiScore: calculateAiScore({
-      priceChange24h: Number(asset.price_change_percentage_24h ?? 0),
-      marketCap: Number(asset.market_cap ?? 0),
-      totalVolume: Number(asset.total_volume ?? 0),
-      marketCapRank: Number(asset.market_cap_rank ?? 9999)
-    })
+    marketCapRank: Number(asset.market_cap_rank ?? 9999)
   };
 }
